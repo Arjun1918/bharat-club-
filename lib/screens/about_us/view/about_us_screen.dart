@@ -1,0 +1,145 @@
+import 'package:flutter/material.dart';
+import 'package:focus_detector/focus_detector.dart';
+import 'package:get/get.dart';
+import 'package:organization/alert/app_alert.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/common/widgets/appbar.dart';
+import 'package:organization/common/widgets/banner_card.dart';
+import 'package:organization/common/widgets/loader.dart';
+import 'package:organization/screens/about_us/controller/about_us_controller.dart';
+import 'package:organization/utils/message_constants.dart';
+import 'package:organization/utils/networl_util.dart';
+
+class AboutUsScreen extends GetView<AboutUsController> {
+  const AboutUsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Get.lazyPut(() => AboutUsController());
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: CustomAppBar(title: 'About Us'),
+      body: FocusDetector(
+        onVisibilityGained: () async {
+          bool isInternetAvailable = await NetworkUtils()
+              .checkInternetConnection();
+          if (isInternetAvailable) {
+            await controller.getAboutUsApi();
+          } else {
+            AppAlert.showSnackBar(
+              Get.context!,
+              MessageConstants.noInternetConnection,
+            );
+          }
+        },
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CustomLoader());
+          }
+
+          final aboutUs = controller.mAboutUsResponse.value;
+
+          if (aboutUs == null || aboutUs.data == null) {
+            return const CustomLoader();
+          }
+
+          final content = aboutUs.data!.content ?? "";
+
+          // Split content into paragraphs
+          List<String> paragraphs = _extractParagraphs(content);
+
+          return ListView(
+            padding: EdgeInsets.all(16),
+            children: [
+              // Banner Card
+              Obx(
+                () => BannerCard(bannerUrl: controller.aboutBannerImage.value),
+              ),
+              SizedBox(height: 20),
+
+              // Paragraphs as separate cards
+              ...paragraphs
+                  .map((paragraph) => _buildParagraphCard(paragraph))
+                  .toList(),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildParagraphCard(String text) {
+    // Check if it's a title/heading (shorter text or starts with "History")
+    bool isTitle = text.length < 50 || text.toLowerCase().contains('history');
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: isTitle ? 20 : 16,
+          fontWeight: isTitle ? FontWeight.bold : FontWeight.normal,
+          color: isTitle ? Colors.black87 : Colors.black87,
+          height: 1.5,
+        ),
+      ),
+    );
+  }
+
+  List<String> _extractParagraphs(String html) {
+    List<String> paragraphs = [];
+
+    // Extract content between <p> tags
+    RegExp pTagRegex = RegExp(r'<p[^>]*>(.*?)</p>', dotAll: true);
+    Iterable<RegExpMatch> matches = pTagRegex.allMatches(html);
+
+    for (var match in matches) {
+      String content = match.group(1) ?? '';
+
+      // Clean HTML tags and entities
+      content = content
+          .replaceAll(RegExp(r'<[^>]*>'), '')
+          .replaceAll('&rsquo;', "'")
+          .replaceAll('&ldquo;', '"')
+          .replaceAll('&rdquo;', '"')
+          .replaceAll('&nbsp;', ' ')
+          .replaceAll('&amp;', '&')
+          .replaceAll(RegExp(r'\s+'), ' ')
+          .trim();
+
+      if (content.isNotEmpty) {
+        paragraphs.add(content);
+      }
+    }
+
+    // If no paragraphs found, return whole content as one
+    if (paragraphs.isEmpty) {
+      String cleanText = html
+          .replaceAll(RegExp(r'<[^>]*>'), ' ')
+          .replaceAll('&rsquo;', "'")
+          .replaceAll('&ldquo;', '"')
+          .replaceAll('&rdquo;', '"')
+          .replaceAll('&nbsp;', ' ')
+          .replaceAll('&amp;', '&')
+          .replaceAll(RegExp(r'\s+'), ' ')
+          .trim();
+      paragraphs.add(cleanText);
+    }
+
+    return paragraphs;
+  }
+}
