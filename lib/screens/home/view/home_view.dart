@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:get/get.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/carousel_slider.dart';
@@ -11,6 +12,7 @@ import 'package:organization/common/widgets/profile_card.dart';
 import 'package:organization/common/widgets/section_header.dart';
 import 'package:organization/common/widgets/shimmer_box.dart';
 import 'package:organization/common/widgets/sponsor_item.dart';
+import 'package:organization/screens/home/view/home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,41 +22,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ScrollController _eventsController = ScrollController();
   int _currentSponsorIndex = 0;
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
-  bool _isLoading = true;
-
-  // Mock data
-  final List<Map<String, String>> _events = [
-    {
-      'title': 'Summer BBQ',
-      'description': 'Join us for a fun-filled BBQ!',
-      'image': 'https://picsum.photos/400/200',
-      'date': 'Aug 15',
-    },
-    {
-      'title': 'Holiday Feast',
-      'description': 'Celebrate the holidays with delicious feast.',
-      'image': 'https://picsum.photos/401/200',
-      'date': 'Dec 25',
-    },
-    {
-      'title': 'Cooking Workshop',
-      'description': 'Learn new cooking skills from experts.',
-      'image': 'https://picsum.photos/402/200',
-      'date': 'Sep 10',
-    },
-  ];
-
-  final List<String> _galleries = [
-    'Delicious Dishes',
-    'Culinary Creations',
-    'Gourmet Meals',
-    'Tasty Treats',
-    'Food Photography',
-  ];
+  final CarouselSliderController _carouselController = CarouselSliderController();
+  final DashboardController controller = Get.put(DashboardController());
 
   @override
   void initState() {
@@ -63,17 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(seconds: 3));
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    await controller.membershipTypeLoad();
   }
 
   @override
   void dispose() {
-    _eventsController.dispose();
+    controller.stopTimer();
     super.dispose();
   }
 
@@ -89,9 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: const CustomMenuDrawer(),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
+        color: AppColors.secondaryGreen,
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: _isLoading ? _buildShimmerLoading() : _buildContent(),
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Obx(() {
+            if (controller.userName.value.isEmpty && 
+                controller.membershipType.value.isEmpty &&
+                controller.photo.value.isEmpty) {
+              return _buildShimmerLoading();
+            }
+            return _buildContent();
+          }),
         ),
       ),
     );
@@ -100,23 +73,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildContent() {
     return Column(
       children: [
-        // User Profile Card
-        ProfileCard(
+        Obx(() => ProfileCard(
           welcomeText: 'Welcome back',
-          userName: 'Ethan Carter',
-          membershipType: 'Premium Member',
-          profileImageUrl: 'https://picsum.photos/200',
-        ),
-
-        // Events Section
+          userName: controller.userName.value.isNotEmpty 
+              ? controller.userName.value 
+              : 'Guest User',
+          membershipType: controller.membershipType.value.isNotEmpty
+              ? controller.membershipType.value
+              : 'Member',
+          profileImageUrl: controller.photo.value.isNotEmpty
+              ? controller.photo.value
+              : 'https://picsum.photos/200',
+        )),
         _buildEventsSection(),
-
-        // Gallery Section
         _buildGallerySection(),
-
-        // Sponsors Section with Carousel
         _buildSponsorsCarousel(),
-
         SizedBox(height: 20.h),
       ],
     );
@@ -135,16 +106,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _handleRefresh() async {
-    setState(() {
-      _isLoading = true;
-    });
-    await _loadData();
+    await controller.membershipTypeLoad();
   }
 
   Widget _buildEventsSection() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Column(
+    return Obx(() {
+      final events = controller.mDashboardEventList;
+      
+      print('Events count: ${events.length}'); // Debug print
+      
+      if (events.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
@@ -154,33 +129,46 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 220.h,
             child: ListView.builder(
-              controller: _eventsController,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              itemCount: _events.length,
+              itemCount: events.length,
               itemBuilder: (context, index) {
-                final event = _events[index];
+                final event = events[index];
+                // Get image from event_attachments array
+                String imageUrl = 'https://picsum.photos/400/200';
+                if (event.eventAttachments != null && 
+                    event.eventAttachments!.isNotEmpty) {
+                  imageUrl = event.eventAttachments!.first.fileUrl ?? imageUrl;
+                }
+                
                 return EventCard(
-                  title: event['title']!,
-                  description: event['description']!,
-                  imageUrl: event['image']!,
-                  date: event['date']!,
+                  title: event.title ?? 'Event',
+                  description: event.description ?? '',
+                  imageUrl: imageUrl,
+                  date: event.startDate ?? '',
                   index: index,
-                  onTap: () => _showComingSoon('Event: ${event['title']}'),
+                  onTap: () => controller.checkEventAppliedStatus(event),
                 );
               },
             ),
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildGallerySection() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Column(
+    return Obx(() {
+      final galleries = controller.mDashboardGalleryList;
+      
+      print('Galleries count: ${galleries.length}'); // Debug print
+      
+      if (galleries.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
@@ -193,56 +181,77 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 16.w),
-              itemCount: _galleries.length,
+              itemCount: galleries.length,
               itemBuilder: (context, index) {
+                final gallery = galleries[index];
                 return GalleryItem(
-                  title: _galleries[index],
-                  imageUrl: 'https://picsum.photos/30$index/200',
+                  title: gallery.fileName ?? 'Gallery',
+                  imageUrl: gallery.fileUrl ?? 'https://picsum.photos/300/200',
                   index: index,
-                  onTap: () => _showComingSoon('Gallery: ${_galleries[index]}'),
+                  onTap: () => _showComingSoon('Gallery: ${gallery.fileName}'),
                 );
               },
             ),
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildSponsorsCarousel() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SectionHeader(title: 'Our Sponsors', showViewAll: false),
-        CarouselSlider(
-          carouselController: _carouselController,
-          options: CarouselOptions(
-            height: 140.h,
-            viewportFraction: 0.85,
-            autoPlay: true,
-            autoPlayInterval: const Duration(seconds: 4),
-            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enlargeCenterPage: true,
-            enlargeFactor: 0.2,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentSponsorIndex = index;
-              });
-            },
-          ),
-          items: List.generate(
-            5,
-            (index) => SponsorItem(
-              imageUrl: 'https://picsum.photos/10$index/100',
-              index: index,
+    return Obx(() {
+      final sponsors = controller.mDashboardBeloBannerList;
+      
+      print('Sponsors count: ${sponsors.length}'); // Debug print
+      
+      if (sponsors.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionHeader(title: 'Our Sponsors', showViewAll: false),
+          CarouselSlider(
+            carouselController: _carouselController,
+            options: CarouselOptions(
+              height: 140.h,
+              viewportFraction: 0.85,
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 4),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              autoPlayCurve: Curves.fastOutSlowIn,
+              enlargeCenterPage: true,
+              enlargeFactor: 0.2,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentSponsorIndex = index;
+                });
+              },
             ),
+            items: sponsors.asMap().entries.map((entry) {
+              final index = entry.key;
+              final sponsor = entry.value;
+              return SponsorItem(
+                imageUrl: sponsor.image ?? 'https://picsum.photos/100/100',
+                index: index,
+                onTap: () {
+                  if (sponsor.redirectionUrl != null && 
+                      sponsor.redirectionUrl!.isNotEmpty) {
+                    controller.webView(sponsor.redirectionUrl!);
+                  }
+                },
+              );
+            }).toList(),
           ),
-        ),
-        SizedBox(height: 16.h),
-        CarouselIndicators(itemCount: 5, currentIndex: _currentSponsorIndex),
-      ],
-    );
+          SizedBox(height: 16.h),
+          CarouselIndicators(
+            itemCount: sponsors.length, 
+            currentIndex: _currentSponsorIndex
+          ),
+        ],
+      );
+    });
   }
 
   void _showComingSoon(String feature) {

@@ -7,6 +7,7 @@ import 'package:organization/animation/animation_background.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/utils/color_constants.dart';
+import 'package:organization/data/local/shared_prefs/shared_prefs.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,7 +38,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _initializeAnimations() {
-    // Scale animation for logo
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -47,7 +47,6 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.elasticOut,
     );
 
-    // Fade animation
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -57,7 +56,6 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeIn,
     );
 
-    // Slide animation for text
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -85,19 +83,28 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _scheduleNavigation() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _timer = Timer(const Duration(seconds: 3), _navigate);
+      _timer = Timer(const Duration(seconds: 3), _checkLoginStatus);
     });
   }
 
-  void _navigate() {
+  Future<void> _checkLoginStatus() async {
     if (!mounted || _hasNavigated) return;
 
     setState(() {
       _hasNavigated = true;
     });
 
+    final prefs = SharedPrefs();
+    await prefs.sharedPreferencesInstance();
+    final loginStatus = await prefs.getUserLoginStatus();
+    final token = await prefs.getUserToken();
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
+      if (!mounted) return;
+
+      if (token.isNotEmpty && loginStatus != "0") {
+        Get.offAllNamed(AppRoutes.home);
+      } else {
         Get.offAllNamed(AppRoutes.loginScreen);
       }
     });
@@ -106,7 +113,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     _timer?.cancel();
-    _timer = null;
     _scaleController.dispose();
     _fadeController.dispose();
     _slideController.dispose();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/widgets/snackbar.dart';
+import 'package:organization/data/local/shared_prefs/shared_prefs.dart';
 
 class MenuItem {
   final String title;
@@ -122,9 +122,9 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
     return SizedBox(
       width: 320.w,
       child: Drawer(
-        backgroundColor: AppColors.secondaryGreen, // Dark background
+        backgroundColor: AppColors.secondaryGreen,
         child: Padding(
-          padding: EdgeInsets.only(top: 40.h), // 👈 shift everything down
+          padding: EdgeInsets.only(top: 40.h),
           child: Column(
             children: [
               // Logo Section
@@ -201,10 +201,56 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                     color: AppColors.transparent,
                     child: InkWell(
                       onTap: () async {
-                        context.showErrorSnackbar(
-                          "Logout functionality not implemented",
+                        final shouldLogout = await Get.dialog<bool>(
+                          AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            title: const Text('Confirm Logout'),
+                            content: const Text(
+                              'Are you sure you want to logout?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Get.back(result: false),
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: AppColors.secondaryGreen,
+                                  ),
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Get.back(result: true),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primaryGreen,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Logout',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                          barrierDismissible: false,
                         );
+
+                        // If user pressed "Logout"
+                        if (shouldLogout == true) {
+                          await SharedPrefs().sharedPreferencesInstance();
+                          await SharedPrefs().logout(); // or .logout()
+
+                          context.showSuccessSnackbar(
+                            "Logged out successfully",
+                          );
+
+                          Get.offAllNamed(AppRoutes.loginScreen);
+                        }
                       },
+
                       borderRadius: BorderRadius.circular(12.r),
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12.h),

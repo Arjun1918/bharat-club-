@@ -8,7 +8,7 @@ import 'package:organization/common/widgets/banner_card.dart';
 import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/screens/about_us/controller/about_us_controller.dart';
 import 'package:organization/utils/message_constants.dart';
-import 'package:organization/utils/networl_util.dart';
+import 'package:organization/utils/network_util.dart';
 
 class AboutUsScreen extends GetView<AboutUsController> {
   const AboutUsScreen({super.key});
@@ -34,9 +34,6 @@ class AboutUsScreen extends GetView<AboutUsController> {
           }
         },
         child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CustomLoader());
-          }
 
           final aboutUs = controller.mAboutUsResponse.value;
 
@@ -70,7 +67,6 @@ class AboutUsScreen extends GetView<AboutUsController> {
   }
 
   Widget _buildParagraphCard(String text) {
-    // Check if it's a title/heading (shorter text or starts with "History")
     bool isTitle = text.length < 50 || text.toLowerCase().contains('history');
 
     return Container(

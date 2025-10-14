@@ -1,6 +1,7 @@
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/screens/about_us/view/about_us_screen.dart';
+import 'package:organization/screens/agree_page/view/agree_page.dart';
 import 'package:organization/screens/contact_us/view/contact_us_screen.dart';
 import 'package:organization/screens/events/view/event_screen.dart';
 import 'package:organization/screens/forgot_password/view/forgot_password_view.dart';
@@ -21,6 +22,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.forgot,
       page: () => ForgotPasswordScreen(),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.agreeToTerms,
+      page: () => TermsAndConditionsPage(),
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(

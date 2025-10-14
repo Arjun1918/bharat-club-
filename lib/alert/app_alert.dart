@@ -22,7 +22,7 @@ class AppAlert {
     String? title,
     String? dismissButtonText,
     IconData? icon = Icons.info,
-    VoidCallback? onDismiss, // Optional dismiss action
+    VoidCallback? onDismiss,
   }) async {
     await showDialog(
       context: context,
@@ -92,7 +92,7 @@ class AppAlert {
                   padding: EdgeInsets.fromLTRB(
                     SizeConstants.width * 0.08,
                     SizeConstants.width *
-                        0.04, // Adjust padding for reduced button size
+                        0.04,
                     SizeConstants.width * 0.08,
                     SizeConstants.width * 0.08,
                   ),
@@ -101,12 +101,12 @@ class AppAlert {
                       Expanded(
                         child: SizedBox(
                           height:
-                              SizeConstants.width * 0.1, // Reduced button size
+                              SizeConstants.width * 0.1,
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                               if (onDismiss != null)
-                                onDismiss(); // Call the dismiss action if provided
+                                onDismiss(); 
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey.shade50,
@@ -121,7 +121,7 @@ class AppAlert {
                                 colors: ColorConstants.cAppColorsRed,
                                 size:
                                     SizeConstants.width *
-                                    0.035, // Adjust text size for smaller button
+                                    0.035,
                               ),
                             ),
                           ),
@@ -142,32 +142,20 @@ class AppAlert {
     showDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black38,
+      barrierColor: Colors.black.withOpacity(0.2),
       builder: (BuildContext context) {
         return WillPopScope(
-          onWillPop: () {
-            return Future.value(false);
-          },
+          onWillPop: () async => false,
           child: Center(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: BorderRadius.circular(20),
               ),
-              padding: EdgeInsets.all(SizeConstants.s1 * 35),
-              height: SizeConstants.s1 * 90,
-              width: SizeConstants.s1 * 90,
-              child: const CustomLoader(),
-              // Lottie.asset(
-              //   ImageAssetsConstants.loadingLogo,
-              //   onLoaded: (composition) {
-              //     if (composition.warnings.isNotEmpty) {
-              //       print(composition.warnings.join('\n'));
-              //     }
-              //   },
-              //   width: SizeConstants.s1 * 120,
-              //   height: SizeConstants.s1 * 120,
-              // ),
+              padding: const EdgeInsets.all(20),
+              height: 100,
+              width: 100,
+              child: CustomLoader(),
             ),
           ),
         );
@@ -227,7 +215,6 @@ class AppAlert {
                     Expanded(
                       child: Material(
                         color: Colors.transparent,
-                        // <-- Add this, if needed
                         child: Text(
                           message,
                           style: getTextRegular(

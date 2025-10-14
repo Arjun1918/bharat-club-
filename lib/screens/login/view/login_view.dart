@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/animation/animation_background.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
-import 'package:organization/common/widgets/snackbar.dart';
+import 'package:organization/screens/login/controller/login_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,24 +15,22 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _emailcontroller = TextEditingController();
-  final TextEditingController _passwordcontroller = TextEditingController();
+  late final LoginScreenController controller;
+  
   final _formKey = GlobalKey<FormState>();
 
   late AnimationController _masterController;
-
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _logoAnimation;
   late Animation<double> _formAnimation;
 
-  bool _obscurePassword = true;
-  bool _isLoginLoading = false;
   bool _isDisposed = false;
 
   @override
   void initState() {
     super.initState();
+    controller = Get.put(LoginScreenController(), tag: 'login_controller', permanent: true);
     _initializeAnimations();
     _startAnimations();
   }
@@ -43,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen>
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-
     _logoAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _masterController,
@@ -58,15 +54,13 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _masterController,
-        curve: const Interval(0.3, 0.8, curve: Curves.easeOutQuart),
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _masterController,
+            curve: const Interval(0.3, 0.8, curve: Curves.easeOutQuart),
+          ),
+        );
 
     _formAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
@@ -89,54 +83,48 @@ class _LoginScreenState extends State<LoginScreen>
     _isDisposed = true;
     _masterController.stop();
     _masterController.dispose();
-    _emailcontroller.dispose();
-    _passwordcontroller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedBackgroundWidget(
-        primaryColor: AppColors.primaryGreen,
-        secondaryColor: AppColors.tertiaryGreen,
-        particleColor: AppColors.primaryGreen,
-        child: Form(
-          key: _formKey,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: IntrinsicHeight(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            flex: 1,
-                            child: SizedBox(height: 20.h),
+      body: Stack(
+        children: [
+          AnimatedBackgroundWidget(
+            primaryColor: AppColors.primaryGreen,
+            secondaryColor: AppColors.tertiaryGreen,
+            particleColor: AppColors.primaryGreen,
+            child: Form(
+              key: _formKey,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 24.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(flex: 1, child: SizedBox(height: 20.h)),
+                              _buildLogoSection(),
+                              SizedBox(height: 30.h),
+                              _buildLoginForm(),
+                              Flexible(flex: 1, child: SizedBox(height: 20.h)),
+                            ],
                           ),
-                          _buildLogoSection(),
-                          SizedBox(height: 30.h),
-                          _buildLoginForm(),
-                          Flexible(
-                            flex: 1,
-                            child: SizedBox(height: 20.h),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -261,47 +249,47 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   SizedBox(height: 24.h),
-                  _buildTextField(
-                    controller: _emailcontroller,
-                    hintText: 'Email Id',
-                    icon: Icons.badge_outlined,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter an employee ID";
-                      }
-                      return null;
-                    },
-                  ),
+                  // Email field with controller from GetX controller
+                  Obx(() => _buildTextField(
+                        controller: controller.mEmailController,
+                        hintText: 'Email Id',
+                        icon: Icons.badge_outlined,
+                        errorText: controller.emailValidator.value
+                            ? controller.seEmailValidator.value
+                            : null,
+                        validator: (value) {
+                          if (controller.emailValidator.value) {
+                            return controller.seEmailValidator.value;
+                          }
+                          return null;
+                        },
+                      )),
                   SizedBox(height: 24.h),
-                  _buildTextField(
-                    controller: _passwordcontroller,
-                    hintText: 'Password',
-                    icon: Icons.lock_outline,
-                    isPassword: true,
-                    obscureText: _obscurePassword,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        color: AppColors.primaryGreen,
-                        size: 22.r,
-                      ),
-                      onPressed: () {
-                        if (mounted) {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        }
-                      },
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a password";
-                      }
-                      return null;
-                    },
-                  ),
+                  // Password field with controller from GetX controller
+                  Obx(() => _buildTextField(
+                        controller: controller.mPasswordController,
+                        hintText: 'Password',
+                        icon: Icons.lock_outline,
+                        isPassword: true,
+                        obscureText: controller.hidePassword.value,
+                        errorText: controller.passwordValidator.value
+                            ? controller.sePasswordValidator.value
+                            : null,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.suffixIcon.value,
+                            color: AppColors.primaryGreen,
+                            size: 22.r,
+                          ),
+                          onPressed: controller.showPassword,
+                        ),
+                        validator: (value) {
+                          if (controller.passwordValidator.value) {
+                            return controller.sePasswordValidator.value;
+                          }
+                          return null;
+                        },
+                      )),
                   SizedBox(height: 16.h),
                   Align(
                     alignment: Alignment.centerRight,
@@ -339,6 +327,7 @@ class _LoginScreenState extends State<LoginScreen>
     bool isPassword = false,
     bool? obscureText,
     Widget? suffixIcon,
+    String? errorText,
     String? Function(String?)? validator,
   }) {
     return Container(
@@ -380,6 +369,7 @@ class _LoginScreenState extends State<LoginScreen>
             horizontal: 20.w,
             vertical: 18.h,
           ),
+          errorText: errorText,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
@@ -411,65 +401,64 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget _buildLoginButton() {
-    return Container(
-      width: double.infinity,
-      height: 56.h,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primaryGreen, AppColors.secondaryGreen],
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primaryGreen.withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+    return Obx(() => Container(
+          width: double.infinity,
+          height: 56.h,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppColors.primaryGreen, AppColors.secondaryGreen],
+            ),
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryGreen.withOpacity(0.4),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16.r),
-          onTap: _isLoginLoading ? null : _handleLogin,
-          child: Center(
-            child: _isLoginLoading
-                ? SizedBox(
-                    width: 24.r,
-                    height: 24.r,
-                    child: const CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white,
-                      ),
-                    ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16.r),
+              onTap: controller.isLoading.value ? null : _handleLogin,
+              child: Center(
+                child: controller.isLoading.value
+                    ? SizedBox(
+                        width: 24.r,
+                        height: 24.r,
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Colors.white,
+                            size: 20.r,
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 8.w),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Colors.white,
-                        size: 20.r,
-                      ),
-                    ],
-                  ),
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildJoinClubButton() {
@@ -486,9 +475,7 @@ class _LoginScreenState extends State<LoginScreen>
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
           onTap: () {
-            context.showErrorSnackbar(
-              "Join Club functionality not implemented",
-            );
+            Get.toNamed(AppRoutes.agreeToTerms);
           },
           child: Center(
             child: Text(
@@ -508,29 +495,13 @@ class _LoginScreenState extends State<LoginScreen>
 
   void _handleLogin() {
     if (_isDisposed || !mounted) return;
-    
+
     FocusScope.of(context).unfocus();
-    
-    if (_formKey.currentState!.validate()) {
-      if (!mounted) return;
-      
-      setState(() {
-        _isLoginLoading = true;
-      });
-      
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (!_isDisposed && mounted) {
-          setState(() {
-            _isLoginLoading = false;
-          });
-          
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            if (!_isDisposed && mounted) {
-              Get.offAllNamed(AppRoutes.home);
-            }
-          });
-        }
-      });
-    }
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (!_isDisposed && mounted) {
+        controller.isCheck();
+      }
+    });
   }
 }

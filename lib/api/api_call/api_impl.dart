@@ -45,57 +45,73 @@ class AllApiImpl implements IApiRepository {
       case 200:
         var responseJson = jsonEncode(responseBody);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 200 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 200 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseBody;
       case 400:
         Map responseJson = json.decode(responseBody);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 400 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 400 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseJson;
       case 403:
         Map responseJson = json.decode(WebConstants.statusCode404Message);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 403 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 403 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseJson;
       case 404:
         Map responseJson = json.decode(WebConstants.statusCode404Message);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 404 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 404 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseJson;
       case 500:
         Map responseJson = json.decode(WebConstants.statusCode502Message);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 500 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 500 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseJson;
       case 502:
         Map responseJson = json.decode(WebConstants.statusCode502Message);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 502 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 502 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseJson;
       case 503:
         Map responseJson = json.decode(WebConstants.statusCode503Message);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 503 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 503 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseJson;
       default:
         var responseJson = jsonEncode(responseBody);
         if (AppConstants.isWebLogToPrint) {
-          debugPrint("Webservices 200 decoded Response $responseJson",
-              wrapWidth: 3072);
+          debugPrint(
+            "Webservices 200 decoded Response $responseJson",
+            wrapWidth: 3072,
+          );
         }
         return responseBody;
     }
@@ -104,15 +120,19 @@ class AllApiImpl implements IApiRepository {
   ///post Registration
   @override
   Future<WebResponseSuccess> postRegistration(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
     final cases = await mWebProvider.postWithRequest(
-        WebConstants.actionRegistration, exhibitorsListRequest);
+      WebConstants.actionRegistration,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -134,18 +154,22 @@ class AllApiImpl implements IApiRepository {
   }
 
   ///post Registration
+  ///post Login - FIXED VERSION without progress dialog
   Future<WebResponseSuccess> postLogin(dynamic exhibitorsListRequest) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
     final cases = await mWebProvider.postWithRequest(
-        WebConstants.actionLogin, exhibitorsListRequest);
+      WebConstants.actionLogin,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
+
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
-        // data: mWebResponseFailed,
         statusMessage: "",
         error: true,
       );
@@ -164,15 +188,19 @@ class AllApiImpl implements IApiRepository {
   }
 
   Future<WebResponseSuccess> postChangePassword(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     final cases = await mWebProvider.postWithRequest(
-        WebConstants.actionChangePassword, exhibitorsListRequest);
+      WebConstants.actionChangePassword,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -196,15 +224,19 @@ class AllApiImpl implements IApiRepository {
   ///post Profile Update
   @override
   Future<WebResponseSuccess> postProfileUpdate(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     final cases = await mWebProvider.postWithRequest(
-        WebConstants.actionProfileUpdate, exhibitorsListRequest);
+      WebConstants.actionProfileUpdate,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mWebResponseFailed,
@@ -230,12 +262,14 @@ class AllApiImpl implements IApiRepository {
   Future<WebResponseSuccess> postProfile() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionProfile);
+    final cases = await mWebProvider.postWithoutRequest(
+      WebConstants.actionProfile,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -243,8 +277,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      ProfileResponse mProfileResponse =
-          ProfileResponse.fromJson(processResponseToJson(cases));
+      ProfileResponse mProfileResponse = ProfileResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mProfileResponse,
@@ -261,12 +296,14 @@ class AllApiImpl implements IApiRepository {
   Future<WebResponseSuccess> postDashboard() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionDashboard);
+    final cases = await mWebProvider.postWithoutRequest(
+      WebConstants.actionDashboard,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -274,8 +311,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      DashboardResponse mDashboardResponse =
-          DashboardResponse.fromJson(processResponseToJson(cases));
+      DashboardResponse mDashboardResponse = DashboardResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mDashboardResponse,
@@ -293,11 +331,14 @@ class AllApiImpl implements IApiRepository {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
     final cases = await mWebProvider.postWithRequest(
-        WebConstants.actionCmsPage, exhibitorsListRequest);
+      WebConstants.actionCmsPage,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -305,8 +346,10 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      dynamic dResponse =
-          getResponse(processResponseToJson(cases), exhibitorsListRequest);
+      dynamic dResponse = getResponse(
+        processResponseToJson(cases),
+        exhibitorsListRequest,
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: dResponse,
@@ -320,20 +363,24 @@ class AllApiImpl implements IApiRepository {
 
   getResponse(Map processResponseToJson, CmsPageRequest sRequest) {
     if (CmsPageRequestType.CONTACT.name == sRequest.name) {
-      ContactUsResponse mContactUsResponse =
-          ContactUsResponse.fromJson(processResponseToJson);
+      ContactUsResponse mContactUsResponse = ContactUsResponse.fromJson(
+        processResponseToJson,
+      );
       return mContactUsResponse;
     } else if (CmsPageRequestType.EVENTS.name == sRequest.name) {
-      EventResponse mEventResponse =
-          EventResponse.fromJson(processResponseToJson);
+      EventResponse mEventResponse = EventResponse.fromJson(
+        processResponseToJson,
+      );
       return mEventResponse;
     } else if (CmsPageRequestType.GALLERY.name == sRequest.name) {
-      GalleryResponse mGalleryResponse =
-          GalleryResponse.fromJson(processResponseToJson);
+      GalleryResponse mGalleryResponse = GalleryResponse.fromJson(
+        processResponseToJson,
+      );
       return mGalleryResponse;
     } else if (CmsPageRequestType.ABOUT_US.name == sRequest.name) {
-      AboutUsResponse mAboutUsResponse =
-          AboutUsResponse.fromJson(processResponseToJson);
+      AboutUsResponse mAboutUsResponse = AboutUsResponse.fromJson(
+        processResponseToJson,
+      );
       return mAboutUsResponse;
     } else {}
   }
@@ -342,12 +389,14 @@ class AllApiImpl implements IApiRepository {
   Future<WebResponseSuccess> postJoinClubs() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionJoinClubs);
+    final cases = await mWebProvider.postWithoutRequest(
+      WebConstants.actionJoinClubs,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -355,8 +404,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      JoinClubResponse mJoinClubData =
-          JoinClubResponse.fromJson(processResponseToJson(cases));
+      JoinClubResponse mJoinClubData = JoinClubResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mJoinClubData,
@@ -373,12 +423,14 @@ class AllApiImpl implements IApiRepository {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     final cases = await WebHttpProvider().postWithAuthAndNoRequestAndAttachment(
-        WebConstants.actionUploadProfileImage,
-        filePath: filePart);
+      WebConstants.actionUploadProfileImage,
+      filePath: filePart,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(jsonDecode(cases.body.toString()));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        jsonDecode(cases.body.toString()),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -386,8 +438,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      ProfilePicResponse mProfilePicResponse =
-          ProfilePicResponse.fromJson(jsonDecode(cases.body));
+      ProfilePicResponse mProfilePicResponse = ProfilePicResponse.fromJson(
+        jsonDecode(cases.body),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mProfilePicResponse,
@@ -404,12 +457,14 @@ class AllApiImpl implements IApiRepository {
   Future<WebResponseSuccess> postMemberList() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionMemberList);
+    final cases = await mWebProvider.postWithoutRequest(
+      WebConstants.actionMemberList,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -417,8 +472,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      MemberListResponse mMemberListResponse =
-          MemberListResponse.fromJson(processResponseToJson(cases));
+      MemberListResponse mMemberListResponse = MemberListResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mMemberListResponse,
@@ -435,12 +491,14 @@ class AllApiImpl implements IApiRepository {
   Future<WebResponseSuccess> postBannerList() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionBannerList);
+    final cases = await mWebProvider.postWithoutRequest(
+      WebConstants.actionBannerList,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -448,8 +506,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      BannerListResponse mBannerListResponse =
-          BannerListResponse.fromJson(processResponseToJson(cases));
+      BannerListResponse mBannerListResponse = BannerListResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mBannerListResponse,
@@ -463,15 +522,19 @@ class AllApiImpl implements IApiRepository {
 
   ///post join club
   Future<WebResponseSuccess> postJoinClubSubmit(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     final cases = await mWebProvider.postWithRequest(
-        WebConstants.actionJoinClubSubmit, exhibitorsListRequest);
+      WebConstants.actionJoinClubSubmit,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -495,19 +558,24 @@ class AllApiImpl implements IApiRepository {
   ///post events
   @override
   Future<WebResponseSuccess> postEventsSubmit(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionEventSubmit, exhibitorsListRequest);
+      WebConstants.actionEventSubmit,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
-      EventApplyResponse mEventApplyResponse =
-          EventApplyResponse.fromJson(processResponseToJson(cases));
+      EventApplyResponse mEventApplyResponse = EventApplyResponse.fromJson(
+        processResponseToJson(cases),
+      );
 
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
@@ -516,8 +584,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      EventApplyResponse mEventApplyResponse =
-          EventApplyResponse.fromJson(processResponseToJson(cases));
+      EventApplyResponse mEventApplyResponse = EventApplyResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mEventApplyResponse,
@@ -530,63 +599,62 @@ class AllApiImpl implements IApiRepository {
   }
 
   //event details
-   @override
+  @override
   Future<WebResponseSuccess> postEventDetails() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionEventDetails);
+    final cases = await mWebProvider.postWithoutRequest(
+      WebConstants.actionEventDetails,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
 
-//   final sampleJson = {
-//     "statusCode": 200,
-//     "error": false,
-//     "statusMessage": "Success",
-//     "data": {
-//       "response": {
-//         "id": 1,
-//         "title": "Annual Dinner",
-//         "description": "Join us for an unforgettable evening filled with entertainment, fine dining, and celebration.",
-//         "start_date": "2024-12-10",
-//         "end_date": "2024-12-10",
-//         "status": 1,
-//         "created_by": 101,
-//         "modified_by": 102,
-//         "created_at": "2024-01-15T08:30:00Z",
-//         "updated_at": "2024-05-20T14:45:00Z",
-//         "deleted_at": null,
-//         "member_adult_age": "18-60",
-//         "member_adult_amount": 150.00,
-//         "member_child_status": 1,
-//         "member_child_age": "5-17",
-//         "member_child_amount": 75.00,
-//         "guest_adult_age": "18-60",
-//         "guest_adult_amount": 200.00,
-//         "guest_child_status": 1,
-//         "guest_child_age": "5-17",
-//         "guest_child_amount": 100.00,
-//         "food_status": 1,
-//         "subscription_status": 0
-//       },
-//       "message": "Event details loaded successfully"
-//     }
-//   };
+    //   final sampleJson = {
+    //     "statusCode": 200,
+    //     "error": false,
+    //     "statusMessage": "Success",
+    //     "data": {
+    //       "response": {
+    //         "id": 1,
+    //         "title": "Annual Dinner",
+    //         "description": "Join us for an unforgettable evening filled with entertainment, fine dining, and celebration.",
+    //         "start_date": "2024-12-10",
+    //         "end_date": "2024-12-10",
+    //         "status": 1,
+    //         "created_by": 101,
+    //         "modified_by": 102,
+    //         "created_at": "2024-01-15T08:30:00Z",
+    //         "updated_at": "2024-05-20T14:45:00Z",
+    //         "deleted_at": null,
+    //         "member_adult_age": "18-60",
+    //         "member_adult_amount": 150.00,
+    //         "member_child_status": 1,
+    //         "member_child_age": "5-17",
+    //         "member_child_amount": 75.00,
+    //         "guest_adult_age": "18-60",
+    //         "guest_adult_amount": 200.00,
+    //         "guest_child_status": 1,
+    //         "guest_child_age": "5-17",
+    //         "guest_child_amount": 100.00,
+    //         "food_status": 1,
+    //         "subscription_status": 0
+    //       },
+    //       "message": "Event details loaded successfully"
+    //     }
+    //   };
 
+    //         EventDetailResponse mEventDetailResponse = EventDetailResponse.fromJson(sampleJson);
 
-//         EventDetailResponse mEventDetailResponse = EventDetailResponse.fromJson(sampleJson);
-
-// return WebResponseSuccess(
-//   statusCode: sampleJson['statusCode'] as int?,
-//   error: sampleJson['error'] as bool?,
-//   statusMessage: sampleJson['statusMessage'] as String?,
-//   data: mEventDetailResponse,
-// );
-
-
+    // return WebResponseSuccess(
+    //   statusCode: sampleJson['statusCode'] as int?,
+    //   error: sampleJson['error'] as bool?,
+    //   statusMessage: sampleJson['statusMessage'] as String?,
+    //   data: mEventDetailResponse,
+    // );
 
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         // data: mWebResponseFailed,
@@ -594,8 +662,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      EventDetailResponse mEventDetailResponse =
-          EventDetailResponse.fromJson(processResponseToJson(cases));
+      EventDetailResponse mEventDetailResponse = EventDetailResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mEventDetailResponse,
@@ -607,16 +676,20 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-   //events participantsubmit
+  //events participantsubmit
   Future<WebResponseSuccess> postParticipantSubmit(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionPartipantSubmit, exhibitorsListRequest);
+      WebConstants.actionPartipantSubmit,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
@@ -645,19 +718,24 @@ class AllApiImpl implements IApiRepository {
 
   //Qr scan details
   Future<WebResponseSuccess> postQrDetails(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionQrScanDetails, exhibitorsListRequest);
+      WebConstants.actionQrScanDetails,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
-      QrDetailsResponse mQrDetailsResponse =
-          QrDetailsResponse.fromJson(processResponseToJson(cases));
+      QrDetailsResponse mQrDetailsResponse = QrDetailsResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mQrDetailsResponse,
@@ -665,8 +743,9 @@ class AllApiImpl implements IApiRepository {
         error: true,
       );
     } else {
-      QrDetailsResponse mQrDetailsResponse =
-          QrDetailsResponse.fromJson(processResponseToJson(cases));
+      QrDetailsResponse mQrDetailsResponse = QrDetailsResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mQrDetailsResponse,
@@ -677,16 +756,20 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-   // event attendance 
+  // event attendance
   Future<WebResponseSuccess> postEventAttendance(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionEventAttentace, exhibitorsListRequest);
+      WebConstants.actionEventAttentace,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
@@ -713,16 +796,20 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-   //Sponsor Event
+  //Sponsor Event
   Future<WebResponseSuccess> postSponsorEvent(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionSponsorEvent , exhibitorsListRequest);
+      WebConstants.actionSponsorEvent,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
@@ -750,16 +837,17 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-
-  //membership type 
+  //membership type
   Future<WebResponseSuccess> postMembershipType() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
     var cases = await mWebProvider.postWithoutRequest(
-        WebConstants.actionMembershipType);
+      WebConstants.actionMembershipType,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
@@ -786,30 +874,34 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-
-
   ///events upload
   Future<WebResponseSuccess> eventsImage(
-      String filePart, EventPaymentSubmitRequest exhibitorsListRequest) async {
+    String filePart,
+    EventPaymentSubmitRequest exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     final cases = await WebHttpProvider().postWithAuthAndRequestAndAttachment(
-        WebConstants.actionUploadPayment, exhibitorsListRequest.toJson(),
-        filePath: filePart);
+      WebConstants.actionUploadPayment,
+      exhibitorsListRequest.toJson(),
+      filePath: filePart,
+    );
     debugPrint("eventsImage statusCode ==  ${jsonEncode(cases.statusCode)}");
     debugPrint("eventsImage ==  ${jsonEncode(cases.body)}");
     AppAlert.hideLoadingDialog(Get.context!);
     if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(jsonDecode(cases.body.toString()));
+      mWebResponseFailed = WebResponseFailed.fromJson(
+        jsonDecode(cases.body.toString()),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         statusMessage: "",
         error: true,
       );
     } else {
-      ProfilePicResponse mProfilePicResponse =
-          ProfilePicResponse.fromJson(jsonDecode(cases.body));
+      ProfilePicResponse mProfilePicResponse = ProfilePicResponse.fromJson(
+        jsonDecode(cases.body),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mProfilePicResponse,
@@ -827,15 +919,19 @@ class AllApiImpl implements IApiRepository {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionAccountDeletion, exhibitorsListRequest);
+      WebConstants.actionAccountDeletion,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
-      EventApplyResponse mEventApplyResponse =
-          EventApplyResponse.fromJson(processResponseToJson(cases));
+      EventApplyResponse mEventApplyResponse = EventApplyResponse.fromJson(
+        processResponseToJson(cases),
+      );
 
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
@@ -845,7 +941,7 @@ class AllApiImpl implements IApiRepository {
       );
     } else {
       ForgotPasswordDeleteResponse mForgotPasswordDeleteResponse =
-      ForgotPasswordDeleteResponse.fromJson(processResponseToJson(cases));
+          ForgotPasswordDeleteResponse.fromJson(processResponseToJson(cases));
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mForgotPasswordDeleteResponse,
@@ -860,19 +956,24 @@ class AllApiImpl implements IApiRepository {
   ///post ForgetPassword
   @override
   Future<WebResponseSuccess> postForgetPassword(
-      dynamic exhibitorsListRequest) async {
+    dynamic exhibitorsListRequest,
+  ) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
     var cases = await mWebProvider.postWithRequest(
-        WebConstants.actionForgotPassword, exhibitorsListRequest);
+      WebConstants.actionForgotPassword,
+      exhibitorsListRequest,
+    );
     AppAlert.hideLoadingDialog(Get.context!);
     debugPrint(
-        "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}");
+      "plainJsonRequest statusCode ==  ${jsonEncode(cases.statusCode)}",
+    );
     debugPrint("plainJsonRequest ==  ${jsonEncode(cases.body)}");
 
     if (cases.statusCode != WebConstants.statusCode200) {
-      EventApplyResponse mEventApplyResponse =
-          EventApplyResponse.fromJson(processResponseToJson(cases));
+      EventApplyResponse mEventApplyResponse = EventApplyResponse.fromJson(
+        processResponseToJson(cases),
+      );
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mEventApplyResponse,
@@ -881,7 +982,7 @@ class AllApiImpl implements IApiRepository {
       );
     } else {
       ForgotPasswordDeleteResponse mForgotPasswordDeleteResponse =
-      ForgotPasswordDeleteResponse.fromJson(processResponseToJson(cases));
+          ForgotPasswordDeleteResponse.fromJson(processResponseToJson(cases));
       mWebResponseSuccess = WebResponseSuccess(
         statusCode: cases.statusCode,
         data: mForgotPasswordDeleteResponse,

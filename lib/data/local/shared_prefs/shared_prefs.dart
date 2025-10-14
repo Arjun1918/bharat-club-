@@ -31,11 +31,12 @@ class SharedPrefs {
   }
 
   Future<String> getUserLoginStatus() async {
-    String value = sharedPreferences!.getString(PrefConstants.sLoginStatus) ?? "";
+    String value =
+        sharedPreferences!.getString(PrefConstants.sLoginStatus) ?? "";
     if (value.isNotEmpty) {
       return value;
     }
-    return  "";
+    return "";
   }
 
   /// AppUserToke
@@ -49,33 +50,46 @@ class SharedPrefs {
     if (value.isNotEmpty) {
       return value;
     }
-    return  "";
+    return "";
   }
 
   Future<void> setUserDetails(String? setUserDetails) async {
-    sharedPreferences!.setString(PrefConstants.sUserDetails, setUserDetails ?? "");
+    sharedPreferences!.setString(
+      PrefConstants.sUserDetails,
+      setUserDetails ?? "",
+    );
   }
 
   Future<RegistrationUser> getUserDetails() async {
-    String value = sharedPreferences!.getString(PrefConstants.sUserDetails) ?? "";
+    String value =
+        sharedPreferences!.getString(PrefConstants.sUserDetails) ?? "";
     if (value.isNotEmpty) {
       return RegistrationUser.fromJson(json.decode(value));
     }
-    return  RegistrationUser();
+    return RegistrationUser();
   }
-  
-  //MebershipType Data
-   Future<void> setMembershipTypeAll(String? setMembershipTypeAll) async {
-    sharedPreferences!.setString(PrefConstants.sMembershipTypeAll, setMembershipTypeAll ?? "");
-  } 
-    
-  Future<List<MembershipTypeData>> getMembershipTypeAll() async {
-  String value = sharedPreferences!.getString(PrefConstants.sMembershipTypeAll) ?? "";
-  if (value.isNotEmpty) {
-    List<dynamic> jsonList = jsonDecode(value);
-    return jsonList.map((e) => MembershipTypeData.fromJson(e)).toList();
-  }
-  return [];
-}
 
+  //MebershipType Data
+  Future<void> setMembershipTypeAll(String? setMembershipTypeAll) async {
+    sharedPreferences!.setString(
+      PrefConstants.sMembershipTypeAll,
+      setMembershipTypeAll ?? "",
+    );
+  }
+
+  Future<List<MembershipTypeData>> getMembershipTypeAll() async {
+    String value =
+        sharedPreferences!.getString(PrefConstants.sMembershipTypeAll) ?? "";
+    if (value.isNotEmpty) {
+      List<dynamic> jsonList = jsonDecode(value);
+      return jsonList.map((e) => MembershipTypeData.fromJson(e)).toList();
+    }
+    return [];
+  }
+
+  Future<void> logout() async {
+    await sharedPreferences?.remove(PrefConstants.token);
+    await sharedPreferences?.remove(PrefConstants.sUserDetails);
+    await sharedPreferences?.remove(PrefConstants.sLoginStatus);
+  }
 }

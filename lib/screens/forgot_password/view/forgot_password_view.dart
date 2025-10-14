@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/animation/animation_background.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
-import 'package:organization/common/widgets/snackbar.dart';
+import 'package:organization/screens/forgot_password/controller/forgot_password_controller.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -14,7 +14,8 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController _emailController = TextEditingController();
+  final ForgotPasswordScreenController controller = Get.put(ForgotPasswordScreenController());
+  
   final _formKey = GlobalKey<FormState>();
 
   late AnimationController _masterController;
@@ -24,7 +25,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   late Animation<double> _logoAnimation;
   late Animation<double> _formAnimation;
 
-  bool _isSubmitting = false;
   bool _isDisposed = false;
 
   @override
@@ -83,7 +83,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     _isDisposed = true;
     _masterController.stop();
     _masterController.dispose();
-    _emailController.dispose();
+    Get.delete<ForgotPasswordScreenController>();
     super.dispose();
   }
 
@@ -255,22 +255,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
               ),
               child: Column(
                 children: [
-                  _buildTextField(
-                    controller: _emailController,
-                    hintText: 'Email ID',
-                    icon: Icons.email_outlined,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter an email ID";
-                      }
-                      if (!RegExp(
-                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                      ).hasMatch(value)) {
-                        return "Please enter a valid email ID";
-                      }
-                      return null;
-                    },
-                  ),
+                  _buildTextField(),
                   SizedBox(height: 32.h),
                   _buildSubmitButton(),
                   SizedBox(height: 16.h),
@@ -296,13 +281,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    String? Function(String?)? validator,
-  }) {
-    return Container(
+  Widget _buildTextField() {
+    return Obx(() => Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
@@ -314,16 +294,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
         ],
       ),
       child: TextFormField(
-        controller: controller,
+        controller: controller.mEmailController,
         style: TextStyle(
           color: AppColors.textPrimary,
           fontSize: 16.sp,
           fontWeight: FontWeight.w500,
         ),
         cursorColor: AppColors.primaryGreen,
-        validator: validator,
+        onChanged: (value) {
+          // Reset validation error when user types
+          if (controller.emailValidator.value) {
+            controller.emailValidator.value = false;
+          }
+        },
         decoration: InputDecoration(
-          hintText: hintText,
+          hintText: 'Email ID',
           hintStyle: TextStyle(
             color: AppColors.textSecondary,
             fontSize: 16.sp,
@@ -331,7 +316,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
           ),
           prefixIcon: Container(
             margin: EdgeInsets.only(left: 16.w, right: 12.w),
-            child: Icon(icon, color: AppColors.primaryGreen, size: 22.r),
+            child: Icon(Icons.email_outlined, color: AppColors.primaryGreen, size: 22.r),
           ),
           filled: true,
           fillColor: AppColors.cardBackground,
@@ -359,6 +344,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
             borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: AppColors.error, width: 2.5),
           ),
+          errorText: controller.emailValidator.value 
+              ? controller.seEmailValidator.value 
+              : null,
           errorStyle: TextStyle(
             color: AppColors.error,
             fontSize: 12.sp,
@@ -366,7 +354,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildSubmitButton() {
@@ -392,37 +380,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: _isSubmitting ? null : _handleSubmit,
+          onTap: _handleSubmit,
           child: Center(
-            child: _isSubmitting
-                ? SizedBox(
-                    width: 24.r,
-                    height: 24.r,
-                    child: const CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Submit',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      SizedBox(width: 8.w),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        color: Colors.white,
-                        size: 20.r,
-                      ),
-                    ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Submit',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
                   ),
+                ),
+                SizedBox(width: 8.w),
+                Icon(
+                  Icons.arrow_forward_rounded,
+                  color: Colors.white,
+                  size: 20.r,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -433,22 +412,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     if (_isDisposed || !mounted) return;
 
     FocusScope.of(context).unfocus();
-
-    if (_formKey.currentState!.validate()) {
-      if (!mounted) return;
-
-      setState(() {
-        _isSubmitting = true;
-      });
-
-      Future.delayed(const Duration(seconds: 2), () {
-        if (!_isDisposed && mounted) {
-          setState(() {
-            _isSubmitting = false;
-          });
-          context.showErrorSnackbar("Password reset link sent to your email");
-        }
-      });
-    }
+    
+    // Call controller's validation and API call
+    controller.isCheck();
   }
 }

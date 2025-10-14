@@ -8,12 +8,11 @@ import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/banner_card.dart';
-import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/data/mode/cms_page/event_response.dart';
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
-import 'package:organization/utils/networl_util.dart';
+import 'package:organization/utils/network_util.dart';
 import '../../../alert/app_alert.dart';
 import '../controller/event_controller.dart';
 
@@ -35,12 +34,6 @@ class EventScreen extends GetView<EventController> {
         },
         onVisibilityLost: () {},
         child: Obx(() {
-          if (controller.isLoading.value) {
-            return Container(
-              color: Colors.white,
-              child: const Center(child: CustomLoader()),
-            );
-          }
           return Container(
             height: 0.85.sh,
             width: 1.sw,
@@ -64,12 +57,16 @@ class EventScreen extends GetView<EventController> {
       ),
     );
   }
+
   Future<void> _fetchEventData() async {
     bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
     if (isInternetAvailable) {
       await controller.getEventUsApi();
     } else {
-      AppAlert.showSnackBar(Get.context!, MessageConstants.noInternetConnection);
+      AppAlert.showSnackBar(
+        Get.context!,
+        MessageConstants.noInternetConnection,
+      );
     }
   }
 
@@ -91,7 +88,8 @@ class EventScreen extends GetView<EventController> {
                   itemBuilder: (context, index) {
                     EventModule mEventModule = controller.mEventList[index];
                     return GestureDetector(
-                      onTap: () => controller.checkEventAppliedStatus(mEventModule),
+                      onTap: () =>
+                          controller.checkEventAppliedStatus(mEventModule),
                       child: Container(
                         height: 160.h,
                         margin: EdgeInsets.all(5.w),
@@ -113,7 +111,9 @@ class EventScreen extends GetView<EventController> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.35),
-                                borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.r),
+                                ),
                               ),
                             ),
                             Padding(
@@ -123,13 +123,19 @@ class EventScreen extends GetView<EventController> {
                                 children: [
                                   Text(
                                     mEventModule.title ?? "",
-                                    style: getTextSemiBold(colors: Colors.white, size: 15.sp),
+                                    style: getTextSemiBold(
+                                      colors: Colors.white,
+                                      size: 15.sp,
+                                    ),
                                   ),
                                   Text(
                                     mEventModule.description ?? "",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: getTextRegular(colors: Colors.white, size: 12.sp),
+                                    style: getTextRegular(
+                                      colors: Colors.white,
+                                      size: 12.sp,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -139,7 +145,10 @@ class EventScreen extends GetView<EventController> {
                               bottom: 15.h,
                               child: Text(
                                 mEventModule.endDate ?? "",
-                                style: getTextRegular(colors: Colors.white, size: 12.sp),
+                                style: getTextRegular(
+                                  colors: Colors.white,
+                                  size: 12.sp,
+                                ),
                               ),
                             ),
                           ],

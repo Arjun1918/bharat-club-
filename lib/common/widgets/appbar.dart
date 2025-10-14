@@ -5,14 +5,14 @@ import 'package:organization/app_theme/theme/app_theme.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBack;
-  final bool showMenu; // new flag for menu button
+  final bool showMenu;
   final VoidCallback? onBack;
 
   const CustomAppBar({
     super.key,
     required this.title,
     this.showBack = true,
-    this.showMenu = false, // default false
+    this.showMenu = false, 
     this.onBack,
   });
 

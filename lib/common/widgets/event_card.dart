@@ -65,13 +65,13 @@ class EventCard extends StatelessWidget {
                         vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.secondaryGreen,
+                        color: AppColors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Text(
                         date,
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 13.sp,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

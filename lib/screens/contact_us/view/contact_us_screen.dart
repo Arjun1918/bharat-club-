@@ -11,7 +11,7 @@ import 'package:organization/screens/contact_us/controller/contact_us_controller
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
-import 'package:organization/utils/networl_util.dart';
+import 'package:organization/utils/network_util.dart';
 
 class ContactUsListScreen extends GetView<ContactUsController> {
   const ContactUsListScreen({super.key});
@@ -55,7 +55,6 @@ class ContactUsListScreen extends GetView<ContactUsController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// 🖼️ Banner
                     BannerCard(
                       bannerUrl: controller.mContactUsResponse.value.data
                               ?.cmsPageAttachments?.first.fileUrl ??
@@ -64,8 +63,6 @@ class ContactUsListScreen extends GetView<ContactUsController> {
                       borderRadius: 12.r,
                     ),
                     SizedBox(height: 20.h),
-
-                    /// 📍 Contact Details
                     Text(
                       controller.contactUsValidator.value
                           ? (controller.mContactUsResponse.value.data?.module?.first.name ?? "")
@@ -87,8 +84,6 @@ class ContactUsListScreen extends GetView<ContactUsController> {
 
                     Divider(thickness: 1, color: Colors.grey.withOpacity(0.3)),
                     SizedBox(height: 10.h),
-
-                    /// 📞 Mobile
                     Row(
                       children: [
                         const Icon(Icons.phone, color: ColorConstants.cAppColorsBlue, size: 20),
@@ -107,8 +102,6 @@ class ContactUsListScreen extends GetView<ContactUsController> {
                       ],
                     ),
                     SizedBox(height: 8.h),
-
-                    /// ✉️ Email
                     Row(
                       children: [
                         const Icon(Icons.email_outlined, color: ColorConstants.cAppColorsBlue, size: 20),

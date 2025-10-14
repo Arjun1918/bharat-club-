@@ -7,7 +7,7 @@ class CustomLoader extends StatelessWidget {
 
   const CustomLoader({
     super.key,
-    this.size = 50, // Increased size for better visibility
+    this.size = 50, 
     this.color = AppColors.secondaryGreen,
   });
 
@@ -20,7 +20,7 @@ class CustomLoader extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white, // Solid white background
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.3),

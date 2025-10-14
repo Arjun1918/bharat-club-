@@ -19,7 +19,7 @@ class EventResponse {
     data = json['data'] != null ? EventData.fromJson(json['data']) : null;
     responseTime = json['responseTime'];
   }
-  bool? error;
+  bool? error; 
   int? statusCode;
   String? statusMessage;
   EventData? data;

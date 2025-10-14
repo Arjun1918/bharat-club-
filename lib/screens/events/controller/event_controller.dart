@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:organization/common/constant/web_constant.dart';
 import 'package:organization/utils/message_constants.dart';
-import 'package:organization/utils/networl_util.dart';
+import 'package:organization/utils/network_util.dart';
 import '../../../../data/remote/web_response.dart';
 import '../../../alert/app_alert.dart';
 import '../../../data/local/shared_prefs/shared_prefs.dart';
@@ -56,7 +56,6 @@ class EventController extends GetxController {
 
         sEventDec.value = mEventResponse.data?.content ?? "";
 
-        /// Banner
         if ((mEventResponse.data?.cmsPageAttachments ?? []).isNotEmpty &&
             (mEventResponse.data?.cmsPageAttachments?.first.fileUrl ?? "")
                 .isNotEmpty) {
@@ -64,7 +63,6 @@ class EventController extends GetxController {
               mEventResponse.data?.cmsPageAttachments?.first.fileUrl ?? "";
         }
 
-        /// Event list
         mEventList.value = mEventResponse.data?.module ?? [];
         intEventCount.value = mEventList.length;
       } else {
@@ -73,11 +71,9 @@ class EventController extends GetxController {
     } catch (e) {
       AppAlert.showSnackBar(Get.context!, "Something went wrong: $e");
     } finally {
-      isLoading.value = false; // 👈 Hide loader when done
+      isLoading.value = false; 
     }
   }
-
-  /// Check event applied status
   Future<void> checkEventAppliedStatus(EventModule mEventModule) async {
     RegistrationUser mRegistrationUser = await SharedPrefs().getUserDetails();
     String? mMembershipID = mRegistrationUser.membershipId ?? "";
@@ -104,10 +100,10 @@ class EventController extends GetxController {
             mQrDetailsResponse.data?.response?.status == 1;
 
         if (isStatusPresent) {
-          QrDetailsRequest mQrDetails = QrDetailsRequest(
-            eventId: mEventModule.id.toString(),
-            membershipId: mMembershipID,
-          );
+          // QrDetailsRequest mQrDetails = QrDetailsRequest(
+          //   eventId: mEventModule.id.toString(),
+          //   membershipId: mMembershipID,
+          // );
           // Get.toNamed(AppRoutes.rQrCodeGenerateScreen, arguments: mQrDetails);
         } else {
           AppAlert.showSnackBar(Get.context!, "Status not valid.");

@@ -227,39 +227,39 @@ class AllApiImpl implements IApiRepository {
 
   ///post Registration
   @override
-  Future<WebResponseSuccess> postProfile() async {
-    AppAlert.showProgressDialog(Get.context!);
-    WebConstants.auth = true;
-    final cases =
-        await mWebProvider.postWithoutRequest(WebConstants.actionProfile);
-    AppAlert.hideLoadingDialog(Get.context!);
-    if (cases.statusCode != WebConstants.statusCode200) {
-      mWebResponseFailed =
-          WebResponseFailed.fromJson(processResponseToJson(cases));
-      mWebResponseSuccess = WebResponseSuccess(
-        statusCode: cases.statusCode,
-        // data: mWebResponseFailed,
-        statusMessage: "",
-        error: true,
-      );
-    } else {
-      ProfileResponse mProfileResponse =
-          ProfileResponse.fromJson(processResponseToJson(cases));
-      mWebResponseSuccess = WebResponseSuccess(
-        statusCode: cases.statusCode,
-        data: mProfileResponse,
-        statusMessage: "",
-        error: false,
-      );
-    }
-
-    return mWebResponseSuccess;
+ Future<WebResponseSuccess> postProfile() async {
+  // Remove the progress dialog from here - let UI handle loading states
+  // AppAlert.showProgressDialog(Get.context!);
+  
+  WebConstants.auth = true;
+  final cases = await mWebProvider.postWithoutRequest(WebConstants.actionProfile);
+  
+  // Remove the hide dialog - let UI handle loading states
+  // AppAlert.hideLoadingDialog(Get.context!);
+  
+  if (cases.statusCode != WebConstants.statusCode200) {
+    mWebResponseFailed = WebResponseFailed.fromJson(processResponseToJson(cases));
+    mWebResponseSuccess = WebResponseSuccess(
+      statusCode: cases.statusCode,
+      statusMessage: "",
+      error: true,
+    );
+  } else {
+    ProfileResponse mProfileResponse = ProfileResponse.fromJson(processResponseToJson(cases));
+    mWebResponseSuccess = WebResponseSuccess(
+      statusCode: cases.statusCode,
+      data: mProfileResponse,
+      statusMessage: "",
+      error: false,
+    );
   }
 
+  return mWebResponseSuccess;
+}
   ///post Registration
   @override
   Future<WebResponseSuccess> postDashboard() async {
-    AppAlert.showProgressDialog(Get.context!);
+    // AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
     final cases =
         await mWebProvider.postWithoutRequest(WebConstants.actionDashboard);
@@ -759,7 +759,7 @@ class AllApiImpl implements IApiRepository {
 
 
   //membership type 
-       @override
+@override
   Future<WebResponseSuccess> postMembershipType() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
@@ -865,8 +865,6 @@ class AllApiImpl implements IApiRepository {
 
     return mWebResponseSuccess;
   }
-
-  ///post ForgetPassword
   @override
   Future<WebResponseSuccess> postForgetPassword(
       dynamic exhibitorsListRequest) async {

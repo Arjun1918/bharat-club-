@@ -1,8 +1,3 @@
-// error : true
-// statusCode : 400
-// statusMessage : "Bad Request"
-// data : {"message":"Token is Expired"}
-// responseTime : 1639548038
 
 class WebResponseFailed {
   WebResponseFailed({

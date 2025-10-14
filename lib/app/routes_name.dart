@@ -8,4 +8,5 @@ class AppRoutes {
   static const aboutus = '/aboutus';
   static const contactUs = '/contactUs';
   static const events = '/events';
+  static const agreeToTerms = '/agreeToTerms';
 }

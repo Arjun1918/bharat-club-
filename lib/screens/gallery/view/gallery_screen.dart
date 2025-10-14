@@ -6,12 +6,11 @@ import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/banner_card.dart';
-import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/screens/gallery/controller/gallery_contoller.dart';
 import 'package:organization/screens/gallery/model/gallery_model.dart';
 import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
-import 'package:organization/utils/networl_util.dart';
+import 'package:organization/utils/network_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -64,11 +63,6 @@ class GalleryListScreen extends GetView<GalleryController> {
 
   Widget galleryView(BuildContext context) {
     return Obx(() {
-      if (controller.intGalleryCount.value == 0 &&
-          controller.sGalleryTitle.value.isEmpty) {
-        return Center(child: CustomLoader());
-      }
-
       return SingleChildScrollView(
         padding: EdgeInsets.zero,
         child: Column(

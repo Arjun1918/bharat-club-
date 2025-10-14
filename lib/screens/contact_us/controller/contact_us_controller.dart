@@ -13,7 +13,6 @@ class ContactUsController extends GetxController {
   var contactUsValidator = false.obs;
   var mContactUsResponse = ContactUsResponse().obs;
 
-  /// Loader flag
   var isLoading = false.obs;
 
   Future<void> getContactUsApi() async {
@@ -24,7 +23,9 @@ class ContactUsController extends GetxController {
         name: CmsPageRequestType.CONTACT.name,
       );
 
-      WebResponseSuccess mWebResponseSuccess = await AllApiImpl().postCmsPage(mCmsPageRequest);
+      WebResponseSuccess mWebResponseSuccess = await AllApiImpl().postCmsPage(
+        mCmsPageRequest,
+      );
 
       if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
         mContactUsResponse.value = mWebResponseSuccess.data;
@@ -34,7 +35,7 @@ class ContactUsController extends GetxController {
     } catch (e) {
       print("Error fetching Contact Us: $e");
     } finally {
-      isLoading.value = false; // ✅ Stop loader
+      isLoading.value = false;
     }
   }
 }
