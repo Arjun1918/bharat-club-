@@ -9,4 +9,11 @@ class AppRoutes {
   static const contactUs = '/contactUs';
   static const events = '/events';
   static const agreeToTerms = '/agreeToTerms';
+  static const profile = '/profile';
+  static const editAccountScreen = '/editAccountScreen';
+  static const editPersonOfContactScreen = '/editPersonOfContactScreen';
+  static const editInformationScreen = '/editInformationScreen';
+  static const eventDetailOneScreen = '/eventDetailOneScreen';
+  static const eventDetailTwoScreen = '/eventDetailTwoScreen';
+  static const qrScreen = '/qrScreen';
 }

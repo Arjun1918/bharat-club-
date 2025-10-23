@@ -1,26 +1,15 @@
 import 'package:flutter/material.dart';
 
-/// A reusable animated background widget with gradient and floating particles
-/// 
-/// This widget provides a consistent animated background across multiple screens
-/// with customizable colors and particle effects.
 class AnimatedBackgroundWidget extends StatefulWidget {
-  /// The primary color for the gradient (top-left)
   final Color primaryColor;
-  
-  /// The secondary color for the gradient (bottom-right)
+
   final Color secondaryColor;
-  
-  /// The color of the animated particles
+
   final Color particleColor;
-  
-  /// Number of particles to animate
+
   final int particleCount;
-  
-  /// Duration of the particle animation cycle
+
   final Duration animationDuration;
-  
-  /// The child widget to display on top of the background
   final Widget child;
 
   const AnimatedBackgroundWidget({

@@ -90,13 +90,6 @@ class DashboardData {
   }
 
 }
-
-/// id : 1
-/// file_name : "gallery onw update 123"
-/// file_type : null
-/// file_url : "https://hcm-storage.ap-south-1.linodeobjects.com/club_portal/gallery/Accounting.png"
-/// status : 1
-
 class DashboardGalleryList {
   DashboardGalleryList({
     this.id,

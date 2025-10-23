@@ -1,128 +1,236 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:organization/common/constant/size_constants.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/color_constants.dart';
 
-class TextInputWidget extends StatelessWidget {
-  String placeHolder = '';
-  String hintText = '';
-  late TextEditingController controller;
-  TextInputType? textInputType = TextInputType.text;
-  String? errorText = '';
-  bool? hidePassword = false;
-  bool? showFloatingLabel = true;
-  bool? isReadOnly = false;
-  String? suffixIconType = '';
-  Color? hintTextColor;
-  Color? labelTextColor;
-  Color? borderColor;
-  TextCapitalization? textCapitalization;
-  int? maxCharLength=300;
-  IconData? prefixIcon;
-  IconData? suffixIcon;
-  Function? onClick;
-  Function? onTextChange;
-  int maxLines;
-  List<TextInputFormatter>? onFilteringTextInputFormatter=[];
+class TextInputWidget extends StatefulWidget {
+  final String placeHolder;
+  final String hintText;
+  final TextEditingController controller;
+  final TextInputType? textInputType;
+  final String? errorText;
+  final bool? hidePassword;
+  final bool? showFloatingLabel;
+  final bool? isReadOnly;
+  final String? suffixIconType;
+  final Color? hintTextColor;
+  final Color? labelTextColor;
+  final Color? borderColor;
+  final TextCapitalization? textCapitalization;
+  final int? maxCharLength;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final Function? onClick;
+  final Function? onTextChange;
+  final int maxLines;
+  final List<TextInputFormatter>? onFilteringTextInputFormatter;
 
-  TextInputWidget({
+  const TextInputWidget({
     super.key,
-    this.isReadOnly,
-    this.suffixIconType,
     required this.placeHolder,
     required this.hintText,
     required this.controller,
     required this.errorText,
-    this.hidePassword,
-    this.showFloatingLabel,
-    this.textInputType,
+    this.isReadOnly = false,
+    this.suffixIconType,
+    this.hidePassword = false,
+    this.showFloatingLabel = true,
+    this.textInputType = TextInputType.text,
     this.borderColor,
     this.hintTextColor,
     this.labelTextColor,
     this.textCapitalization,
-    this.maxCharLength,
+    this.maxCharLength = 300,
     this.prefixIcon,
     this.suffixIcon,
     this.onClick,
     this.onTextChange,
-    this.onFilteringTextInputFormatter,
+    this.onFilteringTextInputFormatter = const [],
     this.maxLines = 1,
   });
 
   @override
+  State<TextInputWidget> createState() => _TextInputWidgetState();
+}
+
+class _TextInputWidgetState extends State<TextInputWidget> {
+  late FocusNode _focusNode;
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextField(
-      onChanged: (value) {
-        if (onTextChange != null) {
-          onTextChange!(value.toString());
-        }
-      },
-      onTap: () {
-        if (onClick != null) {
-          onClick!("click");
-        }
-      },
-      readOnly: isReadOnly ?? false,
-      enableSuggestions: false,
-      autocorrect: false,
-      controller: controller,
-      keyboardType: textInputType,
-      maxLengthEnforcement: MaxLengthEnforcement.none,
-      maxLines: maxLines,
-      obscureText: hidePassword ?? false,
-      inputFormatters: onFilteringTextInputFormatter?? <TextInputFormatter>[],
-      // maxLength: maxCharLength,
-      style: getTextMedium(
-          colors: ColorConstants.cAppColors, size: SizeConstants.s1 * 16),
-      textCapitalization: textCapitalization ?? TextCapitalization.none,
-      decoration: InputDecoration(
-        // counterStyle: const TextStyle(
-        //   height: 0.0,
-        // ),
-        // counterText: "",
-        floatingLabelBehavior: (showFloatingLabel ?? true)
-            ? FloatingLabelBehavior.auto
-            : FloatingLabelBehavior.never,
-        labelText: placeHolder,
-        hintText: hintText,
-        hintStyle: getTextRegular(
-            colors: ColorConstants.cAppColors.shade500,
-            size: SizeConstants.s1 * 16),
-        errorText: errorText,
-        errorStyle:
-            getTextRegular(colors: Colors.red, size: SizeConstants.s1 * 12),
-        labelStyle: getTextRegular(
-            colors: ColorConstants.cAppColors.shade500,
-            size: SizeConstants.s1 * 16),
-        prefixIcon: prefixIcon == null
-            ? null
-            : Padding(
-                padding: EdgeInsets.all(0.0),
-                child: Icon(
-                  prefixIcon,
-                  size: SizeConstants.s1 * 22,
-                ), // icon is 48px widget.
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: [
+          if (_isFocused || widget.errorText != null)
+            BoxShadow(
+              color: widget.errorText != null 
+                  ? Colors.red.withOpacity(0.2)
+                  : ColorConstants.cAppColors.withOpacity(0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            )
+          else
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+        ],
+      ),
+      child: Material(
+        elevation: _isFocused ? 2 : 0,
+        borderRadius: BorderRadius.circular(12.r),
+        shadowColor: ColorConstants.cAppColors.withOpacity(0.2),
+        child: TextField(
+          focusNode: _focusNode,
+          onChanged: (value) {
+            if (widget.onTextChange != null) {
+              widget.onTextChange!(value.toString());
+            }
+          },
+          onTap: () {
+            if (widget.onClick != null) {
+              widget.onClick!("click");
+            }
+          },
+          readOnly: widget.isReadOnly ?? false,
+          enableSuggestions: false,
+          autocorrect: false,
+          controller: widget.controller,
+          keyboardType: widget.textInputType,
+          maxLengthEnforcement: MaxLengthEnforcement.none,
+          maxLines: widget.maxLines,
+          obscureText: widget.hidePassword ?? false,
+          inputFormatters: widget.onFilteringTextInputFormatter ?? <TextInputFormatter>[],
+          style: getTextMedium(
+            colors: ColorConstants.cAppColors,
+            size: 16.sp,
+          ),
+          textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
+          decoration: InputDecoration(
+            floatingLabelBehavior: (widget.showFloatingLabel ?? true)
+                ? FloatingLabelBehavior.auto
+                : FloatingLabelBehavior.never,
+            labelText: widget.placeHolder,
+            hintText: widget.hintText,
+            hintStyle: getTextRegular(
+              colors: Colors.grey.shade500,
+              size: 15.sp,
+            ),
+            errorText: widget.errorText,
+            errorStyle: getTextRegular(
+              colors: Colors.red,
+              size: 12.sp,
+            ),
+            labelStyle: getTextRegular(
+              colors: _isFocused 
+                  ? ColorConstants.cAppColors 
+                  : Colors.grey.shade600,
+              size: 15.sp,
+            ),
+            floatingLabelStyle: getTextMedium(
+              colors: _isFocused 
+                  ? ColorConstants.cAppColors 
+                  : Colors.grey.shade600,
+              size: 14.sp,
+            ),
+            prefixIcon: widget.prefixIcon == null
+                ? null
+                : Container(
+                    margin: EdgeInsets.only(right: 8.w),
+                    child: Icon(
+                      widget.prefixIcon,
+                      size: 22.sp,
+                      color: _isFocused 
+                          ? ColorConstants.cAppColors 
+                          : Colors.grey.shade500,
+                    ),
+                  ),
+            suffixIcon: widget.suffixIcon == null
+                ? null
+                : GestureDetector(
+                    onTap: () {
+                      if (widget.onClick != null) {
+                        widget.onClick!("suffixIcon");
+                      }
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(left: 8.w),
+                      child: Icon(
+                        widget.suffixIcon,
+                        size: 22.sp,
+                        color: _isFocused 
+                            ? ColorConstants.cAppColors 
+                            : Colors.grey.shade600,
+                      ),
+                    ),
+                  ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: widget.borderColor ?? Colors.grey.shade300,
+                width: 1.5.w,
               ),
-        prefixIconColor: ColorConstants.cAppColors.shade400,
-        suffixIcon: suffixIcon == null
-            ? null
-            : GestureDetector(
-                onTap: () {
-                  if (onClick != null) {
-                    onClick!("suffixIcon");
-                  }
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Icon(
-                    suffixIcon,
-                    size: SizeConstants.s1 * 22,
-                  ), // icon is 48px widget.
-                ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: widget.borderColor ?? ColorConstants.cAppColors,
+                width: 2.5.w,
               ),
-        suffixIconColor: ColorConstants.cAppColors.shade700,
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: Colors.red,
+                width: 1.5.w,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: Colors.red,
+                width: 2.5.w,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: Colors.grey.shade300,
+                width: 1.w,
+              ),
+            ),
+            filled: true,
+            fillColor: widget.isReadOnly == true 
+                ? Colors.grey.shade50 
+                : (_isFocused ? Colors.white : Colors.grey.shade50),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 18.h,
+            ),
+          ),
+        ),
       ),
     );
   }

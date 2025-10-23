@@ -15,24 +15,63 @@ import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import '../../../alert/app_alert.dart';
 import '../controller/event_controller.dart';
+import 'package:flutter/foundation.dart';
 
-class EventScreen extends GetView<EventController> {
+class EventScreen extends StatefulWidget {
   const EventScreen({super.key});
 
   @override
+  State<EventScreen> createState() => _EventScreenState();
+}
+
+class _EventScreenState extends State<EventScreen> {
+  late EventController controller;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+  }
+
+  void _initializeController() async {
+    try {
+      if (Get.isRegistered<EventController>()) {
+        controller = Get.find<EventController>();
+      } else {
+        controller = Get.put(EventController());
+      }
+
+      _isInitialized = true;
+
+      if (mounted) {
+        await _fetchEventData();
+      }
+    } catch (e) {
+      if (kDebugMode) print('Error initializing controller: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => EventController());
+    if (!_isInitialized) {
+      return const Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(title: 'Events'),
+        body: Center(child: SizedBox.shrink()),
+      );
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const CustomAppBar(title: 'Events'),
       body: FocusDetector(
         onVisibilityGained: () async {
-          if (controller.hasLoadedOnce.value) {
+          if (kDebugMode) print('EventScreen visibility gained');
+          if (_isInitialized && mounted && controller.hasLoadedOnce.value) {
             await _fetchEventData();
           }
         },
-        onVisibilityLost: () {},
         child: Obx(() {
           return Container(
             height: 0.85.sh,
@@ -59,14 +98,29 @@ class EventScreen extends GetView<EventController> {
   }
 
   Future<void> _fetchEventData() async {
-    bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
-    if (isInternetAvailable) {
-      await controller.getEventUsApi();
-    } else {
-      AppAlert.showSnackBar(
-        Get.context!,
-        MessageConstants.noInternetConnection,
-      );
+    try {
+      if (kDebugMode) print('Fetching event data...');
+      bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
+
+      if (isInternetAvailable) {
+        await controller.getEventUsApi();
+        if (kDebugMode) print('Event data fetched successfully');
+      } else {
+        if (mounted && Get.context != null) {
+          AppAlert.showSnackBar(
+            Get.context!,
+            MessageConstants.noInternetConnection,
+          );
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) print('Error fetching event data: $e');
+      if (mounted && Get.context != null) {
+        AppAlert.showSnackBar(
+          Get.context!,
+          'Error loading events: ${e.toString()}',
+        );
+      }
     }
   }
 

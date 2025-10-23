@@ -14,6 +14,7 @@ class BannerListResponse {
     data = json['data'] != null ? BannerListResponseData.fromJson(json['data']) : null;
     responseTime = json['responseTime'];
   }
+  
   bool? error;
   int? statusCode;
   String? statusMessage;
@@ -31,7 +32,6 @@ class BannerListResponse {
     map['responseTime'] = responseTime;
     return map;
   }
-
 }
 
 class BannerListResponseData {
@@ -39,23 +39,24 @@ class BannerListResponseData {
       this.banner,});
 
   BannerListResponseData.fromJson(dynamic json) {
-    if (json['banner'] != null) {
+    // ✅ FIXED: Changed 'banner' to 'sponsor' to match API response
+    if (json['sponsor'] != null) {
       banner = [];
-      json['banner'].forEach((v) {
+      json['sponsor'].forEach((v) {
         banner?.add(BannerShow.fromJson(v));
       });
     }
   }
+  
   List<BannerShow>? banner;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (banner != null) {
-      map['banner'] = banner?.map((v) => v.toJson()).toList();
+      map['sponsor'] = banner?.map((v) => v.toJson()).toList();
     }
     return map;
   }
-
 }
 
 class BannerShow {
@@ -77,6 +78,7 @@ class BannerShow {
     fileUrl = json['file_url'];
     status = json['status'];
   }
+  
   int? id;
   String? title;
   String? smallText;
@@ -84,6 +86,10 @@ class BannerShow {
   String? fileType;
   String? fileUrl;
   int? status;
+  
+  // Getter methods for backward compatibility
+  String? get image => fileUrl;
+  String? get redirectionUrl => smallText;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -96,5 +102,4 @@ class BannerShow {
     map['status'] = status;
     return map;
   }
-
 }

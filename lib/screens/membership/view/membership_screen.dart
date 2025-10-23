@@ -1,30 +1,45 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:focus_detector/focus_detector.dart';
+import 'package:get/get.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/common/constant/custom_image.dart';
+import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
+import 'package:organization/screens/membership/controller/membership_controller.dart';
 import 'package:organization/utils/color_constants.dart';
 
-class MembershipDetailsScreen extends StatelessWidget {
+class MembershipDetailsScreen extends GetView<MembershipDetailsController> {
   const MembershipDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: CustomAppBar(title: 'Membership'),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 32.h),
-            _buildProfileSection(),
-            SizedBox(height: 24.h),
-            _membershipTypeUI(),
-            SizedBox(height: 16.h),
-            _membershipDetailsUI(),
-            SizedBox(height: 24.h),
-          ],
+    Get.lazyPut(() => MembershipDetailsController());
+
+    return FocusDetector(
+      onVisibilityGained: () {
+        controller.getProfile();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(title: 'Membership Details'),
+        body: Obx(
+          () => SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 32.h),
+                _buildProfileSection(),
+                SizedBox(height: 24.h),
+                _membershipTypeUI(),
+                SizedBox(height: 16.h),
+                _membershipDetailsUI(),
+                SizedBox(height: 24.h),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -33,8 +48,8 @@ class MembershipDetailsScreen extends StatelessWidget {
   Widget _buildProfileSection() {
     return Center(
       child: Container(
-        width: 130.w,
-        height: 130.h,
+        width: 150.w,
+        height: 150.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
@@ -57,25 +72,39 @@ class MembershipDetailsScreen extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           padding: EdgeInsets.all(8.r),
-          child: ClipOval(
-            child: Image.asset("assets/images/pic.png", fit: BoxFit.cover),
-          ),
+          child: ClipOval(child: _getProfileImage()),
         ),
       ),
     );
   }
 
+  Widget _getProfileImage() {
+    if (controller.attachmentPath.value.isNotEmpty) {
+      return Image.file(
+        File(controller.attachmentPath.value),
+        fit: BoxFit.cover,
+      );
+    } else if (controller.photo.value.isEmpty) {
+      return Image.asset(ImageAssetsConstants.pic, fit: BoxFit.cover);
+    } else {
+      return cacheProfilePictureImage(
+        controller.photo.value,
+        ImageAssetsConstants.pic,
+      );
+    }
+  }
+
   Widget _membershipTypeUI() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         gradient: const LinearGradient(
           colors: [
-            AppColors.indiaorange, // orange
-            AppColors.white, // light gray
-            AppColors.secondaryGreen, // green
+            AppColors.indiaorange,
+            AppColors.white,
+            AppColors.secondaryGreen,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -92,31 +121,39 @@ class MembershipDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title
           Center(
             child: Text(
               "Membership Details",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryGreen,
               ),
             ),
           ),
-          const SizedBox(height: 20),
-
-          _infoRow(Icons.card_membership, "Membership Id", "--"),
-          const Divider(height: 24, thickness: 1, color: Colors.black26),
-          _infoRow(Icons.stars, "Membership Type", "Premium"),
-          const Divider(height: 24, thickness: 1, color: Colors.black26),
-          _infoRow(Icons.calendar_today, "Valid Until", "31-12-2025"),
-
-          const Divider(height: 24, thickness: 1, color: Colors.black26),
+          SizedBox(height: 20.h),
+          _infoRow(
+            Icons.card_membership,
+            "Membership Id",
+            controller.membershipId.value.isEmpty
+                ? "--"
+                : controller.membershipId.value,
+          ),
+          Divider(height: 24.h, thickness: 1, color: Colors.black26),
+          _infoRow(
+            Icons.stars,
+            "Membership Type",
+            controller.membershipType.value,
+          ),
+          Divider(height: 24.h, thickness: 1, color: Colors.black26),
           _infoRow(
             Icons.verified,
             "Status",
-            "Active",
-            valueColor: Colors.green.shade800,
+            controller.membershipStatus.value ? "Active" : "Inactive",
+            valueColor: controller.membershipStatus.value
+                ? AppColors.primaryGreen
+                : AppColors.error,
+            showStatusContainer: true, // 👈 adds the capsule-style tag
           ),
         ],
       ),
@@ -127,30 +164,48 @@ class MembershipDetailsScreen extends StatelessWidget {
     IconData icon,
     String label,
     String value, {
-    Color valueColor = Colors.blue,
+    Color valueColor = AppColors.indiaorange,
+    bool showStatusContainer = false, // add flag for conditional styling
   }) {
     return Row(
       children: [
-        Icon(icon, color: Colors.blue, size: 22),
-        const SizedBox(width: 12),
+        Icon(icon, color: AppColors.indiaorange, size: 22.sp),
+        SizedBox(width: 12.w),
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: AppColors.secondaryGreen,
               fontWeight: FontWeight.w500,
             ),
           ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            color: valueColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        showStatusContainer
+            ? Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: valueColor.withOpacity(0.2), // transparent background
+                  border: Border.all(color: valueColor),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: valueColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: valueColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ],
     );
   }

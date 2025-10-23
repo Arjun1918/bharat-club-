@@ -44,7 +44,7 @@ class ProfileCardShimmer extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 10.r,
             offset: Offset(0, 5.h),
           ),
@@ -86,11 +86,11 @@ class SectionShimmer extends StatelessWidget {
   final int itemCount;
 
   const SectionShimmer({
-    super.key,
+    Key? key,
     required this.itemWidth,
     required this.itemHeight,
     this.itemCount = 3,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

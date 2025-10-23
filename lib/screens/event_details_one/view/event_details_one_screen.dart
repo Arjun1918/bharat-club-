@@ -1,0 +1,649 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:focus_detector/focus_detector.dart';
+import 'package:get/get.dart';
+import 'package:organization/common/constant/custom_image.dart';
+import 'package:organization/common/constant/image_constants.dart';
+import 'package:organization/common/widgets/appbar.dart';
+import 'package:organization/common/widgets/text_input.dart';
+import 'package:organization/utils/app_util_constants.dart';
+import 'package:organization/utils/color_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../data/local/shared_prefs/shared_prefs.dart';
+import '../../../data/mode/cms_page/event_response.dart';
+import '../controller/event_details_one_controller.dart';
+
+class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
+  final EventModule mEventModule;
+
+  const EventDetailsOneScreen({super.key, required this.mEventModule});
+
+  @override
+  Widget build(BuildContext context) {
+    Get.lazyPut(() => EventDetailsOneController(mEventModule));
+
+    return FocusDetector(
+      child: Scaffold(
+        backgroundColor: Colors.grey[50],
+        appBar: CustomAppBar(title: 'Event Details'),
+        body: Container(
+          height: 0.85.sh,
+          width: 1.sw,
+          margin: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: ColorConstants.cAppColorsBlue.withOpacity(0.08),
+                spreadRadius: 0,
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: eventDetailsView(context),
+        ),
+      ),
+    );
+  }
+
+  eventDetailsView(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(20.w),
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Banner with modern styling
+            _generateBanners(mEventModule.eventAttachments),
+
+            SizedBox(height: 24.h),
+
+            // Title with gradient effect
+            Text(
+              controller.mTitle.value,
+              style: TextStyle(
+                color: ColorConstants.cAppColorsBlue,
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
+                letterSpacing: -0.5,
+              ),
+            ),
+
+            SizedBox(height: 16.h),
+
+            // Description with better readability
+            Text(
+              controller.mDescription.value,
+              style: TextStyle(
+                color: ColorConstants.cAppColorsBlue,
+                fontSize: 15.sp,
+                fontWeight: FontWeight.w400,
+                height: 1.5,
+              ),
+            ),
+
+            SizedBox(height: 24.h),
+
+            // Event date card
+            Container(
+              padding: EdgeInsets.all(16.w),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    ColorConstants.cAppColorsBlue.withOpacity(0.1),
+                    ColorConstants.cAppColorsBlue.withOpacity(0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: ColorConstants.cAppColorsBlue.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 18.sp,
+                        color: ColorConstants.cAppColorsBlue,
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        "Event Schedule",
+                        style: TextStyle(
+                          color: ColorConstants.cAppColorsBlue,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "From",
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              controller.mStartDate.value,
+                              style: TextStyle(
+                                color: ColorConstants.cAppColorsBlue,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 40.h,
+                        width: 1,
+                        color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+                      ),
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "To",
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              controller.mEndDate.value,
+                              style: TextStyle(
+                                color: ColorConstants.cAppColorsBlue,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 24.h),
+
+            // Sponsor carousel
+            sponsorCarousel(context),
+
+            SizedBox(height: 32.h),
+
+            // Primary Contact Section with modern card
+            _buildSectionHeader("Primary Contact", Icons.person),
+            SizedBox(height: 16.h),
+
+            Text(
+              "Primary Name",
+              style: TextStyle(
+                color: Colors.grey[700],
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            TextInputWidget(
+              placeHolder: "",
+              controller: controller.mPrimaryNameController.value,
+              errorText: null,
+              textInputType: TextInputType.text,
+              hintText: "",
+              showFloatingLabel: false,
+              isReadOnly: true,
+            ),
+
+            SizedBox(height: 32.h),
+
+            // Adult Details Section
+            _buildSectionHeader("Adult Details", Icons.people),
+            SizedBox(height: 16.h),
+
+            Text(
+              "Number of Adults (Age ${controller.mMemberAdultAge.value} and above)",
+              style: TextStyle(
+                color: Colors.grey[700],
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            TextInputWidget(
+              placeHolder: "",
+              controller: controller.mNumberOfAdultsController.value,
+              errorText: null,
+              textInputType: TextInputType.number,
+              hintText: "Enter number of adults",
+              showFloatingLabel: false,
+              maxLines: 1,
+              maxCharLength: 2,
+              onFilteringTextInputFormatter: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(AppUtilConstants.patternOnlyNumber),
+                ),
+                LengthLimitingTextInputFormatter(2),
+              ],
+            ),
+
+            // Children Details Section
+            (controller.mMemberChildStatus.value == '1')
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 32.h),
+                      _buildSectionHeader("Children Details", Icons.child_care),
+                      SizedBox(height: 16.h),
+
+                      Text(
+                        "Number of Children (Age ${controller.mMemberChildAge.value} and above)",
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextInputWidget(
+                        placeHolder: "",
+                        controller: controller
+                            .mNumberOfChildrenAgeLimitController
+                            .value,
+                        errorText: null,
+                        textInputType: TextInputType.number,
+                        hintText: "Enter number of children",
+                        showFloatingLabel: false,
+                        maxLines: 1,
+                        maxCharLength: 2,
+                        onFilteringTextInputFormatter: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(AppUtilConstants.patternOnlyNumber),
+                          ),
+                          LengthLimitingTextInputFormatter(2),
+                        ],
+                      ),
+
+                      SizedBox(height: 16.h),
+                      Text(
+                        "Number of Children (Age 6 and below)",
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextInputWidget(
+                        placeHolder: "",
+                        controller: controller
+                            .mNumberOfChildrenAge6BelowController
+                            .value,
+                        errorText: null,
+                        textInputType: TextInputType.number,
+                        hintText: "Enter number of children",
+                        showFloatingLabel: false,
+                        maxLines: 1,
+                        maxCharLength: 2,
+                        onFilteringTextInputFormatter: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(AppUtilConstants.patternOnlyNumber),
+                          ),
+                          LengthLimitingTextInputFormatter(2),
+                        ],
+                      ),
+                    ],
+                  )
+                : SizedBox.shrink(),
+
+            // Guest Details Section
+            SizedBox(height: 32.h),
+            _buildSectionHeader("Guest Details", Icons.group_add),
+            SizedBox(height: 16.h),
+
+            Text(
+              "Number of Adults (Age ${controller.mGuestAdultAge.value} and above)",
+              style: TextStyle(
+                color: Colors.grey[700],
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            TextInputWidget(
+              placeHolder: "",
+              controller: controller.mNumberOfGuestAdultsController.value,
+              errorText: null,
+              textInputType: TextInputType.number,
+              hintText: "Enter number of guest adults",
+              showFloatingLabel: false,
+              maxLines: 1,
+              maxCharLength: 2,
+              onFilteringTextInputFormatter: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(AppUtilConstants.patternOnlyNumber),
+                ),
+                LengthLimitingTextInputFormatter(2),
+              ],
+            ),
+
+            // Guest Children Section
+            controller.mGuestChildStatus == '1'
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 16.h),
+                      Text(
+                        "Number of Children (Age ${controller.mGuestChildAge.value} and above)",
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextInputWidget(
+                        placeHolder: "",
+                        controller: controller
+                            .mNumberOfGuestChildrenAge12AboveController
+                            .value,
+                        errorText: null,
+                        textInputType: TextInputType.number,
+                        hintText: "Enter number of guest children",
+                        showFloatingLabel: false,
+                        maxLines: 1,
+                        maxCharLength: 2,
+                        onFilteringTextInputFormatter: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(AppUtilConstants.patternOnlyNumber),
+                          ),
+                          LengthLimitingTextInputFormatter(2),
+                        ],
+                      ),
+
+                      SizedBox(height: 16.h),
+                      Text(
+                        "Number of Children (Age 6 and below)",
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      TextInputWidget(
+                        placeHolder: "",
+                        controller: controller
+                            .mNumberOfGuestChildrenAge6BelowController
+                            .value,
+                        errorText: null,
+                        textInputType: TextInputType.number,
+                        hintText: "Enter number of guest children",
+                        showFloatingLabel: false,
+                        maxLines: 1,
+                        maxCharLength: 2,
+                        onFilteringTextInputFormatter: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(AppUtilConstants.patternOnlyNumber),
+                          ),
+                          LengthLimitingTextInputFormatter(2),
+                        ],
+                      ),
+                    ],
+                  )
+                : SizedBox.shrink(),
+
+            SizedBox(height: 40.h),
+            InkWell(
+              onTap: () async {
+                await SharedPrefs().getUserDetails();
+                controller.navigateToNextScreen(mEventModule,context);
+              },
+              borderRadius: BorderRadius.circular(12.r),
+              child: Container(
+                height: 56.h,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      ColorConstants.cAppColorsBlue,
+                      ColorConstants.cAppColorsBlue.withOpacity(0.8),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Proceed",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Icon(Icons.arrow_forward, color: Colors.white, size: 20.sp),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 20.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8.w),
+          decoration: BoxDecoration(
+            color: ColorConstants.cAppColorsBlue.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Icon(icon, size: 20.sp, color: ColorConstants.cAppColorsBlue),
+        ),
+        SizedBox(width: 12.w),
+        Text(
+          title,
+          style: TextStyle(
+            color: ColorConstants.cAppColorsBlue,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _generateBanners(List<EventModuleAttachments>? eventAttachments) {
+    String banner = (eventAttachments ?? []).isEmpty
+        ? ""
+        : (eventAttachments?.first.fileUrl ?? "");
+    return Container(
+      height: 0.5.sw,
+      width: 1.sw,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16.r),
+        child: banner.isEmpty
+            ? Container(
+                color: Colors.grey[100],
+                child: Center(
+                  child: Image.asset(
+                    ImageAssetsConstants.goParkingLogoJpg,
+                    width: 0.4.sw,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              )
+            : cacheImageBannerExploreOurProgram(
+                banner,
+                ImageAssetsConstants.goParkingLogoJpg,
+              ),
+      ),
+    );
+  }
+
+  Widget sponsorCarousel(BuildContext context) {
+    final PageController pageController = PageController();
+    controller.startTimer(pageController);
+
+    return Obx(() {
+      if (controller.sponsorList.isEmpty) {
+        return SizedBox.shrink();
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader("Our Sponsors", Icons.business),
+          SizedBox(height: 16.h),
+          SizedBox(
+            height: MediaQuery.of(context).size.width * 0.6,
+            child: PageView.builder(
+              controller: pageController,
+              itemCount: controller.sponsorList.length,
+              onPageChanged: (index) {
+                controller.currentIndex.value = index;
+              },
+              itemBuilder: (context, index) {
+                final sponsor = controller.sponsorList[index];
+                return GestureDetector(
+                  onTap: () {
+                    if (sponsor.website != null &&
+                        sponsor.website!.isNotEmpty) {
+                      final uri = Uri.parse(sponsor.website!);
+                      launchUrl(uri);
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: ColorConstants.cAppColorsBlue.withOpacity(
+                            0.15,
+                          ),
+                          blurRadius: 15,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.r),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          cacheImageBannerExploreOurProgram(
+                            sponsor.fileUrl,
+                            ImageAssetsConstants.goParkingLogoJpg,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12.h,
+                                horizontal: 16.w,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Colors.black.withOpacity(0.8),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                              child: Text(
+                                sponsor.companyName,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          SizedBox(height: 12.h),
+          // Page indicators
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              controller.sponsorList.length,
+              (index) => Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.w),
+                width: controller.currentIndex.value == index ? 24.w : 8.w,
+                height: 8.h,
+                decoration: BoxDecoration(
+                  color: controller.currentIndex.value == index
+                      ? ColorConstants.cAppColorsBlue
+                      : Colors.grey[300],
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+}

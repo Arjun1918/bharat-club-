@@ -1,19 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../data/local/shared_prefs/shared_prefs.dart';
+import '../../../data/mode/banner_list/banner_list.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/common/constant/web_constant.dart';
 import 'package:organization/data/mode/registration/registration_response.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../alert/app_alert.dart';
 import '../../../../data/remote/web_response.dart';
-import '../../../data/local/shared_prefs/shared_prefs.dart';
-import '../../../data/mode/banner_list/banner_list.dart';
 import '../../../data/mode/cms_page/event_response.dart';
 import '../../../data/mode/dashboard/dashboard_response.dart';
 import '../../../data/mode/event_qr_scan/qr_details_request.dart';
@@ -22,31 +20,22 @@ import '../../../data/mode/membership_type/membership_type_response.dart';
 import '../../../data/mode/profile_response/profile_response.dart';
 import '../../../data/remote/api_call/api_impl.dart';
 
-class DashboardController extends GetxController {
+class HomeController extends GetxController {
   late Timer _timer;
-  
-  // Top banner carousel controller
+
   PageController pageViewController = PageController(initialPage: 0);
   int _currentPage = 0;
   final _kDuration = const Duration(milliseconds: 350);
   final _kCurve = Curves.easeIn;
 
-  // Sponsor banner carousel controller
   final PageController certificationsPageController = PageController(
     initialPage: 0,
   );
 
-  // Event list
   RxList mDashboardEventList = [].obs;
-
-  // Gallery list
   RxList mDashboardGalleryList = [].obs;
-
-  // Sponsor/Below banner list
   var beloBanner = 0.obs;
   RxList mDashboardBeloBannerList = [].obs;
-
-  // Profile data
   RxBool membershipStatus = false.obs;
   RxString membershipEndDate = "".obs;
   RxString photo = "".obs;
@@ -66,17 +55,15 @@ class DashboardController extends GetxController {
       if (_timer.isActive) {
         _timer.cancel();
       }
-    } catch (e) {
-      // Timer not initialized yet
-    }
+    } catch (e) {}
     super.dispose();
   }
 
   void isTimerSt() {
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer timer) {
-      if (mDashboardBeloBannerList.value.isNotEmpty) {
+      if (mDashboardBeloBannerList.isNotEmpty) {
         if (pageViewController.hasClients) {
-          if (_currentPage < mDashboardBeloBannerList.value.length - 1) {
+          if (_currentPage < mDashboardBeloBannerList.length - 1) {
             _currentPage++;
           } else {
             _currentPage = 0;
@@ -135,17 +122,10 @@ class DashboardController extends GetxController {
     if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
       DashboardResponse mDashboardResponse = mWebResponseSuccess.data;
 
-      // Event list
-      mDashboardEventList.value.clear();
-      mDashboardEventList.value.addAll(
-        mDashboardResponse.data?.eventList ?? [],
-      );
-
-      // Gallery list
-      mDashboardGalleryList.value.clear();
-      mDashboardGalleryList.value.addAll(
-        mDashboardResponse.data?.galleryList ?? [],
-      );
+      mDashboardEventList.clear();
+      mDashboardEventList.addAll(mDashboardResponse.data?.eventList ?? []);
+      mDashboardGalleryList.clear();
+      mDashboardGalleryList.addAll(mDashboardResponse.data?.galleryList ?? []);
     }
   }
 
@@ -155,16 +135,15 @@ class DashboardController extends GetxController {
         WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
             .postBannerList();
         BannerListResponse mBannerListResponse = mWebResponseSuccess.data;
-        mDashboardBeloBannerList.value.clear();
+        mDashboardBeloBannerList.clear();
         beloBanner.value = 0;
         if (mBannerListResponse.statusCode == 200) {
-          mDashboardBeloBannerList.value.addAll(
+          mDashboardBeloBannerList.addAll(
             mBannerListResponse.data?.banner ?? [],
           );
-          beloBanner.value = mDashboardBeloBannerList.value.length;
-          
-          // Start timer for sponsor carousel if more than 1 sponsor
-          if (mDashboardBeloBannerList.value.length > 1) {
+          beloBanner.value = mDashboardBeloBannerList.length;
+
+          if (mDashboardBeloBannerList.length > 1) {
             isTimerSt();
           }
         }
@@ -283,17 +262,12 @@ class DashboardController extends GetxController {
                 eventId: mEventModule.id.toString(),
                 membershipId: mMembershipID,
               );
-              // Navigate to QR code screen when implemented
-              // Get.offAllNamed(
-              //   RouteConstants.rQrCodeGenerateScreen,
-              //   arguments: mQrDetails,
-              // );
+              Get.offAllNamed(AppRoutes.qrScreen, arguments: mQrDetails);
             } else {
-              // Navigate to event details when implemented
-              // Get.toNamed(
-              //   RouteConstants.rEventDetailsOneScreen,
-              //   arguments: mEventModule,
-              // );
+              Get.toNamed(
+                AppRoutes.eventDetailOneScreen,
+                arguments: mEventModule,
+              );
             }
           } else {
             AppAlert.showSnackBar(

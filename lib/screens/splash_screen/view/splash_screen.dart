@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/animation/animation_background.dart';
-import 'package:organization/app/routes_name.dart';
 import 'package:organization/common/constant/image_constants.dart';
+import 'package:organization/screens/splash_screen/controller/splash_screen_contoller.dart';
 import 'package:organization/utils/color_constants.dart';
-import 'package:organization/data/local/shared_prefs/shared_prefs.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,13 +16,10 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  Timer? _timer;
-  bool _hasNavigated = false;
-
+  late final SplashController controller;
   late AnimationController _scaleController;
   late AnimationController _fadeController;
   late AnimationController _slideController;
-
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
@@ -32,9 +27,9 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    controller = Get.put(SplashController());
     _initializeAnimations();
     _startAnimations();
-    _scheduleNavigation();
   }
 
   void _initializeAnimations() {
@@ -60,6 +55,10 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
     _slideAnimation =
         Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
           CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
@@ -81,38 +80,8 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  void _scheduleNavigation() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _timer = Timer(const Duration(seconds: 3), _checkLoginStatus);
-    });
-  }
-
-  Future<void> _checkLoginStatus() async {
-    if (!mounted || _hasNavigated) return;
-
-    setState(() {
-      _hasNavigated = true;
-    });
-
-    final prefs = SharedPrefs();
-    await prefs.sharedPreferencesInstance();
-    final loginStatus = await prefs.getUserLoginStatus();
-    final token = await prefs.getUserToken();
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-
-      if (token.isNotEmpty && loginStatus != "0") {
-        Get.offAllNamed(AppRoutes.home);
-      } else {
-        Get.offAllNamed(AppRoutes.loginScreen);
-      }
-    });
-  }
-
   @override
   void dispose() {
-    _timer?.cancel();
     _scaleController.dispose();
     _fadeController.dispose();
     _slideController.dispose();

@@ -104,15 +104,6 @@ class GalleryData {
     return map;
   }
 }
-
-/// id : 3
-/// cms_page_id : 3
-/// title : "Gallery"
-/// small_text : "Moments forever"
-/// file_name : ""
-/// file_type : null
-/// file_url : null
-
 class CmsPageGalleryAttachments {
   CmsPageGalleryAttachments({
     this.id,
@@ -154,13 +145,6 @@ class CmsPageGalleryAttachments {
     return map;
   }
 }
-
-/// id : 1
-/// file_name : "gallery onw update 123"
-/// file_type : null
-/// file_url : "https://hcm-storage.ap-south-1.linodeobjects.com/club_portal/gallery/Accounting.png"
-/// status : 1
-
 class GalleryModule {
   GalleryModule({
     this.id,

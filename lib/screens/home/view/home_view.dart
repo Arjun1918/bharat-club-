@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
+import 'package:organization/app/routes_name.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/carousel_slider.dart';
@@ -13,6 +14,7 @@ import 'package:organization/common/widgets/section_header.dart';
 import 'package:organization/common/widgets/shimmer_box.dart';
 import 'package:organization/common/widgets/sponsor_item.dart';
 import 'package:organization/screens/home/view/home_controller.dart';
+import '../../../alert/app_alert.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,8 +25,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentSponsorIndex = 0;
-  final CarouselSliderController _carouselController = CarouselSliderController();
-  final DashboardController controller = Get.put(DashboardController());
+  final CarouselSliderController _carouselController =
+      CarouselSliderController();
+  final HomeController controller = Get.put(HomeController());
 
   @override
   void initState() {
@@ -58,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Obx(() {
-            if (controller.userName.value.isEmpty && 
+            if (controller.userName.value.isEmpty &&
                 controller.membershipType.value.isEmpty &&
                 controller.photo.value.isEmpty) {
               return _buildShimmerLoading();
@@ -73,18 +76,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildContent() {
     return Column(
       children: [
-        Obx(() => ProfileCard(
-          welcomeText: 'Welcome back',
-          userName: controller.userName.value.isNotEmpty 
-              ? controller.userName.value 
-              : 'Guest User',
-          membershipType: controller.membershipType.value.isNotEmpty
-              ? controller.membershipType.value
-              : 'Member',
-          profileImageUrl: controller.photo.value.isNotEmpty
-              ? controller.photo.value
-              : 'https://picsum.photos/200',
-        )),
+        Obx(
+          () => ProfileCard(
+            welcomeText: 'Welcome back',
+            userName: controller.userName.value.isNotEmpty
+                ? controller.userName.value
+                : 'Guest User',
+            membershipType: controller.membershipType.value.isNotEmpty
+                ? controller.membershipType.value
+                : 'Member',
+            profileImageUrl: controller.photo.value.isNotEmpty
+                ? controller.photo.value
+                : 'https://picsum.photos/200',
+          ),
+        ),
         _buildEventsSection(),
         _buildGallerySection(),
         _buildSponsorsCarousel(),
@@ -112,9 +117,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEventsSection() {
     return Obx(() {
       final events = controller.mDashboardEventList;
-      
-      print('Events count: ${events.length}'); // Debug print
-      
+
+      print('Events count: ${events.length}');
+
       if (events.isEmpty) {
         return const SizedBox.shrink();
       }
@@ -124,7 +129,9 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SectionHeader(
             title: 'Events',
-            onViewAllPressed: () => _showComingSoon('Events'),
+            onViewAllPressed: () {
+              Get.toNamed(AppRoutes.events);
+            },
           ),
           SizedBox(
             height: 220.h,
@@ -137,18 +144,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 final event = events[index];
                 // Get image from event_attachments array
                 String imageUrl = 'https://picsum.photos/400/200';
-                if (event.eventAttachments != null && 
+                if (event.eventAttachments != null &&
                     event.eventAttachments!.isNotEmpty) {
                   imageUrl = event.eventAttachments!.first.fileUrl ?? imageUrl;
                 }
-                
+
                 return EventCard(
                   title: event.title ?? 'Event',
                   description: event.description ?? '',
                   imageUrl: imageUrl,
                   date: event.startDate ?? '',
                   index: index,
-                  onTap: () => controller.checkEventAppliedStatus(event),
+                  onTap: () {
+                    // Add membership check logic like dashboard screen
+                    _handleEventTap(event);
+                  },
                 );
               },
             ),
@@ -158,12 +168,23 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Add this new method to handle event tap with membership check
+  void _handleEventTap(dynamic event) {
+    if (controller.membershipStatus.value) {
+      // User has active membership, proceed with event
+      controller.checkEventAppliedStatus(event);
+    } else {
+      // User doesn't have active membership, show message
+      AppAlert.showSnackBar(Get.context!, "Please renew your membership");
+    }
+  }
+
   Widget _buildGallerySection() {
     return Obx(() {
       final galleries = controller.mDashboardGalleryList;
-      
-      print('Galleries count: ${galleries.length}'); // Debug print
-      
+
+      print('Galleries count: ${galleries.length}');
+
       if (galleries.isEmpty) {
         return const SizedBox.shrink();
       }
@@ -173,7 +194,9 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           SectionHeader(
             title: 'Gallery',
-            onViewAllPressed: () => _showComingSoon('Gallery'),
+            onViewAllPressed: () {
+              Get.toNamed(AppRoutes.gallery);
+            },
           ),
           SizedBox(
             height: 200.h,
@@ -188,7 +211,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: gallery.fileName ?? 'Gallery',
                   imageUrl: gallery.fileUrl ?? 'https://picsum.photos/300/200',
                   index: index,
-                  onTap: () => _showComingSoon('Gallery: ${gallery.fileName}'),
+                  onTap: () =>
+                      Get.toNamed(AppRoutes.gallery, arguments: gallery),
                 );
               },
             ),
@@ -201,9 +225,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSponsorsCarousel() {
     return Obx(() {
       final sponsors = controller.mDashboardBeloBannerList;
-      
-      print('Sponsors count: ${sponsors.length}'); // Debug print
-      
+
+      print('Sponsors count: ${sponsors.length}');
+
       if (sponsors.isEmpty) {
         return const SizedBox.shrink();
       }
@@ -215,8 +239,8 @@ class _HomeScreenState extends State<HomeScreen> {
           CarouselSlider(
             carouselController: _carouselController,
             options: CarouselOptions(
-              height: 140.h,
-              viewportFraction: 0.85,
+              height: 100.h,
+              viewportFraction: 0.99,
               autoPlay: true,
               autoPlayInterval: const Duration(seconds: 4),
               autoPlayAnimationDuration: const Duration(milliseconds: 800),
@@ -236,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 imageUrl: sponsor.image ?? 'https://picsum.photos/100/100',
                 index: index,
                 onTap: () {
-                  if (sponsor.redirectionUrl != null && 
+                  if (sponsor.redirectionUrl != null &&
                       sponsor.redirectionUrl!.isNotEmpty) {
                     controller.webView(sponsor.redirectionUrl!);
                   }
@@ -246,46 +270,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 16.h),
           CarouselIndicators(
-            itemCount: sponsors.length, 
-            currentIndex: _currentSponsorIndex
+            itemCount: sponsors.length,
+            currentIndex: _currentSponsorIndex,
           ),
         ],
       );
     });
-  }
-
-  void _showComingSoon(String feature) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.r),
-        ),
-        title: Text(
-          'Coming Soon!',
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.secondaryGreen,
-          ),
-        ),
-        content: Text(
-          '$feature feature will be available soon. Stay tuned for updates!',
-          style: TextStyle(fontSize: 14.sp),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'OK',
-              style: TextStyle(
-                color: AppColors.secondaryGreen,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

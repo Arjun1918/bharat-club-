@@ -46,7 +46,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
         MenuItem(
           title: 'Profile',
           icon: Icons.person_rounded,
-          route: '/profile',
+          route: AppRoutes.profile,
           iconColor: AppColors.white,
         ),
         MenuItem(

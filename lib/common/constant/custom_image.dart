@@ -4,7 +4,9 @@ import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/constant/size_constants.dart';
 
 cacheImageBannerExploreOurProgram(
-    String imageUrl, String placeHolderImagePath) {
+  String imageUrl,
+  String placeHolderImagePath,
+) {
   // // debugPrint("image Url $imageUrl");
   return CachedNetworkImage(
     imageUrl: imageUrl,
@@ -16,9 +18,7 @@ cacheImageBannerExploreOurProgram(
       return Center(
         child: SizedBox(
           width: SizeConstants.width * 0.5,
-          child: Image.asset(
-            placeHolderImagePath,
-          ),
+          child: Image.asset(placeHolderImagePath),
         ),
       );
     },
@@ -26,9 +26,7 @@ cacheImageBannerExploreOurProgram(
       return Center(
         child: SizedBox(
           width: SizeConstants.width * 0.5,
-          child: Image.asset(
-            placeHolderImagePath,
-          ),
+          child: Image.asset(placeHolderImagePath),
         ),
       );
     },
@@ -43,8 +41,9 @@ cacheImageBannerExploreOurProgram(
 }
 
 cacheImageGalleryExploreOurProgram(
-    String imageUrl, String placeHolderImagePath) {
-  // // debugPrint("image Url $imageUrl");
+  String imageUrl,
+  String placeHolderImagePath,
+) {
   return CachedNetworkImage(
     imageUrl: imageUrl,
     key: UniqueKey(),
@@ -54,21 +53,17 @@ cacheImageGalleryExploreOurProgram(
     placeholder: (context, url) {
       return Center(
         child: SizedBox(
-            width: SizeConstants.width * 0.15,
-            child: Image.asset(
-              placeHolderImagePath,
-              fit: BoxFit.fitWidth,
-            )),
+          width: SizeConstants.width * 0.15,
+          child: Image.asset(placeHolderImagePath, fit: BoxFit.fitWidth),
+        ),
       );
     },
     errorWidget: (context, url, error) {
       return Center(
         child: SizedBox(
-            width: SizeConstants.width * 0.15,
-            child: Image.asset(
-              placeHolderImagePath,
-              fit: BoxFit.fitWidth,
-            )),
+          width: SizeConstants.width * 0.15,
+          child: Image.asset(placeHolderImagePath, fit: BoxFit.fitWidth),
+        ),
       );
     },
     imageBuilder: (context, imageProvider) => Container(
@@ -81,8 +76,7 @@ cacheImageGalleryExploreOurProgram(
   );
 }
 
-cacheProfilePictureImage(
-    String imageUrl, String placeHolderImagePath) {
+cacheProfilePictureImage(String imageUrl, String placeHolderImagePath) {
   // // debugPrint("image Url $imageUrl");
   return CachedNetworkImage(
     imageUrl: imageUrl,
@@ -94,26 +88,26 @@ cacheProfilePictureImage(
       return Container(
         padding: EdgeInsets.all(SizeConstants.s1 * 5),
         child: ClipOval(
-            child: Image.asset(
+          child: Image.asset(
             ImageAssetsConstants.pic,
             height: SizeConstants.s1 * 65,
             width: SizeConstants.s1 * 65,
             fit: BoxFit.cover,
           ),
-       ),
+        ),
       );
     },
     errorWidget: (context, url, error) {
       return Container(
         padding: EdgeInsets.all(SizeConstants.s1 * 5),
         child: ClipOval(
-              child: Image.asset(
-              ImageAssetsConstants.pic,
-              height: SizeConstants.s1 * 65,
-              width: SizeConstants.s1 * 65,
-              fit: BoxFit.cover,
-            ),
-          )
+          child: Image.asset(
+            ImageAssetsConstants.pic,
+            height: SizeConstants.s1 * 65,
+            width: SizeConstants.s1 * 65,
+            fit: BoxFit.cover,
+          ),
+        ),
       );
     },
     imageBuilder: (context, imageProvider) => Container(

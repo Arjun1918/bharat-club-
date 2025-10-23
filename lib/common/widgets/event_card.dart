@@ -84,6 +84,7 @@ class EventCard extends StatelessWidget {
                 padding: EdgeInsets.all(16.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // 👈 prevent unbounded height
                   children: [
                     Text(
                       title,
@@ -92,6 +93,8 @@ class EventCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
+                      maxLines: 1, // 👈 show only one line for title
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 4.h),
                     Text(
@@ -100,8 +103,9 @@ class EventCard extends StatelessWidget {
                         fontSize: 12.sp,
                         color: Colors.grey[600],
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1, // 👈 limit to 3 lines
+                      overflow:
+                          TextOverflow.ellipsis, // 👈 show "..." if longer
                     ),
                   ],
                 ),

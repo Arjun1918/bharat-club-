@@ -66,7 +66,7 @@ class PageOneScreen extends StatelessWidget {
             ),
             Html(
               shrinkWrap: true,
-              data: mJoinClubController.sJoinClubShotDec.value.trim() ?? "",
+              data: mJoinClubController.sJoinClubShotDec.value.trim(),
               onLinkTap: (url, _, __) {
                 if (url.toString().trim().isNotEmpty) {
                   // LauncherUtils().launchWebUrlInsideApp(
@@ -95,7 +95,7 @@ class PageOneScreen extends StatelessWidget {
                 margin: EdgeInsets.only(left: SizeConstants.s1 * 5),
                 child: Html(
                   shrinkWrap: true,
-                  data: mJoinClubController.sJoinClubAddress.value ?? "",
+                  data: mJoinClubController.sJoinClubAddress.value,
                   onLinkTap: (url, _, __) {
                     if (url.toString().trim().isNotEmpty) {
                       // LauncherUtils().launchWebUrlInsideApp(
@@ -189,10 +189,10 @@ class PageOneScreen extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: mJoinClubController.sJoinClubMembership.value.length,
+              itemCount: mJoinClubController.sJoinClubMembership.length,
               itemBuilder: (BuildContext context, int index) {
                 ClubsMembership mClubsMembership =
-                    mJoinClubController.sJoinClubMembership.value[index];
+                    mJoinClubController.sJoinClubMembership[index];
                 return GestureDetector(
                     onTap: () {
                       mJoinClubController.selectRadioButtonValue.value =

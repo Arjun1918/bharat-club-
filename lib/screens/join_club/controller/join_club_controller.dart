@@ -17,24 +17,12 @@ import '../../../data/mode/profile_response/profile_response.dart';
 import '../../../data/mode/registration/registration_response.dart';
 import '../../../data/remote/api_call/api_impl.dart';
 import '../../../data/remote/web_response.dart';
-import '../view/page_view/page_one_screen.dart';
-import '../view/page_view/page_four_screen.dart';
-import '../view/page_view/page_three_screen.dart';
-import '../view/page_view/page_two_screen.dart';
 import 'package:intl/intl.dart';
 
 class JoinClubController extends GetxController {
   var counter = 0.obs;
   var isJoinClub = false.obs;
   final pageController = PageController(initialPage: 0);
-
-  /// widget list
-  final List<Widget> bottomBarPages = [
-    PageOneScreen(),
-    PageTwoScreen(),
-    PageThreeScreen(),
-    PageFourScreen(),
-  ];
 
   @override
   void dispose() {
@@ -208,7 +196,7 @@ class JoinClubController extends GetxController {
         sJoinClubPhone.value =
             (mJoinClubResponse.data?.clubs?.first.phone ?? "");
 
-        sJoinClubMembership.value.addAll(
+        sJoinClubMembership.addAll(
           mJoinClubResponse.data?.clubsMembership ?? [],
         );
       }
