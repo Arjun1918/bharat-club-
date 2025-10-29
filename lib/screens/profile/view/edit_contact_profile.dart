@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
 import 'package:organization/lang/translation_service_key.dart';
 import 'package:organization/utils/app_util.dart';
 import 'package:organization/utils/app_util_constants.dart';
-import 'package:organization/utils/color_constants.dart';
 import '../controller/profile_controller.dart';
 
 class EditPersonOfContactScreen extends StatelessWidget {
@@ -21,7 +21,6 @@ class EditPersonOfContactScreen extends StatelessWidget {
     _initializeControllers();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const CustomAppBar(title: 'Person Of Contact'),
       body: GestureDetector(
         onTap: () => AppUtils.hideKeyboard(Get.context!),
         child: Container(
@@ -29,31 +28,40 @@ class EditPersonOfContactScreen extends StatelessWidget {
           height: 1.sh,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                ColorConstants.cAppColors.withOpacity(0.08),
+                AppColors.cAppColors,
                 Colors.grey.shade100,
-                Colors.grey.shade50,
-                ColorConstants.cAppColors.withOpacity(0.08),
+                Colors.grey.shade100,
+                AppColors.cAppColors,
               ],
             ),
           ),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 20.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _headerLogo(),
-                SizedBox(height: 16.h),
-                _pageTitle(),
-                SizedBox(height: 25.h),
-                _formContent(),
-                SizedBox(height: 30.h),
-                _updateButton(),
-              ],
-            ),
+          child: Column(
+            children: [
+              const CustomAppBar(title: 'Person Of Contact'),
+              SizedBox(height: 20.h),
+              _buildProfileHeader(),
+              SizedBox(height: 20.h),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _formContent(),
+                        SizedBox(height: 30.h),
+                        _updateButton(),
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -67,147 +75,262 @@ class EditPersonOfContactScreen extends StatelessWidget {
     controller.setValidator();
   }
 
-  Widget _headerLogo() {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-      shadowColor: ColorConstants.cAppColors.withOpacity(0.3),
-      child: ClipRRect(
+  Widget _buildProfileHeader() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 15.w),
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        child: Image.asset(
-          ImageAssetsConstants.goParkingLogoJpg,
-          width: 230.w,
-          height: 90.h,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
-  Widget _pageTitle() {
-    return Column(
-      children: [
-        Text(
-          "Edit Person Of Contact",
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-            color: ColorConstants.cAppColors,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          "Update your person of contact details",
-          style: TextStyle(fontSize: 14.sp, color: Colors.grey.shade600),
-        ),
-      ],
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.w),
+            decoration: BoxDecoration(
+              color: AppColors.cAppColors.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: Image.asset(
+                ImageAssetsConstants.goParkingLogoJpg,
+                height: 50.h,
+                fit: BoxFit.fitHeight,
+              ),
+            ),
+          ),
+          SizedBox(width: 15.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Person of Contact',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                SizedBox(height: 4.h),
+                Text(
+                  'Update contact person details',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _formContent() {
     return Obx(() {
-      return Card(
-        color: Colors.white,
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.r),
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        shadowColor: ColorConstants.cAppColors.withOpacity(0.25),
-        child: Padding(
-          padding: EdgeInsets.all(18.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _inputLabel("Name"),
-              SizedBox(height: 6.h),
-              TextInputWidget(
-                placeHolder: "Name",
-                controller: controller.mUserNameController.value,
-                errorText: controller.userNameValidator.isTrue
-                    ? "Please enter the name"
-                    : null,
-                textInputType: TextInputType.name,
-                hintText: sUserNameHint.tr,
-                prefixIcon: Icons.account_circle,
-                onFilteringTextInputFormatter: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp(AppUtilConstants.patternStringAndSpace),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.h),
+        padding: EdgeInsets.all(20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionTitle('Contact Information'),
+            SizedBox(height: 16.h),
 
-              _inputLabel("Email"),
-              SizedBox(height: 6.h),
-              TextInputWidget(
-                placeHolder: sEmail.tr,
-                controller: controller.mEmailController.value,
-                errorText: controller.emailValidator.isTrue
-                    ? controller.seEmailValidator.value
-                    : null,
-                textInputType: TextInputType.emailAddress,
-                hintText: sEmailHint.tr,
-                prefixIcon: Icons.email_rounded,
-              ),
-              SizedBox(height: 16.h),
+            /// Name
+            _buildInputField(
+              label: 'Name',
+              controller: controller.mUserNameController.value,
+              errorText: controller.userNameValidator.isTrue
+                  ? "Please enter the name"
+                  : null,
+              icon: Icons.person_outline,
+              hint: sUserNameHint.tr,
+              keyboardType: TextInputType.name,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(AppUtilConstants.patternStringAndSpace),
+                ),
+              ],
+            ),
+            SizedBox(height: 20.h),
 
-              _inputLabel("Phone Number"),
-              SizedBox(height: 6.h),
-              TextInputWidget(
-                placeHolder: sPhoneNumber.tr,
-                controller: controller.mPhoneNoController.value,
-                errorText: controller.phoneNumberValidator.isTrue
-                    ? controller.sePhoneNumberValidator.value
-                    : null,
-                textInputType: TextInputType.number,
-                hintText: sPhoneNumberHint.tr,
-                prefixIcon: Icons.phone_android_rounded,
-                onFilteringTextInputFormatter: [
-                  FilteringTextInputFormatter.allow(
-                    RegExp(AppUtilConstants.patternOnlyNumber),
-                  ),
-                ],
-                maxCharLength: 11,
-              ),
-            ],
-          ),
+            /// Email
+            _buildInputField(
+              label: 'Email',
+              controller: controller.mEmailController.value,
+              errorText: controller.emailValidator.isTrue
+                  ? controller.seEmailValidator.value
+                  : null,
+              icon: Icons.email_outlined,
+              hint: sEmailHint.tr,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            SizedBox(height: 20.h),
+
+            /// Phone Number
+            _buildInputField(
+              label: 'Phone Number',
+              controller: controller.mPhoneNoController.value,
+              errorText: controller.phoneNumberValidator.isTrue
+                  ? controller.sePhoneNumberValidator.value
+                  : null,
+              icon: Icons.phone_outlined,
+              hint: sPhoneNumberHint.tr,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(AppUtilConstants.patternOnlyNumber),
+                ),
+              ],
+              maxLength: 11,
+            ),
+          ],
         ),
       );
     });
   }
 
-  Widget _inputLabel(String label) {
-    return Text(
-      label,
-      style: TextStyle(
-        fontSize: 15.sp,
-        fontWeight: FontWeight.w600,
-        color: Colors.grey.shade700,
-      ),
+  Widget _buildSectionTitle(String title) {
+    return Row(
+      children: [
+        Container(
+          width: 4.w,
+          height: 20.h,
+          decoration: BoxDecoration(
+            color: AppColors.cAppColors,
+            borderRadius: BorderRadius.circular(2.r),
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey.shade800,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInputField({
+    required String label,
+    required TextEditingController controller,
+    required IconData icon,
+    required String hint,
+    required TextInputType keyboardType,
+    String? errorText,
+    List<TextInputFormatter>? inputFormatters,
+    int? maxLength,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: errorText != null
+                  ? Colors.red.shade300
+                  : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
+          child: TextInputWidget(
+            placeHolder: label,
+            controller: controller,
+            errorText: null,
+            textInputType: keyboardType,
+            hintText: hint,
+            showFloatingLabel: true,
+            prefixIcon: icon,
+            onFilteringTextInputFormatter: inputFormatters,
+            maxCharLength: maxLength,
+          ),
+        ),
+        if (errorText != null) ...[
+          SizedBox(height: 6.h),
+          Padding(
+            padding: EdgeInsets.only(left: 12.w),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 14.sp,
+                  color: Colors.red.shade600,
+                ),
+                SizedBox(width: 4.w),
+                Expanded(
+                  child: Text(
+                    errorText,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.red.shade600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 
   Widget _updateButton() {
     return SizedBox(
-      height: 55.h,
       width: double.infinity,
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.save_rounded, color: Colors.white),
-        label: Text(
-          "Update Profile",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
+      height: 56.h,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.cAppColors,
+          elevation: 2,
+          shadowColor: AppColors.cAppColors.withOpacity(0.4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
           ),
         ),
         onPressed: () => controller.isPersonOfContactCheck(),
-        style: ElevatedButton.styleFrom(
-          elevation: 4,
-          backgroundColor: ColorConstants.cAppColors,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.r),
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.check_circle_outline,
+              color: Colors.white,
+            ),
+            SizedBox(width: 8.w),
+            Text(
+              "Update Profile",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+              ),
+            ),
+          ],
         ),
       ),
     );

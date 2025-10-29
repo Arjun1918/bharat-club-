@@ -7,12 +7,13 @@ import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
 import 'package:organization/utils/app_util_constants.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../data/local/shared_prefs/shared_prefs.dart';
 import '../../../data/mode/cms_page/event_response.dart';
 import '../controller/event_details_one_controller.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
+
 
 class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
   final EventModule mEventModule;
@@ -36,7 +37,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
             borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
-                color: ColorConstants.cAppColorsBlue.withOpacity(0.08),
+                color: AppColors.cAppColorsBlue.withOpacity(0.08),
                 spreadRadius: 0,
                 blurRadius: 20,
                 offset: const Offset(0, 4),
@@ -65,7 +66,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
             Text(
               controller.mTitle.value,
               style: TextStyle(
-                color: ColorConstants.cAppColorsBlue,
+                color: AppColors.cAppColorsBlue,
                 fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
                 letterSpacing: -0.5,
@@ -78,7 +79,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
             Text(
               controller.mDescription.value,
               style: TextStyle(
-                color: ColorConstants.cAppColorsBlue,
+                color: AppColors.cAppColorsBlue,
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -93,13 +94,13 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    ColorConstants.cAppColorsBlue.withOpacity(0.1),
-                    ColorConstants.cAppColorsBlue.withOpacity(0.05),
+                    AppColors.cAppColorsBlue.withOpacity(0.1),
+                    AppColors.cAppColorsBlue.withOpacity(0.05),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(
-                  color: ColorConstants.cAppColorsBlue.withOpacity(0.2),
+                  color: AppColors.cAppColorsBlue.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -111,13 +112,13 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                       Icon(
                         Icons.calendar_today,
                         size: 18.sp,
-                        color: ColorConstants.cAppColorsBlue,
+                        color: AppColors.cAppColorsBlue,
                       ),
                       SizedBox(width: 8.w),
                       Text(
                         "Event Schedule",
                         style: TextStyle(
-                          color: ColorConstants.cAppColorsBlue,
+                          color: AppColors.cAppColorsBlue,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -143,7 +144,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                             Text(
                               controller.mStartDate.value,
                               style: TextStyle(
-                                color: ColorConstants.cAppColorsBlue,
+                                color: AppColors.cAppColorsBlue,
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -154,7 +155,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                       Container(
                         height: 40.h,
                         width: 1,
-                        color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+                        color: AppColors.cAppColorsBlue.withOpacity(0.3),
                       ),
                       SizedBox(width: 16.w),
                       Expanded(
@@ -173,7 +174,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                             Text(
                               controller.mEndDate.value,
                               style: TextStyle(
-                                color: ColorConstants.cAppColorsBlue,
+                                color: AppColors.cAppColorsBlue,
                                 fontSize: 14.sp,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -428,14 +429,14 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      ColorConstants.cAppColorsBlue,
-                      ColorConstants.cAppColorsBlue.withOpacity(0.8),
+                      AppColors.cAppColorsBlue,
+                      AppColors.cAppColorsBlue.withOpacity(0.8),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+                      color: AppColors.cAppColorsBlue.withOpacity(0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 6),
                     ),
@@ -472,16 +473,16 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: ColorConstants.cAppColorsBlue.withOpacity(0.1),
+            color: AppColors.cAppColorsBlue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8.r),
           ),
-          child: Icon(icon, size: 20.sp, color: ColorConstants.cAppColorsBlue),
+          child: Icon(icon, size: 20.sp, color: AppColors.cAppColorsBlue),
         ),
         SizedBox(width: 12.w),
         Text(
           title,
           style: TextStyle(
-            color: ColorConstants.cAppColorsBlue,
+            color: AppColors.cAppColorsBlue,
             fontSize: 18.sp,
             fontWeight: FontWeight.bold,
           ),
@@ -566,7 +567,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                       borderRadius: BorderRadius.circular(20.r),
                       boxShadow: [
                         BoxShadow(
-                          color: ColorConstants.cAppColorsBlue.withOpacity(
+                          color: AppColors.cAppColorsBlue.withOpacity(
                             0.15,
                           ),
                           blurRadius: 15,
@@ -635,7 +636,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                 height: 8.h,
                 decoration: BoxDecoration(
                   color: controller.currentIndex.value == index
-                      ? ColorConstants.cAppColorsBlue
+                      ? AppColors.cAppColorsBlue
                       : Colors.grey[300],
                   borderRadius: BorderRadius.circular(4.r),
                 ),

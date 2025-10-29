@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:focus_detector/focus_detector.dart';
-import 'package:get/get.dart';
-import 'package:organization/alert/app_alert.dart';
-import 'package:organization/app_theme/theme/app_theme.dart';
-import 'package:organization/common/widgets/appbar.dart';
-import 'package:organization/common/widgets/banner_card.dart';
-import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/screens/about_us/controller/about_us_controller.dart';
+import 'package:organization/common/widgets/banner_card.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/utils/message_constants.dart';
+import 'package:organization/common/widgets/appbar.dart';
+import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/utils/network_util.dart';
+import 'package:focus_detector/focus_detector.dart';
+import 'package:organization/alert/app_alert.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AboutUsScreen extends GetView<AboutUsController> {
   const AboutUsScreen({super.key});
@@ -34,7 +34,6 @@ class AboutUsScreen extends GetView<AboutUsController> {
           }
         },
         child: Obx(() {
-
           final aboutUs = controller.mAboutUsResponse.value;
 
           if (aboutUs == null || aboutUs.data == null) {
@@ -42,20 +41,15 @@ class AboutUsScreen extends GetView<AboutUsController> {
           }
 
           final content = aboutUs.data!.content ?? "";
-
-          // Split content into paragraphs
           List<String> paragraphs = _extractParagraphs(content);
 
           return ListView(
             padding: EdgeInsets.all(16),
             children: [
-              // Banner Card
               Obx(
                 () => BannerCard(bannerUrl: controller.aboutBannerImage.value),
               ),
               SizedBox(height: 20),
-
-              // Paragraphs as separate cards
               ...paragraphs
                   .map((paragraph) => _buildParagraphCard(paragraph))
                   .toList(),
@@ -98,15 +92,11 @@ class AboutUsScreen extends GetView<AboutUsController> {
 
   List<String> _extractParagraphs(String html) {
     List<String> paragraphs = [];
-
-    // Extract content between <p> tags
     RegExp pTagRegex = RegExp(r'<p[^>]*>(.*?)</p>', dotAll: true);
     Iterable<RegExpMatch> matches = pTagRegex.allMatches(html);
 
     for (var match in matches) {
       String content = match.group(1) ?? '';
-
-      // Clean HTML tags and entities
       content = content
           .replaceAll(RegExp(r'<[^>]*>'), '')
           .replaceAll('&rsquo;', "'")
@@ -121,8 +111,6 @@ class AboutUsScreen extends GetView<AboutUsController> {
         paragraphs.add(content);
       }
     }
-
-    // If no paragraphs found, return whole content as one
     if (paragraphs.isEmpty) {
       String cleanText = html
           .replaceAll(RegExp(r'<[^>]*>'), ' ')

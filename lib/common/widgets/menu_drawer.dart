@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/common/controller/side_menu_contoller.dart';
 import 'package:organization/common/widgets/snackbar.dart';
 import 'package:organization/data/local/shared_prefs/shared_prefs.dart';
 
@@ -11,12 +12,14 @@ class MenuItem {
   final IconData icon;
   final String? route;
   final Color? iconColor;
+  final bool adminOnly;
 
   MenuItem({
     required this.title,
     required this.icon,
     this.route,
     this.iconColor,
+    this.adminOnly = false,
   });
 }
 
@@ -37,6 +40,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
     with TickerProviderStateMixin {
   late AnimationController _logoAnimationController;
   late Animation<double> _logoAnimation;
+  late CustomMenuDrawerController controller;
 
   String currentLogo = 'assets/images/logo.png';
 
@@ -66,6 +70,13 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
           icon: Icons.event_rounded,
           route: AppRoutes.events,
           iconColor: AppColors.white,
+        ),
+        MenuItem(
+          title: 'QR Scanner',
+          icon: Icons.qr_code_scanner,
+          route: AppRoutes.qrCodeScanScreen,
+          iconColor: AppColors.white,
+          adminOnly: true,
         ),
         MenuItem(
           title: 'Gallery',
@@ -98,6 +109,17 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
   @override
   void initState() {
     super.initState();
+    print('CustomMenuDrawer initState called');
+    
+    // Check if controller exists, if not create it
+    if (Get.isRegistered<CustomMenuDrawerController>()) {
+      controller = Get.find<CustomMenuDrawerController>();
+      print('Controller found');
+    } else {
+      controller = Get.put(CustomMenuDrawerController());
+      print('Controller created');
+    }
+    
     _logoAnimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -115,6 +137,13 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
   void dispose() {
     _logoAnimationController.dispose();
     super.dispose();
+  }
+
+  // Check if the current route matches the menu item route
+  bool _isActiveRoute(String? route) {
+    if (route == null) return false;
+    String currentRoute = Get.currentRoute;
+    return currentRoute == route;
   }
 
   @override
@@ -241,7 +270,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                         // If user pressed "Logout"
                         if (shouldLogout == true) {
                           await SharedPrefs().sharedPreferencesInstance();
-                          await SharedPrefs().logout(); // or .logout()
+                          await SharedPrefs().logout();
 
                           context.showSuccessSnackbar(
                             "Logged out successfully",
@@ -250,7 +279,6 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                           Get.offAllNamed(AppRoutes.loginScreen);
                         }
                       },
-
                       borderRadius: BorderRadius.circular(12.r),
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -286,56 +314,90 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
   }
 
   Widget _buildMenuItem(MenuItem item) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.h),
-      child: Material(
-        color: AppColors.transparent,
-        child: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-            if (item.route != null) {
-              Get.toNamed(item.route!);
-            }
-            FocusScope.of(context).unfocus();
-          },
-          borderRadius: BorderRadius.circular(10.r),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(6.w),
-                  decoration: BoxDecoration(
-                    color:
-                        item.iconColor?.withValues(alpha: 0.2) ??
-                        Colors.grey.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(6.r),
-                  ),
-                  child: Icon(
-                    item.icon,
-                    color: item.iconColor ?? Colors.grey.shade400,
-                    size: 20.sp,
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Text(
-                    item.title,
-                    style: TextStyle(
-                      color: Colors.grey.shade300,
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
+    // CRITICAL FIX: Check route OUTSIDE Obx - Get.currentRoute is NOT observable
+    final isActive = _isActiveRoute(item.route);
+    
+    // Only wrap the admin check in Obx since adminStatus is the only observable
+    return Obx(() {
+      // Show loading or skip admin items while loading
+      if (controller.isLoading.value && item.adminOnly) {
+        return const SizedBox.shrink();
+      }
+      
+      // Skip admin-only items if user is not admin
+      if (item.adminOnly && !controller.adminStatus.value) {
+        return const SizedBox.shrink();
+      }
+
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.h),
+        child: Material(
+          color: AppColors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              if (item.route != null) {
+                Get.toNamed(item.route!);
+              }
+              FocusScope.of(context).unfocus();
+            },
+            borderRadius: BorderRadius.circular(10.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: isActive
+                    ? AppColors.white.withValues(alpha: 0.3)
+                    : AppColors.transparent,
+                borderRadius: BorderRadius.circular(10.r),
+                border: isActive
+                    ? Border.all(
+                        color: AppColors.primaryGreen.withValues(alpha: 0.5),
+                        width: 1.5,
+                      )
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(6.w),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? Colors.white.withValues(alpha: 0.4)
+                          : item.iconColor?.withValues(alpha: 0.2) ??
+                                Colors.grey.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    child: Icon(
+                      item.icon,
+                      color: isActive
+                          ? AppColors.white
+                          : item.iconColor ?? Colors.grey.shade400,
+                      size: 20.sp,
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Text(
+                      item.title,
+                      style: TextStyle(
+                        color: isActive ? AppColors.white : Colors.grey.shade300,
+                        fontSize: 18.sp,
+                        fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  if (isActive)
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: AppColors.white,
+                      size: 14.sp,
+                    ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

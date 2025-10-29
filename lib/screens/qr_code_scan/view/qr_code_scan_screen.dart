@@ -17,24 +17,29 @@ class ScanQrCodeScreen extends StatefulWidget {
 
 class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
   String searchKeyword = "";
-
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  bool isProcessing = false;
+  bool isCameraInitialized = false; // Track camera initialization
 
   @override
   void initState() {
     super.initState();
-    Get.lazyPut(() => QrCodeGenerateController());
+    if (!Get.isRegistered<QrCodeGenerateController>()) {
+      Get.put(QrCodeGenerateController());
+    }
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    if (Platform.isAndroid) {
-      controller?.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller?.resumeCamera();
+    if (isCameraInitialized && controller != null) {
+      if (Platform.isAndroid) {
+        controller?.pauseCamera();
+      } else if (Platform.isIOS) {
+        controller?.resumeCamera();
+      }
     }
   }
 
@@ -42,6 +47,7 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        _cleanupCamera();
         Get.back(result: "");
         return false;
       },
@@ -53,39 +59,45 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
   }
 
   Widget _buildTrainerListView() {
-    final qrController = Get.find<QrCodeGenerateController>();
     return FocusDetector(
-      onVisibilityGained: () async {
-        await controller?.resumeCamera();
+      onVisibilityGained: () {
+        isProcessing = false;
+        if (isCameraInitialized && controller != null) {
+          controller?.resumeCamera();
+        }
       },
       onVisibilityLost: () {
-        controller?.pauseCamera();
+        if (isCameraInitialized && controller != null) {
+          controller?.pauseCamera();
+        }
       },
-      child: Obx(
-        () => Container(
-          color: AppColors.primaryGreen, // Background color set to green
-          child: qrController.isLoading.value
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 8.0,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      child: GetBuilder<QrCodeGenerateController>(
+        builder: (qrController) {
+          return Container(
+            color: AppColors.primaryGreen,
+            child: qrController.isLoading.value
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 8.0,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: _buildQrView(context)),
+                      SizedBox(height: 0.20.sw),
+                    ],
                   ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: _buildQrView(context)),
-                    SizedBox(height: 0.20.sw), // replaced SizeConstants.width * 0.20
-                  ],
-                ),
-        ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildQrView(BuildContext context) {
-    var scanArea = 0.65.sw; // replaced SizeConstants.width * 0.65
+    var scanArea = 0.65.sw;
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -103,26 +115,59 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
+      isCameraInitialized = true; // Mark camera as initialized
     });
-    controller.scannedDataStream.listen((scanData) async {
-      await controller.pauseCamera();
 
-      final qrController = Get.find<QrCodeGenerateController>();
-      qrController.verifyQrCode(scanData.code ?? "", controller, context);
+    controller.scannedDataStream.listen((scanData) async {
+      if (isProcessing) return;
+
+      if (scanData.code != null && scanData.code!.isNotEmpty) {
+        isProcessing = true;
+
+        try {
+          await controller.pauseCamera();
+
+          if (Get.isRegistered<QrCodeGenerateController>()) {
+            final qrController = Get.find<QrCodeGenerateController>();
+            await qrController.verifyQrCode(
+              scanData.code ?? "",
+              controller,
+              context,
+            );
+          }
+        } catch (e) {
+          print('Error processing QR code: $e');
+          isProcessing = false;
+          await controller.resumeCamera();
+        }
+      }
     });
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No permission')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Camera permission denied')));
+    }
+  }
+
+  void _cleanupCamera() {
+    try {
+      // Only attempt to stop if camera was initialized
+      if (isCameraInitialized && controller != null) {
+        controller?.stopCamera();
+      }
+      controller = null;
+      isCameraInitialized = false;
+    } catch (e) {
+      print('Error cleaning up camera: $e');
     }
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    _cleanupCamera();
     super.dispose();
   }
 }

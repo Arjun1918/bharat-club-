@@ -9,7 +9,6 @@ import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/screens/membership/controller/membership_controller.dart';
-import 'package:organization/utils/color_constants.dart';
 
 class MembershipDetailsScreen extends GetView<MembershipDetailsController> {
   const MembershipDetailsScreen({super.key});
@@ -53,7 +52,7 @@ class MembershipDetailsScreen extends GetView<MembershipDetailsController> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
-            colors: [AppColors.indiaorange, AppColors.tertiaryGreen],
+            colors: [AppColors.indiaOrange, AppColors.tertiaryGreen],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -102,7 +101,7 @@ class MembershipDetailsScreen extends GetView<MembershipDetailsController> {
         borderRadius: BorderRadius.circular(16.r),
         gradient: const LinearGradient(
           colors: [
-            AppColors.indiaorange,
+            AppColors.indiaOrange,
             AppColors.white,
             AppColors.secondaryGreen,
           ],
@@ -164,12 +163,12 @@ class MembershipDetailsScreen extends GetView<MembershipDetailsController> {
     IconData icon,
     String label,
     String value, {
-    Color valueColor = AppColors.indiaorange,
+    Color valueColor = AppColors.indiaOrange,
     bool showStatusContainer = false, // add flag for conditional styling
   }) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.indiaorange, size: 22.sp),
+        Icon(icon, color: AppColors.indiaOrange, size: 22.sp),
         SizedBox(width: 12.w),
         Expanded(
           child: Text(
@@ -231,7 +230,7 @@ class MembershipDetailsScreen extends GetView<MembershipDetailsController> {
             padding: EdgeInsets.all(20.r),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [ColorConstants.cAppColors, AppColors.white],
+                colors: [AppColors.cAppColors, AppColors.white],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

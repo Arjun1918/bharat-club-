@@ -10,15 +10,17 @@ import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/lang/translation_service_key.dart';
-import 'package:organization/utils/color_constants.dart';
 import '../controller/profile_controller.dart';
+
 
 class ProfileScreen extends GetView<ProfileController> {
   ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => ProfileController());
+    // CHANGED: Use Get.put() instead of Get.lazyPut() to ensure controller is immediately available
+    Get.put(ProfileController());
+    
     return FocusDetector(
       onVisibilityGained: () {
         controller.getProfile();
@@ -63,7 +65,7 @@ class ProfileScreen extends GetView<ProfileController> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: ColorConstants.cAppColors.withOpacity(0.3),
+                              color: AppColors.cAppColors.withOpacity(0.3),
                               width: 3,
                             ),
                           ),
@@ -96,11 +98,11 @@ class ProfileScreen extends GetView<ProfileController> {
                             height: 36.w,
                             width: 36.w,
                             decoration: BoxDecoration(
-                              color: ColorConstants.cAppColors,
+                              color: AppColors.cAppColors,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: ColorConstants.cAppColors.withOpacity(
+                                  color: AppColors.cAppColors.withOpacity(
                                     0.3,
                                   ),
                                   blurRadius: 8,
@@ -220,7 +222,6 @@ class ProfileScreen extends GetView<ProfileController> {
       ),
       child: Column(
         children: [
-          // Section Header
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Row(
@@ -229,7 +230,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   child: Text(
                     "Membership Type",
                     style: TextStyle(
-                      fontSize: 17.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,
                     ),
@@ -241,7 +242,6 @@ class ProfileScreen extends GetView<ProfileController> {
 
           Divider(height: 1, thickness: 1, color: Colors.grey[100]),
 
-          // Section Content
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -287,7 +287,6 @@ class ProfileScreen extends GetView<ProfileController> {
       ),
       child: Column(
         children: [
-          // Section Header
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Row(
@@ -296,7 +295,7 @@ class ProfileScreen extends GetView<ProfileController> {
                   child: Text(
                     "Basic Details",
                     style: TextStyle(
-                      fontSize: 17.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.black87,
                     ),
@@ -316,7 +315,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorConstants.cAppColors.withOpacity(
+                      backgroundColor: AppColors.cAppColors.withOpacity(
                         0.1,
                       ),
                       shape: RoundedRectangleBorder(
@@ -334,7 +333,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         Icon(
                           Icons.edit_outlined,
                           size: 16.sp,
-                          color: ColorConstants.cAppColors,
+                          color: AppColors.cAppColors,
                         ),
                         SizedBox(width: 4.w),
                         Text(
@@ -342,7 +341,7 @@ class ProfileScreen extends GetView<ProfileController> {
                           style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
-                            color: ColorConstants.cAppColors,
+                            color: AppColors.cAppColors,
                           ),
                         ),
                       ],
@@ -396,7 +395,6 @@ Widget personOfContact() {
     ),
     child: Column(
       children: [
-        // Section Header
         Padding(
           padding: EdgeInsets.all(16.w),
           child: Row(
@@ -405,7 +403,7 @@ Widget personOfContact() {
                 child: Text(
                   "Person of Contact",
                   style: TextStyle(
-                    fontSize: 17.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
                   ),
@@ -415,6 +413,7 @@ Widget personOfContact() {
                 height: 35.h,
                 child: ElevatedButton(
                   onPressed: () {
+                    // OPTION 1: Pass controller tag to ensure it can be found
                     Get.toNamed(
                       AppRoutes.editPersonOfContactScreen,
                       arguments: {
@@ -429,7 +428,7 @@ Widget personOfContact() {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstants.cAppColors.withOpacity(0.1),
+                    backgroundColor: AppColors.cAppColors.withOpacity(0.1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -445,7 +444,7 @@ Widget personOfContact() {
                       Icon(
                         Icons.edit_outlined,
                         size: 16.sp,
-                        color: ColorConstants.cAppColors,
+                        color: AppColors.cAppColors,
                       ),
                       SizedBox(width: 4.w),
                       Text(
@@ -453,7 +452,7 @@ Widget personOfContact() {
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
-                          color: ColorConstants.cAppColors,
+                          color: AppColors.cAppColors,
                         ),
                       ),
                     ],
@@ -466,7 +465,6 @@ Widget personOfContact() {
 
         Divider(height: 1, thickness: 1, color: Colors.grey[100]),
 
-        // Section Content
         Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -520,6 +518,7 @@ Widget personOfContact() {
     ),
   );
 }
+
 Widget profileInformation() {
   return Container(
     decoration: BoxDecoration(
@@ -543,7 +542,7 @@ Widget profileInformation() {
                 child: Text(
                   "Professional Information",
                   style: TextStyle(
-                    fontSize: 17.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
                   ),
@@ -565,7 +564,7 @@ Widget profileInformation() {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstants.cAppColors.withOpacity(0.1),
+                    backgroundColor: AppColors.cAppColors.withOpacity(0.1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.r),
                     ),
@@ -581,7 +580,7 @@ Widget profileInformation() {
                       Icon(
                         Icons.edit_outlined,
                         size: 16.sp,
-                        color: ColorConstants.cAppColors,
+                        color: AppColors.cAppColors,
                       ),
                       SizedBox(width: 4.w),
                       Text(
@@ -589,7 +588,7 @@ Widget profileInformation() {
                         style: TextStyle(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
-                          color: ColorConstants.cAppColors,
+                          color: AppColors.cAppColors,
                         ),
                       ),
                     ],
@@ -602,7 +601,6 @@ Widget profileInformation() {
 
         Divider(height: 1, thickness: 1, color: Colors.grey[100]),
 
-        // Section Content
         Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -640,6 +638,7 @@ Widget profileInformation() {
     ),
   );
 }
+
   Widget _buildInfoRow(
     IconData icon,
     String label,
@@ -654,10 +653,10 @@ Widget profileInformation() {
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: ColorConstants.cAppColors.withOpacity(0.08),
+              color: AppColors.cAppColors.withOpacity(0.08),
               borderRadius: BorderRadius.circular(10.r),
             ),
-            child: Icon(icon, size: 20.sp, color: ColorConstants.cAppColors),
+            child: Icon(icon, size: 20.sp, color: AppColors.cAppColors),
           ),
           SizedBox(width: 12.w),
           Expanded(
@@ -676,7 +675,7 @@ Widget profileInformation() {
                 Text(
                   value.isEmpty ? "--" : value,
                   style: TextStyle(
-                    fontSize: 15.sp,
+                    fontSize: 17.sp,
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
                   ),

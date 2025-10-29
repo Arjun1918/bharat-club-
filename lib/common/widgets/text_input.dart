@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/utils/app_text.dart';
-import 'package:organization/utils/color_constants.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
+
 
 class TextInputWidget extends StatefulWidget {
   final String placeHolder;
@@ -86,7 +87,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             BoxShadow(
               color: widget.errorText != null 
                   ? Colors.red.withOpacity(0.2)
-                  : ColorConstants.cAppColors.withOpacity(0.15),
+                  : AppColors.cAppColors.withOpacity(0.15),
               blurRadius: 8,
               offset: const Offset(0, 3),
             )
@@ -101,7 +102,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
       child: Material(
         elevation: _isFocused ? 2 : 0,
         borderRadius: BorderRadius.circular(12.r),
-        shadowColor: ColorConstants.cAppColors.withOpacity(0.2),
+        shadowColor: AppColors.cAppColors.withOpacity(0.2),
         child: TextField(
           focusNode: _focusNode,
           onChanged: (value) {
@@ -124,7 +125,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
           obscureText: widget.hidePassword ?? false,
           inputFormatters: widget.onFilteringTextInputFormatter ?? <TextInputFormatter>[],
           style: getTextMedium(
-            colors: ColorConstants.cAppColors,
+            colors: AppColors.cAppColors,
             size: 16.sp,
           ),
           textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
@@ -145,13 +146,13 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             ),
             labelStyle: getTextRegular(
               colors: _isFocused 
-                  ? ColorConstants.cAppColors 
+                  ? AppColors.cAppColors 
                   : Colors.grey.shade600,
               size: 15.sp,
             ),
             floatingLabelStyle: getTextMedium(
               colors: _isFocused 
-                  ? ColorConstants.cAppColors 
+                  ? AppColors.cAppColors 
                   : Colors.grey.shade600,
               size: 14.sp,
             ),
@@ -163,7 +164,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                       widget.prefixIcon,
                       size: 22.sp,
                       color: _isFocused 
-                          ? ColorConstants.cAppColors 
+                          ? AppColors.cAppColors 
                           : Colors.grey.shade500,
                     ),
                   ),
@@ -181,7 +182,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                         widget.suffixIcon,
                         size: 22.sp,
                         color: _isFocused 
-                            ? ColorConstants.cAppColors 
+                            ? AppColors.cAppColors 
                             : Colors.grey.shade600,
                       ),
                     ),
@@ -196,7 +197,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(
-                color: widget.borderColor ?? ColorConstants.cAppColors,
+                color: widget.borderColor ?? AppColors.cAppColors,
                 width: 2.5.w,
               ),
             ),

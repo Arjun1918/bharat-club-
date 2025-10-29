@@ -3,6 +3,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/data/mode/cms_page/event_response.dart';
 import 'package:organization/data/mode/event_qr_scan/qr_details_request.dart';
+import 'package:organization/data/mode/event_qr_scan/qr_details_response.dart';
 import 'package:organization/screens/about_us/view/about_us_screen.dart';
 import 'package:organization/screens/agree_page/view/agree_page.dart';
 import 'package:organization/screens/contact_us/view/contact_us.dart';
@@ -19,6 +20,8 @@ import 'package:organization/screens/profile/view/edit_contact_profile.dart';
 import 'package:organization/screens/profile/view/edit_information.dart';
 import 'package:organization/screens/profile/view/profile_screen.dart';
 import 'package:organization/screens/qr_code_scan/view/qr_code_generate.dart';
+import 'package:organization/screens/qr_code_scan/view/qr_code_scan_screen.dart';
+import 'package:organization/screens/qr_code_scan/view/qr_scan_success_screen.dart';
 import 'package:organization/screens/splash_screen/view/splash_screen.dart';
 
 class AppPages {
@@ -70,9 +73,22 @@ class AppPages {
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
+      name: AppRoutes.qrCodeScanScreen,
+      page: () => ScanQrCodeScreen(),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.qrSuccessScreen,
+      page: () => QrScanSuccessScreen(
+        mqQrDetailResponse: Get.arguments as QrDetailsResponseDetails,
+      ),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
       name: AppRoutes.eventDetailOneScreen,
       page: () =>
           EventDetailsOneScreen(mEventModule: Get.arguments as EventModule),
+      transition: Transition.rightToLeftWithFade,
     ),
 
     GetPage(

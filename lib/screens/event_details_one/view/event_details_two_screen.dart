@@ -6,13 +6,12 @@ import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
-import 'package:organization/screens/join_club/view/page_view/page_four_screen.dart';
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util_constants.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../data/mode/cms_page/event_response.dart';
 import '../controller/event_details_one_controller.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 
 class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
   final EventModule mEventModule;
@@ -67,12 +66,12 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: ColorConstants.cAppColorsBlue.withOpacity(0.1),
+                  color: AppColors.cAppColorsBlue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
                   Icons.event,
-                  color: ColorConstants.cAppColorsBlue,
+                  color: AppColors.cAppColorsBlue,
                   size: 20.sp,
                 ),
               ),
@@ -81,7 +80,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 child: Text(
                   controller.mTitle.value,
                   style: getTextSemiBold(
-                    colors: ColorConstants.cAppColorsBlue,
+                    colors: AppColors.cAppColorsBlue,
                     size: 18.sp,
                   ),
                 ),
@@ -133,10 +132,10 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                     child: Container(
                       padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
-                        color: ColorConstants.cAppColorsBlue.withOpacity(0.05),
+                        color: AppColors.cAppColorsBlue.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(10.r),
                         border: Border.all(
-                          color: ColorConstants.cAppColorsBlue.withOpacity(0.2),
+                          color: AppColors.cAppColorsBlue.withOpacity(0.2),
                           width: 1,
                         ),
                       ),
@@ -147,7 +146,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                             onChanged: (value) {
                               controller.isSubscriptionRenewalCheck(value!);
                             },
-                            activeColor: ColorConstants.cAppColorsBlue,
+                            activeColor: AppColors.cAppColorsBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(4.r),
                             ),
@@ -205,7 +204,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 18.sp, color: ColorConstants.cAppColorsBlue),
+            Icon(icon, size: 18.sp, color: AppColors.cAppColorsBlue),
             SizedBox(width: 8.w),
             Text(
               label,
@@ -249,12 +248,12 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: ColorConstants.cAppColorsBlue.withOpacity(0.15),
+          color: AppColors.cAppColorsBlue.withOpacity(0.15),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: ColorConstants.cAppColorsBlue.withOpacity(0.08),
+            color: AppColors.cAppColorsBlue.withOpacity(0.08),
             blurRadius: 12,
             spreadRadius: 0,
             offset: Offset(0, 4),
@@ -269,7 +268,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: ColorConstants.cAppColorsBlue,
+                  color: AppColors.cAppColorsBlue,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(icon, color: Colors.white, size: 20.sp),
@@ -278,7 +277,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
               Text(
                 title,
                 style: getTextSemiBold(
-                  colors: ColorConstants.cAppColorsBlue,
+                  colors: AppColors.cAppColorsBlue,
                   size: 17.sp,
                 ),
               ),
@@ -315,10 +314,10 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 margin: EdgeInsets.only(bottom: 12.h),
                 padding: EdgeInsets.all(14.w),
                 decoration: BoxDecoration(
-                  color: ColorConstants.cAppColorsBlue.withOpacity(0.05),
+                  color: AppColors.cAppColorsBlue.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(10.r),
                   border: Border.all(
-                    color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+                    color: AppColors.cAppColorsBlue.withOpacity(0.3),
                   ),
                 ),
                 child: Row(
@@ -326,12 +325,12 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                     Container(
                       padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
-                        color: ColorConstants.cAppColorsBlue.withOpacity(0.1),
+                        color: AppColors.cAppColorsBlue.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Icon(
                         Icons.description,
-                        color: ColorConstants.cAppColorsBlue,
+                        color: AppColors.cAppColorsBlue,
                         size: 20.sp,
                       ),
                     ),
@@ -364,11 +363,11 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 16.h),
                 decoration: BoxDecoration(
-                  color: ColorConstants.cAppColorsBlue,
+                  color: AppColors.cAppColorsBlue,
                   borderRadius: BorderRadius.circular(10.r),
                   boxShadow: [
                     BoxShadow(
-                      color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+                      color: AppColors.cAppColorsBlue.withOpacity(0.3),
                       blurRadius: 8,
                       spreadRadius: 0,
                       offset: Offset(0, 4),
@@ -406,8 +405,8 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              ColorConstants.cAppColorsBlue,
-              ColorConstants.cAppColorsBlue.withOpacity(0.8),
+              AppColors.cAppColorsBlue,
+              AppColors.cAppColorsBlue.withOpacity(0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -415,7 +414,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: ColorConstants.cAppColorsBlue.withOpacity(0.3),
+              color: AppColors.cAppColorsBlue.withOpacity(0.3),
               blurRadius: 12,
               spreadRadius: 0,
               offset: Offset(0, 6),
@@ -471,13 +470,13 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
         borderRadius: BorderRadius.circular(12.r),
         gradient: LinearGradient(
           colors: [
-            ColorConstants.cAppColors,
-            ColorConstants.cAppColors.withOpacity(0.85),
+            AppColors.cAppColors,
+            AppColors.cAppColors.withOpacity(0.85),
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: ColorConstants.cAppColors.withOpacity(0.4),
+            color: AppColors.cAppColors.withOpacity(0.4),
             blurRadius: 12,
             spreadRadius: 0,
             offset: Offset(0, 6),
@@ -521,12 +520,12 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: ColorConstants.cAppColorsBlue.withOpacity(0.15),
+            color: AppColors.cAppColorsBlue.withOpacity(0.15),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: ColorConstants.cAppColorsBlue.withOpacity(0.08),
+              color: AppColors.cAppColorsBlue.withOpacity(0.08),
               blurRadius: 12,
               spreadRadius: 0,
               offset: Offset(0, 4),
@@ -541,7 +540,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 Container(
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
-                    color: ColorConstants.cAppColorsBlue,
+                    color: AppColors.cAppColorsBlue,
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Icon(
@@ -554,7 +553,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 Text(
                   "Payment Summary",
                   style: getTextBold(
-                    colors: ColorConstants.cAppColorsBlue,
+                    colors: AppColors.cAppColorsBlue,
                     size: 19.sp,
                   ),
                 ),
@@ -608,13 +607,13 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
             ],
 
             SizedBox(height: 12.h),
-            Divider(color: ColorConstants.cAppColorsBlue.withOpacity(0.3), thickness: 2),
+            Divider(color: AppColors.cAppColorsBlue.withOpacity(0.3), thickness: 2),
             SizedBox(height: 8.h),
 
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: ColorConstants.cAppColorsBlue.withOpacity(0.05),
+                color: AppColors.cAppColorsBlue.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Row(
@@ -623,14 +622,14 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                   Text(
                     "Total Amount:",
                     style: getTextBold(
-                      colors: ColorConstants.cAppColorsBlue,
+                      colors: AppColors.cAppColorsBlue,
                       size: 18.sp,
                     ),
                   ),
                   Text(
                     "RM ${controller.totalPaymentAmount.value.toStringAsFixed(2)}",
                     style: getTextBold(
-                      colors: ColorConstants.cAppColorsBlue,
+                      colors: AppColors.cAppColorsBlue,
                       size: 20.sp,
                     ),
                   ),
@@ -661,7 +660,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 ? "No Cost"
                 : "RM ${double.parse(amount).toStringAsFixed(2)}",
             style: getTextSemiBold(
-              colors: ColorConstants.cAppColorsBlue,
+              colors: AppColors.cAppColorsBlue,
               size: 14.sp,
             ),
           ),

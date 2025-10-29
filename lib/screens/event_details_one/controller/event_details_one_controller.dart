@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/common/constant/web_constant.dart';
@@ -16,16 +12,12 @@ import 'package:organization/utils/network_util.dart';
 
 import '../../../alert/app_alert.dart';
 import '../../../data/local/shared_prefs/shared_prefs.dart';
-import '../../../data/mode/cms_page/cms_page_request.dart';
 import '../../../data/mode/cms_page/event_response.dart';
 import '../../../data/mode/event_details_model/event_details_response_model.dart';
-import '../../../data/mode/event_model/event_apply_response.dart';
 import '../../../data/mode/event_model/event_payment_submit_request.dart';
-import '../../../data/mode/event_model/event_submit_request.dart';
 import '../../../data/mode/event_one_model/participant_submit_request.dart';
 import '../../../data/mode/event_one_model/participant_submit_response.dart';
 import '../../../data/mode/event_qr_scan/qr_details_request.dart';
-import '../../../data/mode/event_qr_scan/qr_details_response.dart';
 import '../../../data/mode/membership_type/membership_type_response.dart';
 import '../../../data/mode/profile_pic/profile_pic_response.dart';
 import '../../../data/mode/registration/registration_response.dart';
@@ -33,7 +25,6 @@ import '../../../data/mode/sponsor_event/sponsor_event_attach_request.dart';
 import '../../../data/mode/sponsor_event/sponsor_event_attach_response.dart';
 import '../../../data/remote/api_call/api_impl.dart';
 import '../../../data/remote/web_response.dart';
-import '../../qr_code_scan/view/qr_code_generate.dart';
 
 class EventDetailsOneController extends GetxController {
   final EventModule mEventModule;
@@ -41,9 +32,7 @@ class EventDetailsOneController extends GetxController {
   EventDetailsOneController(this.mEventModule) {
     _initializeUserDetails();
 
-    //  _checkEventAppliedStatus();
     mNumberOfAdultsController.value.text = "2";
-    //  getEventDetailsApi();
     _initializeEventDetails();
 
     fetchSponsorDataApi();
@@ -144,61 +133,6 @@ class EventDetailsOneController extends GetxController {
   var emailValidator = false.obs;
   RxString showPaymentMessage = ''.obs;
 
-  _checkEventAppliedStatus() {
-    NetworkUtils().checkInternetConnection().then((isInternetAvailable) async {
-      if (isInternetAvailable) {
-        QrDetailsRequest mQrDetailsRequest = QrDetailsRequest(
-          eventId: (mEventModule.id ?? 0).toString(),
-          membershipId: mUserMembershipType.value,
-        );
-
-        WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
-            .postQrDetails(mQrDetailsRequest);
-
-        if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
-          QrDetailsResponse mQrDetailsResponse = mWebResponseSuccess.data;
-          if (mQrDetailsResponse.statusCode == WebConstants.statusCode200) {
-            bool isStatusPresent = false;
-
-            if (mQrDetailsResponse.data?.response?.status != null) {
-              isStatusPresent = mQrDetailsResponse.data!.response!.status == 1;
-            }
-            if (isStatusPresent) {
-              QrDetailsRequest mQrDetails = QrDetailsRequest(
-                eventId: mEventModule.id.toString(),
-                membershipId: mUserMembershipID.value,
-              );
-              Get.delete<EventDetailsOneController>();
-              Get.offAllNamed(AppRoutes.qrScreen, arguments: mQrDetails);
-              // Get.toNamed(RouteConstants.rQrScanSuccessScreen);
-            } else {
-              AppAlert.showSnackBar(
-                Get.context!,
-                "Status is not present or is not 1.",
-              );
-            }
-
-            // if (mQrDetailsResponse != null &&
-            //     mQrDetailsResponse.response != null &&
-            //     mQrDetailsResponse["data"]["response"].containsKey("status")) {
-            //   isStatusPresent = true;
-            // }
-          } else {
-            AppAlert.showSnackBar(
-              Get.context!,
-              mQrDetailsResponse.statusMessage ?? "",
-            );
-          }
-        }
-      } else {
-        AppAlert.showSnackBar(
-          Get.context!,
-          MessageConstants.noInternetConnection,
-        );
-      }
-    });
-  }
-
   void _initializeUserDetails() async {
     try {
       RegistrationUser mRegistrationUser = await SharedPrefs().getUserDetails();
@@ -282,7 +216,7 @@ class EventDetailsOneController extends GetxController {
           } else {
             AppAlert.showSnackBar(
               Get.context!,
-              mSponsorEventAttachmentResponse.statusMessage ?? "",
+              mSponsorEventAttachmentResponse.statusMessage,
             );
           }
         } else {
@@ -346,7 +280,7 @@ class EventDetailsOneController extends GetxController {
   }
 
   void isSubscriptionRenewalCheck(bool value) {
-    isSubscriptionRenewalChecked.value = value!;
+    isSubscriptionRenewalChecked.value = value;
     calculateTotalPaymentAmount();
   }
 
@@ -391,55 +325,41 @@ class EventDetailsOneController extends GetxController {
   }
 
   void _initializeEventDetails() {
-    if (mEventModule != null) {
-      mTitle.value = mEventModule.title ?? '';
-      mDescription.value = mEventModule.description ?? '';
+    mTitle.value = mEventModule.title ?? '';
+    mDescription.value = mEventModule.description ?? '';
 
-      DateTime parsedstartDate = DateTime.parse(mEventModule.startDate ?? '');
-      String formattedstartDate = DateFormat(
-        'dd/MM/yyyy',
-      ).format(parsedstartDate);
-      mStartDate.value = formattedstartDate;
-      // mStartDate.value = mEventModule.startDate ?? '';
+    DateTime parsedstartDate = DateTime.parse(mEventModule.startDate ?? '');
+    String formattedstartDate = DateFormat(
+      'dd/MM/yyyy',
+    ).format(parsedstartDate);
+    mStartDate.value = formattedstartDate;
+    // mStartDate.value = mEventModule.startDate ?? '';
 
-      DateTime parsedendDate = DateTime.parse(mEventModule.startDate ?? '');
-      String formattedendDate = DateFormat('dd/MM/yyyy').format(parsedendDate);
-      mEndDate.value = formattedendDate;
-      // mEndDate.value = mEventModule.endDate ?? '';
+    DateTime parsedendDate = DateTime.parse(mEventModule.startDate ?? '');
+    String formattedendDate = DateFormat('dd/MM/yyyy').format(parsedendDate);
+    mEndDate.value = formattedendDate;
+    // mEndDate.value = mEventModule.endDate ?? '';
 
-      mMemberAdultAge.value = mEventModule.memberAdultAge ?? '';
-      mMemberAdultAmount.value = mEventModule.memberAdultAmount ?? '';
-      mMemberChildStatus.value =
-          mEventModule.memberChildStatus?.toString() ?? '';
-      mMemberChildAge.value = mEventModule.memberChildAge ?? '';
-      mMemberChildAmount.value =
-          mEventModule.memberChildAmount?.toString() ?? '';
-      mGuestAdultAge.value = mEventModule.guestAdultAge ?? '';
-      mGuestAdultAmount.value = mEventModule.guestAdultAmount?.toString() ?? '';
-      mGuestChildStatus.value = mEventModule.guestChildStatus?.toString() ?? '';
-      mGuestChildAge.value = mEventModule.guestChildAge ?? '';
-      mGuestChildAmount.value = mEventModule.guestChildAmount?.toString() ?? '';
-      mFoodStatus.value = mEventModule.foodStatus?.toString() ?? '';
-      // isMemberRenewal.value = mEventModule.subscriptionStatus == 1 ? true : false;
-      mSubscriptionStatus.value =
-          mEventModule.subscriptionStatus?.toString() ?? '';
-    }
+    mMemberAdultAge.value = mEventModule.memberAdultAge ?? '';
+    mMemberAdultAmount.value = mEventModule.memberAdultAmount ?? '';
+    mMemberChildStatus.value = mEventModule.memberChildStatus?.toString() ?? '';
+    mMemberChildAge.value = mEventModule.memberChildAge ?? '';
+    mMemberChildAmount.value = mEventModule.memberChildAmount?.toString() ?? '';
+    mGuestAdultAge.value = mEventModule.guestAdultAge ?? '';
+    mGuestAdultAmount.value = mEventModule.guestAdultAmount?.toString() ?? '';
+    mGuestChildStatus.value = mEventModule.guestChildStatus?.toString() ?? '';
+    mGuestChildAge.value = mEventModule.guestChildAge ?? '';
+    mGuestChildAmount.value = mEventModule.guestChildAmount?.toString() ?? '';
+    mFoodStatus.value = mEventModule.foodStatus?.toString() ?? '';
+    // isMemberRenewal.value = mEventModule.subscriptionStatus == 1 ? true : false;
+    mSubscriptionStatus.value =
+        mEventModule.subscriptionStatus?.toString() ?? '';
   }
 
   //Event Details api
   getEventDetailsApi() async {
     NetworkUtils().checkInternetConnection().then((isInternetAvailable) async {
       if (isInternetAvailable) {
-        // EventSubmitRequest mEventSubmitRequest = EventSubmitRequest(
-        //   remarks: mMessageController.value.text,
-        //   eventId: (mEventModule.id ?? 0).toString(),
-        //   emailAddress: mEmailController.value.text,
-        //   noOfParticipants: msNoOfPersonController.value.text,
-        //   participantName: mNameController.value.text,
-        // );
-        // CmsPageRequest mCmsPageRequest =
-        //     CmsPageRequest(name: CmsPageRequestType.EVENTS.name);
-
         WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
             .postEventDetails();
 
@@ -715,7 +635,7 @@ class EventDetailsOneController extends GetxController {
               membershipId: mUserMembershipID.value,
             );
             Get.delete<EventDetailsOneController>();
-            Get.offAllNamed(AppRoutes.qrScreen, arguments: mQrDetails);
+            Get.toNamed(AppRoutes.qrScreen, arguments: mQrDetails);
           } else {
             AppAlert.showSnackBar(
               Get.context!,

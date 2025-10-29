@@ -16,4 +16,6 @@ class AppRoutes {
   static const eventDetailOneScreen = '/eventDetailOneScreen';
   static const eventDetailTwoScreen = '/eventDetailTwoScreen';
   static const qrScreen = '/qrScreen';
+  static const qrCodeScanScreen = '/qrCodeScanScreen';
+  static const qrSuccessScreen = '/qrSuccessScreen';
 }

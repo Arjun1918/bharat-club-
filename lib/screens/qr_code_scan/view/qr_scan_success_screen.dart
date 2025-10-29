@@ -5,8 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
-import 'package:organization/utils/color_constants.dart';
 import '../../../data/mode/event_qr_scan/qr_details_response.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
+
 import '../controller/qr_scan_success_controller.dart';
 
 class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
@@ -118,7 +119,10 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
             SizedBox(height: 10.h),
 
             // Adult Attended
-            _buildTextField("Adult Attended", controller.adultAttendedController),
+            _buildTextField(
+              "Adult Attended",
+              controller.adultAttendedController,
+            ),
 
             // Child Attended
             controller.memberChildStatus.value == 1
@@ -129,7 +133,10 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
                 : const SizedBox.shrink(),
 
             // Guest Attended
-            _buildTextField("Guest Attended", controller.guestAttendedController),
+            _buildTextField(
+              "Guest Attended",
+              controller.guestAttendedController,
+            ),
 
             // Guest Child Attended
             controller.guestChildStatus.value == 1
@@ -150,21 +157,30 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
             SizedBox(height: 20.h),
 
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  controller.validateAndSubmitAttendance();
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 12.h,
-                    horizontal: 30.w,
+              child: SizedBox(
+                width: double.infinity, // ✅ full width button
+                child: ElevatedButton(
+                  onPressed: () {
+                    controller.validateAndSubmitAttendance();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondaryGreen,
+                    elevation: 4,
+                    shadowColor: AppColors.secondaryGreen.withOpacity(0.4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
                   ),
-                  textStyle: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
+                  child: const Text(
+                    "Submit",
+                    style: TextStyle(
+                      color: Colors.white, // ✅ white text
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-                child: const Text("Submit"),
               ),
             ),
           ],
@@ -184,9 +200,9 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
         textInputType: TextInputType.text,
         maxLines: 4,
         maxCharLength: 250,
-        borderColor: ColorConstants.cAppColors.shade500,
-        hintTextColor: ColorConstants.cAppColors.shade400,
-        labelTextColor: ColorConstants.cAppColors.shade700,
+        borderColor: AppColors.cAppColors.shade500,
+        hintTextColor: AppColors.cAppColors.shade400,
+        labelTextColor: AppColors.cAppColors.shade700,
         onTextChange: (value) {
           controller.remarksController.text = value;
         },
@@ -204,9 +220,9 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
         errorText: null,
         textInputType: TextInputType.number,
         onFilteringTextInputFormatter: [FilteringTextInputFormatter.digitsOnly],
-        borderColor: ColorConstants.cAppColors.shade500,
-        hintTextColor: ColorConstants.cAppColors.shade400,
-        labelTextColor: ColorConstants.cAppColors.shade700,
+        borderColor: AppColors.cAppColors.shade500,
+        hintTextColor: AppColors.cAppColors.shade400,
+        labelTextColor: AppColors.cAppColors.shade700,
         maxLines: 1,
         onTextChange: (value) {},
       ),

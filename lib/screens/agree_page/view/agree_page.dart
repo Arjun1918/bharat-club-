@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
 import 'package:organization/app/routes_name.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util.dart';
-import 'package:organization/utils/color_constants.dart';
 import '../controller/agree_page_controller.dart';
 
 class TermsAndConditionsPage extends StatefulWidget {
@@ -65,10 +65,10 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                ColorConstants.cAppColors,
+                AppColors.cAppColors,
                 Colors.grey.shade100,
                 Colors.grey.shade100,
-                ColorConstants.cAppColors,
+                AppColors.cAppColors,
               ],
             ),
           ),
@@ -109,7 +109,7 @@ class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
             Text(
               'Terms and Conditions',
               style: getTextSemiBold(
-                colors: ColorConstants.cAppColors.shade700,
+                colors: AppColors.cAppColors.shade700,
                 size: 18.sp,
               ),
             ),
@@ -180,7 +180,7 @@ clubbharat@gmail.com
 +6019 5331794
               ''',
               style: getTextRegular(
-                colors: ColorConstants.cAppColors.shade700,
+                colors: AppColors.cAppColors.shade700,
                 size: 14.sp,
               ),
             ),
@@ -208,7 +208,7 @@ Widget _actionButtons() {
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    _isAtBottom ? ColorConstants.cAppColors : Colors.grey,
+                    _isAtBottom ? AppColors.cAppColors : Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),
                 ),

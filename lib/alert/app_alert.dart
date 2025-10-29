@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/size_constants.dart';
 import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/utils/app_text.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'alert_action.dart';
 
@@ -112,13 +112,13 @@ class AppAlert {
                               backgroundColor: Colors.grey.shade50,
                               side: BorderSide(
                                 width: 1.5,
-                                color: ColorConstants.cAppColorsBlue,
+                                color: AppColors.cAppColorsBlue,
                               ),
                             ),
                             child: Text(
                               dismissButtonText ?? "Dismiss",
                               style: getTextMedium(
-                                colors: ColorConstants.cAppColorsRed,
+                                colors: AppColors.cAppColorsRed,
                                 size:
                                     SizeConstants.width *
                                     0.035,
@@ -175,7 +175,7 @@ class AppAlert {
         width: 80,
         child: const CircularProgressIndicator(
           strokeWidth: 6.0,
-          color: ColorConstants.cAppColors,
+          color: AppColors.cAppColors,
         ),
       ),
     );
@@ -209,7 +209,7 @@ class AppAlert {
                       padding: EdgeInsets.all(SizeConstants.s_16),
                       child: const CircularProgressIndicator(
                         strokeWidth: 5.0,
-                        color: ColorConstants.cAppColors,
+                        color: AppColors.cAppColors,
                       ),
                     ),
                     Expanded(
@@ -315,13 +315,13 @@ class AppAlert {
                               backgroundColor: Colors.grey.shade50,
                               side: const BorderSide(
                                 width: 1.5,
-                                color: ColorConstants.cAppColorsBlue,
+                                color: AppColors.cAppColorsBlue,
                               ),
                             ),
                             child: Text(
                               'Cancel',
                               style: getTextMedium(
-                                colors: ColorConstants.cAppColorsRed,
+                                colors: AppColors.cAppColorsRed,
                                 size: SizeConstants.width * 0.04,
                               ),
                             ),
@@ -334,7 +334,7 @@ class AppAlert {
                           height: SizeConstants.width * 0.12,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorConstants.cAppColorsBlue,
+                              backgroundColor: AppColors.cAppColorsBlue,
                             ),
                             onPressed: () {
                               Get.back(result: AlertAction.yes);

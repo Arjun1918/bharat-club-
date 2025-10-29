@@ -8,7 +8,6 @@ import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/banner_card.dart';
 import 'package:organization/screens/gallery/controller/gallery_contoller.dart';
 import 'package:organization/screens/gallery/model/gallery_model.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -104,7 +103,7 @@ class GalleryListScreen extends GetView<GalleryController> {
                       "No data found",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: ColorConstants.cAppColorsBlue,
+                        color: AppColors.cAppColorsBlue,
                         fontSize: 18,
                       ),
                     ),
@@ -126,111 +125,358 @@ class GalleryListScreen extends GetView<GalleryController> {
       onTap: () {
         if (isVideo) {
           controller.webView((mGalleryModule.videoUrl ?? ''));
+        } else {
+          // Show fullscreen image viewer for images
+          _showFullscreenImage(context, mGalleryModule, index);
         }
       },
-      child: Container(
-        height: 180,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              // Image
-              (mGalleryModule.fileUrl ?? '').isEmpty
-                  ? Container(
-                      color: Colors.grey[100],
-                      child: Center(
-                        child: Image.asset(
-                          ImageAssetsConstants.goParkingLogo,
-                          fit: BoxFit.contain,
-                          width: 80,
-                          height: 80,
-                        ),
-                      ),
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: mGalleryModule.fileUrl ?? "",
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey[100],
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: ColorConstants.cAppColorsBlue,
-                          ),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[100],
-                        child: const Center(
-                          child: Icon(
-                            Icons.broken_image_outlined,
-                            size: 50,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-              ),
-              if (isVideo)
-                Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 10,
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.play_arrow_rounded,
-                      size: 32,
-                      color: ColorConstants.cAppColorsBlue,
-                    ),
-                  ),
-                ),
-              // Type indicator badge
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    isVideo ? Icons.videocam : Icons.image,
-                    size: 16,
-                    color: ColorConstants.cAppColorsBlue,
-                  ),
-                ),
+      child: Hero(
+        tag: 'gallery_${index}',
+        child: Container(
+          height: 180,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                (mGalleryModule.fileUrl ?? '').isEmpty
+                    ? Container(
+                        color: Colors.grey[100],
+                        child: Center(
+                          child: Image.asset(
+                            ImageAssetsConstants.goParkingLogo,
+                            fit: BoxFit.contain,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: mGalleryModule.fileUrl ?? "",
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[100],
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.cAppColorsBlue,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[100],
+                          child: const Center(
+                            child: Icon(
+                              Icons.broken_image_outlined,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.3),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+                if (isVideo)
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        Icons.play_arrow_rounded,
+                        size: 32,
+                        color: AppColors.cAppColorsBlue,
+                      ),
+                    ),
+                  ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      isVideo ? Icons.videocam : Icons.image,
+                      size: 16,
+                      color: AppColors.cAppColorsBlue,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showFullscreenImage(
+    BuildContext context,
+    GalleryModule mGalleryModule,
+    int initialIndex,
+  ) {
+    Get.to(
+      () => FullscreenGalleryViewer(
+        galleryList: controller.mGalleryList.cast<GalleryModule>().toList(),
+        initialIndex: initialIndex,
+      ),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => FullscreenGalleryController());
+      }),
+    );
+  }
+}
+
+// Fullscreen Gallery Controller
+class FullscreenGalleryController extends GetxController {
+  late PageController pageController;
+  var currentIndex = 0.obs;
+  var showControls = true.obs;
+
+  void initializeController(int initialIndex) {
+    currentIndex.value = initialIndex;
+    pageController = PageController(initialPage: initialIndex);
+  }
+
+  void toggleControls() {
+    showControls.value = !showControls.value;
+  }
+
+  void onPageChanged(int index) {
+    currentIndex.value = index;
+  }
+
+  void previousPage() {
+    if (currentIndex.value > 0) {
+      pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void nextPage(int totalItems) {
+    if (currentIndex.value < totalItems - 1) {
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
+  }
+}
+
+// Fullscreen Gallery Viewer
+class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
+  final List<GalleryModule> galleryList;
+  final int initialIndex;
+
+  const FullscreenGalleryViewer({
+    super.key,
+    required this.galleryList,
+    required this.initialIndex,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Initialize controller with initial index
+    controller.initializeController(initialIndex);
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Obx(
+        () => Stack(
+          children: [
+            PageView.builder(
+              controller: controller.pageController,
+              itemCount: galleryList.length,
+              onPageChanged: controller.onPageChanged,
+              itemBuilder: (context, index) {
+                final item = galleryList[index];
+                return GestureDetector(
+                  onTap: controller.toggleControls,
+                  child: Center(
+                    child: InteractiveViewer(
+                      minScale: 0.5,
+                      maxScale: 4.0,
+                      child: Hero(
+                        tag: 'gallery_$index',
+                        child: (item.fileUrl ?? '').isEmpty
+                            ? Image.asset(
+                                ImageAssetsConstants.goParkingLogo,
+                                fit: BoxFit.contain,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: item.fileUrl ?? "",
+                                fit: BoxFit.contain,
+                                placeholder: (context, url) => Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.cAppColorsBlue,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    const Center(
+                                      child: Icon(
+                                        Icons.broken_image_outlined,
+                                        size: 80,
+                                        color: Colors.white54,
+                                      ),
+                                    ),
+                              ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            // Top Controls
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              top: controller.showControls.value ? 0 : -100,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                  ),
+                ),
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 8,
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: () => Get.back(),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${controller.currentIndex.value + 1} / ${galleryList.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Bottom Controls
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
+              bottom: controller.showControls.value ? 0 : -100,
+              left: 0,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+                  ),
+                ),
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 16,
+                  left: 16,
+                  right: 16,
+                  top: 16,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: controller.currentIndex.value > 0
+                            ? Colors.white
+                            : Colors.white38,
+                        size: 24,
+                      ),
+                      onPressed: controller.currentIndex.value > 0
+                          ? controller.previousPage
+                          : null,
+                    ),
+
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color:
+                            controller.currentIndex.value <
+                                galleryList.length - 1
+                            ? Colors.white
+                            : Colors.white38,
+                        size: 24,
+                      ),
+                      onPressed:
+                          controller.currentIndex.value < galleryList.length - 1
+                          ? () => controller.nextPage(galleryList.length)
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

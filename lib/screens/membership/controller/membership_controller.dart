@@ -19,14 +19,10 @@ class MembershipDetailsController extends GetxController {
   RxString membershipEndDate = "".obs;
   RxString membershipType = "".obs;
   RxString membershipId = "".obs;
-
-  // User Basic Info
   RxString userName = "".obs;
   RxString emailId = "".obs;
   RxString phoneNumber = "".obs;
   RxString photo = "".obs;
-
-  // Profile Picture
   RxString attachmentPath = "".obs;
   String fileName = "";
   String sPath = "";
@@ -36,8 +32,6 @@ class MembershipDetailsController extends GetxController {
     super.onInit();
     getProfile();
   }
-
-  /// Get Profile API Call
   Future<void> getProfile() async {
     NetworkUtils().checkInternetConnection().then((isInternetAvailable) async {
       if (isInternetAvailable) {

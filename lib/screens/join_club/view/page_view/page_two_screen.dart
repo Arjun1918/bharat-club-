@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/size_constants.dart';
 import 'package:organization/common/widgets/text_input.dart';
 import 'package:organization/screens/join_club/view/page_view/page_four_screen.dart';
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util_constants.dart';
-import 'package:organization/utils/color_constants.dart';
 
 import '../../controller/join_club_controller.dart';
 
@@ -62,7 +62,7 @@ class PageTwoScreen extends StatelessWidget {
                 child: Text(
                   "Member Details",
                   style: getTextSemiBold(
-                      colors: ColorConstants.cAppColorsBlue,
+                      colors: AppColors.cAppColorsBlue,
                       size: SizeConstants.s1 * 22),
                 ),
               ),
@@ -233,7 +233,7 @@ class PageTwoScreen extends StatelessWidget {
                       child: rectangleRoundedCornerSemiBoldButton("BACK", () {
                         mJoinClubController.pageController.jumpToPage(0);
                       },
-                          buttonColors: ColorConstants.cAppColors,
+                          buttonColors: AppColors.cAppColors,
                           textColors: Colors.white)),
                   Container(
                       height: SizeConstants.s1 * 55,
@@ -246,7 +246,7 @@ class PageTwoScreen extends StatelessWidget {
                       child: rectangleRoundedCornerSemiBoldButton("NEXT", () {
                         mJoinClubController.isMemberDetailsCheck();
                       },
-                          buttonColors: ColorConstants.cAppColors,
+                          buttonColors: AppColors.cAppColors,
                           textColors: Colors.white)),
                 ],
               ),

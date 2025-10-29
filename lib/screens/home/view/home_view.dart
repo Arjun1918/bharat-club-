@@ -8,8 +8,8 @@ import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/carousel_slider.dart';
 import 'package:organization/common/widgets/event_card.dart';
 import 'package:organization/common/widgets/gallery_item.dart';
-import 'package:organization/common/widgets/menu_drawer.dart';
 import 'package:organization/common/widgets/profile_card.dart';
+import 'package:organization/common/widgets/menu_drawer.dart';
 import 'package:organization/common/widgets/section_header.dart';
 import 'package:organization/common/widgets/shimmer_box.dart';
 import 'package:organization/common/widgets/sponsor_item.dart';
@@ -24,7 +24,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentSponsorIndex = 0;
   final CarouselSliderController _carouselController =
       CarouselSliderController();
   final HomeController controller = Get.put(HomeController());
@@ -142,7 +141,6 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: events.length,
               itemBuilder: (context, index) {
                 final event = events[index];
-                // Get image from event_attachments array
                 String imageUrl = 'https://picsum.photos/400/200';
                 if (event.eventAttachments != null &&
                     event.eventAttachments!.isNotEmpty) {
@@ -156,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   date: event.startDate ?? '',
                   index: index,
                   onTap: () {
-                    // Add membership check logic like dashboard screen
                     _handleEventTap(event);
                   },
                 );
@@ -167,14 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     });
   }
-
-  // Add this new method to handle event tap with membership check
   void _handleEventTap(dynamic event) {
     if (controller.membershipStatus.value) {
-      // User has active membership, proceed with event
       controller.checkEventAppliedStatus(event);
     } else {
-      // User doesn't have active membership, show message
       AppAlert.showSnackBar(Get.context!, "Please renew your membership");
     }
   }
@@ -248,9 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
               enlargeCenterPage: true,
               enlargeFactor: 0.2,
               onPageChanged: (index, reason) {
-                setState(() {
-                  _currentSponsorIndex = index;
-                });
+                controller.currentSponsorIndex.value = index;
               },
             ),
             items: sponsors.asMap().entries.map((entry) {
@@ -269,9 +260,11 @@ class _HomeScreenState extends State<HomeScreen> {
             }).toList(),
           ),
           SizedBox(height: 16.h),
-          CarouselIndicators(
-            itemCount: sponsors.length,
-            currentIndex: _currentSponsorIndex,
+          Obx(
+            () => CarouselIndicators(
+              itemCount: sponsors.length,
+              currentIndex: controller.currentSponsorIndex.value,
+            ),
           ),
         ],
       );

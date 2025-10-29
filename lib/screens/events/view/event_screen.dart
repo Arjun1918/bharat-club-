@@ -10,7 +10,6 @@ import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/banner_card.dart';
 import 'package:organization/data/mode/cms_page/event_response.dart';
 import 'package:organization/utils/app_text.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import '../../../alert/app_alert.dart';
@@ -217,7 +216,7 @@ class _EventScreenState extends State<EventScreen> {
                   child: Text(
                     "No data found",
                     style: getTextSemiBold(
-                      colors: ColorConstants.cAppColorsBlue,
+                      colors: AppColors.cAppColorsBlue,
                       size: 18.sp,
                     ),
                   ),

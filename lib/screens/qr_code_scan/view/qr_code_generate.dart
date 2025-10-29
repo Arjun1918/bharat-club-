@@ -28,14 +28,12 @@ class QrCodeGenerateScreen extends StatelessWidget {
     return FocusDetector(
       child: Scaffold(
         backgroundColor: Colors.grey[50],
-        appBar: CustomAppBar(title: 'QR Code', showBack: false),
+        appBar: CustomAppBar(title: 'QR Code', showBack: true),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
               children: [
-                // Header Card
-                // Main QR Code Card
                 Container(
                   width: 1.sw,
                   padding: EdgeInsets.all(24.w),
@@ -64,8 +62,6 @@ class QrCodeGenerateScreen extends StatelessWidget {
                       SizedBox(height: 20.h),
                       _buildQrCodeWidget(encodedData),
                       SizedBox(height: 20.h),
-
-                      // Membership ID Display
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 20.w,
@@ -148,7 +144,7 @@ class QrCodeGenerateScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.offAllNamed(AppRoutes.home);
+                      Get.toNamed(AppRoutes.home);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.secondaryGreen,

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/size_constants.dart';
 import 'package:organization/common/widgets/text_input.dart';
 import 'package:organization/screens/join_club/view/page_view/page_four_screen.dart';
 import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util_constants.dart';
-import 'package:organization/utils/color_constants.dart';
 import '../../controller/join_club_controller.dart';
 
 class PageThreeScreen extends StatelessWidget {
@@ -63,7 +63,7 @@ class PageThreeScreen extends StatelessWidget {
               child: Text(
                 "Spouse Details",
                 style: getTextSemiBold(
-                  colors: ColorConstants.cAppColorsBlue,
+                  colors: AppColors.cAppColorsBlue,
                   size: SizeConstants.s1 * 22,
                 ),
               ),
@@ -215,7 +215,7 @@ class PageThreeScreen extends StatelessWidget {
                     () {
                       mJoinClubController.pageController.jumpToPage(1);
                     },
-                    buttonColors: ColorConstants.cAppColors,
+                    buttonColors: AppColors.cAppColors,
                     textColors: Colors.white,
                   ),
                 ),
@@ -233,7 +233,7 @@ class PageThreeScreen extends StatelessWidget {
                       () {
                         mJoinClubController.isSpouseDetailsCheck();
                       },
-                      buttonColors: ColorConstants.cAppColors,
+                      buttonColors: AppColors.cAppColors,
                       textColors: Colors.white,
                     ),
                   ),

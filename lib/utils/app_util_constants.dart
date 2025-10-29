@@ -1,5 +1,4 @@
 class AppUtilConstants{
-  // Pattern Matcher
   static const String patternEmail =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
   static const String patternMobile = r'(^(?:[+0]9)?[0-9]{10,12}$)';
@@ -13,7 +12,6 @@ class AppUtilConstants{
   static const String patternStringAndSpace = "[a-zA-Z ]";
   static const String patternEmailStringAtDot = "[a-zA-Z0-9-.@_]";
   static const String patternMyCroIdStringAtDot = "[a-zA-Z0-9- .@_]";
-  // static const String patternStringNumber = "[a-zA-Z0-9]";
   static const String patternStringNumberSpace = "[a-zA-Z0-9 ]";
   static const String patternUrlLink = "[a-zA-Z0-9;,/?:@&=+\$-_.!~*'()#]";
   static const String patternAddress = "[a-zA-Z0-9.,/' ]";

@@ -11,83 +11,63 @@ class GalleryController extends GetxController {
   var sGalleryBannerImage = "".obs;
   var sGalleryTitle = "".obs;
   var sGalleryDec = "".obs;
-  RxList mGalleryList = [].obs;
+  RxList<GalleryModule> mGalleryList = <GalleryModule>[].obs;
+
+  /// new reactive states for Fullscreen viewer
+  var currentIndex = 0.obs;
+  var showControls = true.obs;
 
   @override
   void onInit() {
     super.onInit();
   }
 
+  /// API call for gallery
   getGalleryUsApi() async {
     try {
-      
-      CmsPageRequest mCmsPageRequest = CmsPageRequest(
-        name: CmsPageRequestType.GALLERY.name,
-      );      
-      WebResponseSuccess mWebResponseSuccess = await AllApiImpl().postCmsPage(
-        mCmsPageRequest,
-      );
-      
-      
+      CmsPageRequest mCmsPageRequest =
+          CmsPageRequest(name: CmsPageRequestType.GALLERY.name);
+      WebResponseSuccess mWebResponseSuccess =
+          await AllApiImpl().postCmsPage(mCmsPageRequest);
+
       if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
-        print("===== Status Code 200 - Processing Data =====");
-        
         GalleryResponse mGalleryResponse = mWebResponseSuccess.data;
-        
-        print("Gallery Response Data: ${mGalleryResponse.data}");
-        print("Gallery Module Count: ${mGalleryResponse.data?.module?.length ?? 0}");
-        
+
         mGalleryList.clear();
         mGalleryList.addAll(mGalleryResponse.data?.module ?? []);
         intGalleryCount.value = mGalleryList.length;
-        
-        print("Updated Gallery List Length: ${mGalleryList.length}");
-        print("Updated Gallery Count: ${intGalleryCount.value}");
 
-        // Banner
         if ((mGalleryResponse.data?.cmsPageAttachments ?? []).isNotEmpty &&
             (mGalleryResponse.data?.cmsPageAttachments?.first.fileUrl ?? "")
                 .isNotEmpty) {
           sGalleryBannerImage.value =
               (mGalleryResponse.data?.cmsPageAttachments?.first.fileUrl ?? "");
-          print("Banner Image URL: ${sGalleryBannerImage.value}");
-        } else {
-          print("No Banner Image Found");
         }
 
         sGalleryTitle.value = mGalleryResponse.data?.title ?? "Gallery";
         sGalleryDec.value = mGalleryResponse.data?.content ?? "MOMENTS FOREVER";
-        
-        print("Gallery Title: ${sGalleryTitle.value}");
-        print("Gallery Description: ${sGalleryDec.value}");
-        
-        // Print each gallery item
-        for (int i = 0; i < mGalleryList.length; i++) {
-          print("Gallery Item $i:");
-          print("  - FileUrl: ${mGalleryList[i].fileUrl}");
-          print("  - VideoUrl: ${mGalleryList[i].videoUrl}");
-        }
-        
-        print("===== getGalleryUsApi Completed Successfully =====");
-      } else {
-        print("===== API Failed with Status Code: ${mWebResponseSuccess.statusCode} =====");
-        print("Status Message: ${mWebResponseSuccess.statusMessage}");
       }
-    } catch (e, stackTrace) {
-      print("===== ERROR in getGalleryUsApi =====");
-      print("Error: $e");
-      print("StackTrace: $stackTrace");
+    } catch (e) {
+      print("Error in getGalleryUsApi: $e");
     }
   }
 
+  /// For web/video open
   void webView(String url) async {
     try {
-      print("Opening URL: $url");
       final Uri _url = Uri.parse(url);
-      bool launched = await launchUrl(_url);
-      print("URL Launch Success: $launched");
+      await launchUrl(_url);
     } catch (e) {
       print("Error launching URL: $e");
     }
+  }
+
+  /// new controller-managed functions
+  void toggleControls() {
+    showControls.value = !showControls.value;
+  }
+
+  void updateIndex(int index) {
+    currentIndex.value = index;
   }
 }

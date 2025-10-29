@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/constant/size_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/utils/app_text.dart';
-import 'package:organization/utils/color_constants.dart';
-
 import '../controller/join_club_controller.dart';
 
 class JoinClubScreen extends GetView<JoinClubController> {
@@ -84,7 +83,7 @@ class JoinClubScreen extends GetView<JoinClubController> {
           Text(
             "IT'S TIME TO JOIN ${controller.sJoinClubTitle.value}",
             style: getTextSemiBold(
-              colors: ColorConstants.cAppColorsBlue,
+              colors: AppColors.cAppColorsBlue,
               size: SizeConstants.s1 * 22,
             ),
           ),
@@ -114,7 +113,7 @@ class JoinClubScreen extends GetView<JoinClubController> {
                 controller.isJoinClub.value = true;
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorConstants.cAppColors,
+                backgroundColor: AppColors.cAppColors,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.r),
                 ),
@@ -156,7 +155,7 @@ class JoinClubScreen extends GetView<JoinClubController> {
               Text(
                 controller.sJoinClubPhone.value,
                 style: getTextRegular(
-                  colors: ColorConstants.cAppColorsBlue,
+                  colors: AppColors.cAppColorsBlue,
                   size: SizeConstants.s1 * 15,
                 ),
               ),
@@ -176,7 +175,7 @@ class JoinClubScreen extends GetView<JoinClubController> {
               Text(
                 controller.sJoinClubEmail.value,
                 style: getTextRegular(
-                  colors: ColorConstants.cAppColorsBlue,
+                  colors: AppColors.cAppColorsBlue,
                   size: SizeConstants.s1 * 15,
                 ),
               ),

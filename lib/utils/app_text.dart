@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-///   TEXT STYLES
-
 TextStyle getTextLight({Color colors = Colors.white, size = 14.0}) {
   return GoogleFonts.exo(
     color: colors,
@@ -10,13 +8,6 @@ TextStyle getTextLight({Color colors = Colors.white, size = 14.0}) {
     fontWeight: FontWeight.w100,
     letterSpacing: -0.2,
   );
-
-  // TextStyle(
-  //   color: colors,
-  //   fontFamily: 'SFUI',
-  //   fontSize: size,
-  //   fontWeight: FontWeight.w100,
-  //   letterSpacing: -0.2);
 }
 
 TextStyle getTextRegular({
@@ -94,8 +85,6 @@ TextStyle getTextSemiBold({
     height: heights,
   );
 }
-
-// Events
 TextStyle getTextSemiBold1({
   Color colors = Colors.white,
   size = 14.0,
@@ -145,6 +134,7 @@ getTextSpan({String word = "", size = 14.0, bool bStare = true}) {
       children: <TextSpan>[
         TextSpan(text: word),
         TextSpan(
+          spellOut: false,
           text: bStare ? "*" : "",
           style: getTextMedium(colors: Colors.red.shade900, size: size),
         ),

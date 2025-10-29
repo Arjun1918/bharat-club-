@@ -6,10 +6,8 @@ import 'package:organization/alert/app_alert.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/banner_card.dart';
-import 'package:organization/common/widgets/loader.dart';
 import 'package:organization/screens/contact_us/controller/contact_us_controller.dart';
 import 'package:organization/utils/app_text.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 
@@ -25,7 +23,9 @@ class ContactUsListScreen extends GetView<ContactUsController> {
       appBar: const CustomAppBar(title: "Contact Us"),
       body: FocusDetector(
         onVisibilityGained: () {
-          NetworkUtils().checkInternetConnection().then((isInternetAvailable) async {
+          NetworkUtils().checkInternetConnection().then((
+            isInternetAvailable,
+          ) async {
             if (isInternetAvailable) {
               await controller.getContactUsApi();
             } else {
@@ -37,10 +37,6 @@ class ContactUsListScreen extends GetView<ContactUsController> {
           });
         },
         child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CustomLoader());
-          }
-
           return SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
             child: Card(
@@ -56,8 +52,14 @@ class ContactUsListScreen extends GetView<ContactUsController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BannerCard(
-                      bannerUrl: controller.mContactUsResponse.value.data
-                              ?.cmsPageAttachments?.first.fileUrl ??
+                      bannerUrl:
+                          controller
+                              .mContactUsResponse
+                              .value
+                              .data
+                              ?.cmsPageAttachments
+                              ?.first
+                              .fileUrl ??
                           "",
                       height: 200.h,
                       borderRadius: 12.r,
@@ -65,36 +67,59 @@ class ContactUsListScreen extends GetView<ContactUsController> {
                     SizedBox(height: 20.h),
                     Text(
                       controller.contactUsValidator.value
-                          ? (controller.mContactUsResponse.value.data?.module?.first.name ?? "")
+                          ? (controller
+                                    .mContactUsResponse
+                                    .value
+                                    .data
+                                    ?.module
+                                    ?.first
+                                    .name ??
+                                "")
                           : "Welcome to Bharat Club",
                       style: getTextSemiBold(colors: Colors.black, size: 18.0),
                     ),
                     SizedBox(height: 10.h),
-
                     Text(
                       controller.contactUsValidator.value
-                          ? (controller.mContactUsResponse.value.data?.module?.first.address ?? "")
+                          ? (controller
+                                    .mContactUsResponse
+                                    .value
+                                    .data
+                                    ?.module
+                                    ?.first
+                                    .address ??
+                                "")
                           : "MALAYSIA - Kuala Lumpur",
                       style: getTextSemiBold(
-                        colors: ColorConstants.cAppColorsBlue,
+                        colors: AppColors.cAppColorsBlue,
                         size: 16.sp,
                       ),
                     ),
                     SizedBox(height: 16.h),
-
                     Divider(thickness: 1, color: Colors.grey.withOpacity(0.3)),
                     SizedBox(height: 10.h),
                     Row(
                       children: [
-                        const Icon(Icons.phone, color: ColorConstants.cAppColorsBlue, size: 20),
+                        const Icon(
+                          Icons.phone,
+                          color: AppColors.cAppColorsBlue,
+                          size: 20,
+                        ),
                         SizedBox(width: 10.w),
                         Expanded(
                           child: Text(
                             controller.contactUsValidator.value
-                                ? (controller.mContactUsResponse.value.data?.module?.first.primaryMobile ?? "")
+                                ? (controller
+                                          .mContactUsResponse
+                                          .value
+                                          .data
+                                          ?.module
+                                          ?.first
+                                          .primaryMobile ??
+                                      "")
                                 : "+6 019 533 1794",
                             style: getTextRegular(
-                              colors: ColorConstants.cAppColorsBlue,
+                              colors: AppColors.cAppColorsBlue,
                               size: 15.sp,
                             ),
                           ),
@@ -104,15 +129,26 @@ class ContactUsListScreen extends GetView<ContactUsController> {
                     SizedBox(height: 8.h),
                     Row(
                       children: [
-                        const Icon(Icons.email_outlined, color: ColorConstants.cAppColorsBlue, size: 20),
+                        const Icon(
+                          Icons.email_outlined,
+                          color: AppColors.cAppColorsBlue,
+                          size: 20,
+                        ),
                         SizedBox(width: 10.w),
                         Expanded(
                           child: Text(
                             controller.contactUsValidator.value
-                                ? (controller.mContactUsResponse.value.data?.module?.first.email ?? "")
+                                ? (controller
+                                          .mContactUsResponse
+                                          .value
+                                          .data
+                                          ?.module
+                                          ?.first
+                                          .email ??
+                                      "")
                                 : "clubbharat@gmail.com",
                             style: getTextRegular(
-                              colors: ColorConstants.cAppColorsBlue,
+                              colors: AppColors.cAppColorsBlue,
                               size: 15.sp,
                             ),
                           ),

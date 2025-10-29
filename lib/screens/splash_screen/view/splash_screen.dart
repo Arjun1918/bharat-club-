@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/animation/animation_background.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/screens/splash_screen/controller/splash_screen_contoller.dart';
-import 'package:organization/utils/color_constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -92,9 +92,9 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedBackgroundWidget(
-        primaryColor: ColorConstants.cAppColors,
-        secondaryColor: ColorConstants.cAppColors,
-        particleColor: ColorConstants.cAppColors,
+        primaryColor: AppColors.cAppColors,
+        secondaryColor: AppColors.cAppColors,
+        particleColor: AppColors.cAppColors,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen>
         borderRadius: BorderRadius.circular(24.r),
         boxShadow: [
           BoxShadow(
-            color: ColorConstants.cAppColors.withOpacity(0.2),
+            color: AppColors.cAppColors.withOpacity(0.2),
             blurRadius: 30.r,
             offset: Offset(0, 10.h),
             spreadRadius: 5.r,
@@ -149,7 +149,7 @@ class _SplashScreenState extends State<SplashScreen>
               end: Alignment.bottomRight,
               colors: [
                 Colors.white,
-                ColorConstants.cAppColors.withOpacity(0.02),
+                AppColors.cAppColors.withOpacity(0.02),
               ],
             ),
           ),
@@ -163,13 +163,13 @@ class _SplashScreenState extends State<SplashScreen>
                   height: 100.h,
                   width: 100.w,
                   decoration: BoxDecoration(
-                    color: ColorConstants.cAppColors.withOpacity(0.1),
+                    color: AppColors.cAppColors.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Icon(
                     Icons.business,
                     size: 80.sp,
-                    color: ColorConstants.cAppColors,
+                    color: AppColors.cAppColors,
                   ),
                 );
               },
@@ -197,7 +197,7 @@ class _SplashScreenState extends State<SplashScreen>
           'Bharat Club',
           style: TextStyle(
             fontSize: 28.sp,
-            color: ColorConstants.cAppColors,
+            color: AppColors.cAppColors,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
           ),

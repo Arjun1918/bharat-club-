@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
-import 'package:organization/utils/color_constants.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
+
 
 class BannerCard extends StatelessWidget {
   final String bannerUrl;
@@ -41,7 +42,7 @@ class BannerCard extends StatelessWidget {
                   height: 150,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: ColorConstants.cAppColorsBlue.withOpacity(0.1),
+                    color: AppColors.cAppColorsBlue.withOpacity(0.1),
                   ),
                 ),
               ),
@@ -53,7 +54,7 @@ class BannerCard extends StatelessWidget {
                   height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: ColorConstants.cAppColorsBlue.withOpacity(0.1),
+                    color: AppColors.cAppColorsBlue.withOpacity(0.1),
                   ),
                 ),
               ),
@@ -77,7 +78,7 @@ class BannerCard extends StatelessWidget {
                           height: double.infinity,
                           placeholder: (context, url) => Center(
                             child: CircularProgressIndicator(
-                              color: ColorConstants.cAppColorsBlue,
+                              color: AppColors.cAppColorsBlue,
                             ),
                           ),
                           errorWidget: (context, url, error) => Padding(

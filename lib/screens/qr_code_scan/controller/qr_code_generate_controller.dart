@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:organization/app/routes_name.dart';
 import 'package:organization/common/constant/web_constant.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
@@ -41,6 +42,8 @@ class QrCodeGenerateController extends GetxController {
 
         memberID = parts[1];
         eventID = parts[2];
+
+        AppAlert.showSnackBar(Get.context!, "QR code verified successfully!");
       }
     } else {
       qrDialog(context, controller);
@@ -93,6 +96,10 @@ class QrCodeGenerateController extends GetxController {
 
               mqQrDetailResponse.eventID = int.tryParse(eventID);
               mqQrDetailResponse.membershipID = memberID;
+              Get.toNamed(
+                AppRoutes.qrSuccessScreen,
+                arguments: mqQrDetailResponse,
+              );
             } else {
               qrDialognotregister(context, controller);
             }

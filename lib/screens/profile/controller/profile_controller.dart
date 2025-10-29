@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:organization/app/routes_name.dart';
+import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/web_constant.dart';
 import 'package:organization/utils/app_util.dart';
-import 'package:organization/utils/color_constants.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import '../../../alert/alert_action.dart';
@@ -437,7 +437,7 @@ class ProfileController extends GetxController {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Cropper',
-          toolbarColor: ColorConstants.cAppColors,
+          toolbarColor: AppColors.cAppColors,
           toolbarWidgetColor: Colors.white,
           lockAspectRatio: false,
           hideBottomControls: true,

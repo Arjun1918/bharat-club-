@@ -27,6 +27,8 @@ class HomeController extends GetxController {
   int _currentPage = 0;
   final _kDuration = const Duration(milliseconds: 350);
   final _kCurve = Curves.easeIn;
+  RxInt currentSponsorIndex = 0.obs;
+
 
   final PageController certificationsPageController = PageController(
     initialPage: 0,
@@ -262,7 +264,7 @@ class HomeController extends GetxController {
                 eventId: mEventModule.id.toString(),
                 membershipId: mMembershipID,
               );
-              Get.offAllNamed(AppRoutes.qrScreen, arguments: mQrDetails);
+              Get.toNamed(AppRoutes.qrScreen, arguments: mQrDetails);
             } else {
               Get.toNamed(
                 AppRoutes.eventDetailOneScreen,

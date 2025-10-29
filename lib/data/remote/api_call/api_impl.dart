@@ -153,7 +153,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   ///post Registration
-  @override
   Future<WebResponseSuccess> postLogin(dynamic exhibitorsListRequest) async {
     WebConstants.auth = false;
     final cases = await mWebProvider.postWithRequest(
@@ -185,7 +184,6 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-  @override
   Future<WebResponseSuccess> postChangePassword(
     dynamic exhibitorsListRequest,
   ) async {
@@ -256,19 +254,12 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-  ///post Registration
   @override
   Future<WebResponseSuccess> postProfile() async {
-    // Remove the progress dialog from here - let UI handle loading states
-    // AppAlert.showProgressDialog(Get.context!);
-
     WebConstants.auth = true;
     final cases = await mWebProvider.postWithoutRequest(
       WebConstants.actionProfile,
     );
-
-    // Remove the hide dialog - let UI handle loading states
-    // AppAlert.hideLoadingDialog(Get.context!);
 
     if (cases.statusCode != WebConstants.statusCode200) {
       mWebResponseFailed = WebResponseFailed.fromJson(
@@ -389,7 +380,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   ///JoinClubs
-  @override
   Future<WebResponseSuccess> postJoinClubs() async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = false;
@@ -423,7 +413,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   ///postImage
-  @override
   Future<WebResponseSuccess> postImage(String filePart) async {
     AppAlert.showProgressDialog(Get.context!);
     WebConstants.auth = true;
@@ -526,7 +515,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   ///post join club
-  @override
   Future<WebResponseSuccess> postJoinClubSubmit(
     dynamic exhibitorsListRequest,
   ) async {
@@ -614,49 +602,6 @@ class AllApiImpl implements IApiRepository {
     );
     AppAlert.hideLoadingDialog(Get.context!);
 
-    //   final sampleJson = {
-    //     "statusCode": 200,
-    //     "error": false,
-    //     "statusMessage": "Success",
-    //     "data": {
-    //       "response": {
-    //         "id": 1,
-    //         "title": "Annual Dinner",
-    //         "description": "Join us for an unforgettable evening filled with entertainment, fine dining, and celebration.",
-    //         "start_date": "2024-12-10",
-    //         "end_date": "2024-12-10",
-    //         "status": 1,
-    //         "created_by": 101,
-    //         "modified_by": 102,
-    //         "created_at": "2024-01-15T08:30:00Z",
-    //         "updated_at": "2024-05-20T14:45:00Z",
-    //         "deleted_at": null,
-    //         "member_adult_age": "18-60",
-    //         "member_adult_amount": 150.00,
-    //         "member_child_status": 1,
-    //         "member_child_age": "5-17",
-    //         "member_child_amount": 75.00,
-    //         "guest_adult_age": "18-60",
-    //         "guest_adult_amount": 200.00,
-    //         "guest_child_status": 1,
-    //         "guest_child_age": "5-17",
-    //         "guest_child_amount": 100.00,
-    //         "food_status": 1,
-    //         "subscription_status": 0
-    //       },
-    //       "message": "Event details loaded successfully"
-    //     }
-    //   };
-
-    //         EventDetailResponse mEventDetailResponse = EventDetailResponse.fromJson(sampleJson);
-
-    // return WebResponseSuccess(
-    //   statusCode: sampleJson['statusCode'] as int?,
-    //   error: sampleJson['error'] as bool?,
-    //   statusMessage: sampleJson['statusMessage'] as String?,
-    //   data: mEventDetailResponse,
-    // );
-
     if (cases.statusCode != WebConstants.statusCode200) {
       mWebResponseFailed = WebResponseFailed.fromJson(
         processResponseToJson(cases),
@@ -682,8 +627,6 @@ class AllApiImpl implements IApiRepository {
     return mWebResponseSuccess;
   }
 
-  //events participantsubmit
-  @override
   Future<WebResponseSuccess> postParticipantSubmit(
     dynamic exhibitorsListRequest,
   ) async {
@@ -724,7 +667,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   //Qr scan details
-  @override
   Future<WebResponseSuccess> postQrDetails(
     dynamic exhibitorsListRequest,
   ) async {
@@ -765,7 +707,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   // event attendance
-  @override
   Future<WebResponseSuccess> postEventAttendance(
     dynamic exhibitorsListRequest,
   ) async {
@@ -806,7 +747,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   //Sponsor Event
-  @override
   Future<WebResponseSuccess> postSponsorEvent(
     dynamic exhibitorsListRequest,
   ) async {
@@ -848,7 +788,6 @@ class AllApiImpl implements IApiRepository {
   }
 
   //membership type
-  @override
   Future<WebResponseSuccess> postMembershipType() async {
     try {
       // REMOVE progress dialog - it's causing the timeout
@@ -875,7 +814,6 @@ class AllApiImpl implements IApiRepository {
       );
       debugPrint("plainJsonRequest == ${jsonEncode(cases.body)}");
 
-      // Process response
       MembershipTypeResponse mMembershipTypeResponse =
           MembershipTypeResponse.fromJson(processResponseToJson(cases));
 

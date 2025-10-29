@@ -199,7 +199,7 @@ class EventController extends GetxController {
           eventId: mEventModule.id.toString(),
           membershipId: mMembershipID,
         );
-        Get.offAllNamed(AppRoutes.qrScreen, arguments: mQrDetails);
+        Get.toNamed(AppRoutes.qrScreen, arguments: mQrDetails);
       } else {
         debugPrint("❌ User not registered → Event Detail Screen");
         Get.toNamed(
