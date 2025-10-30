@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/image_constants.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
@@ -108,18 +109,17 @@ class EditAccountScreen extends GetView<ProfileController> {
               children: [
                 Text(
                   'Account Settings',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                  style: getTextSemiBold(
+                    size: 18.sp,
+                    colors: Colors.grey.shade800,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   'Update your personal details',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.grey.shade600,
+                  style: getTextMedium(
+                    size: 13.sp,
+                    colors: Colors.grey.shade600,
                   ),
                 ),
               ],
@@ -155,12 +155,16 @@ class EditAccountScreen extends GetView<ProfileController> {
             _buildInputField(
               label: 'Username',
               controller: controller.mUserNameController.value,
-              errorText: controller.userNameValidator.isTrue ? sUserNameError.tr : null,
+              errorText: controller.userNameValidator.isTrue
+                  ? sUserNameError.tr
+                  : null,
               icon: Icons.person_outline,
               hint: sUserNameHint.tr,
               keyboardType: TextInputType.name,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(AppUtilConstants.patternStringAndSpace)),
+                FilteringTextInputFormatter.allow(
+                  RegExp(AppUtilConstants.patternStringAndSpace),
+                ),
               ],
             ),
             SizedBox(height: 20.h),
@@ -169,7 +173,9 @@ class EditAccountScreen extends GetView<ProfileController> {
             _buildInputField(
               label: 'Email',
               controller: controller.mEmailController.value,
-              errorText: controller.emailValidator.isTrue ? controller.seEmailValidator.value : null,
+              errorText: controller.emailValidator.isTrue
+                  ? controller.seEmailValidator.value
+                  : null,
               icon: Icons.email_outlined,
               hint: sEmailHint.tr,
               keyboardType: TextInputType.emailAddress,
@@ -188,7 +194,9 @@ class EditAccountScreen extends GetView<ProfileController> {
               hint: sPhoneNumberHint.tr,
               keyboardType: TextInputType.phone,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(AppUtilConstants.patternOnlyNumber)),
+                FilteringTextInputFormatter.allow(
+                  RegExp(AppUtilConstants.patternOnlyNumber),
+                ),
               ],
               maxLength: 11,
             ),
@@ -212,11 +220,7 @@ class EditAccountScreen extends GetView<ProfileController> {
         SizedBox(width: 8.w),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey.shade800,
-          ),
+          style: getTextSemiBold1(size: 16.sp, colors: Colors.grey.shade800),
         ),
       ],
     );
@@ -275,9 +279,9 @@ class EditAccountScreen extends GetView<ProfileController> {
                 Expanded(
                   child: Text(
                     errorText,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.red.shade600,
+                    style: getTextMedium(
+                      size: 12.sp,
+                      colors: Colors.red.shade600,
                     ),
                   ),
                 ),
@@ -306,18 +310,11 @@ class EditAccountScreen extends GetView<ProfileController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-            ),
+            const Icon(Icons.check_circle_outline, color: Colors.white),
             SizedBox(width: 8.w),
             Text(
               "Update Profile",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-              ),
+              style: getTextSemiBold1(colors: Colors.white, size: 16.sp),
             ),
           ],
         ),

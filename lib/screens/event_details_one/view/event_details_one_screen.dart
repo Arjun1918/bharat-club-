@@ -6,6 +6,7 @@ import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +14,6 @@ import '../../../data/local/shared_prefs/shared_prefs.dart';
 import '../../../data/mode/cms_page/event_response.dart';
 import '../controller/event_details_one_controller.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
-
 
 class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
   final EventModule mEventModule;
@@ -50,45 +50,38 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
     );
   }
 
-  eventDetailsView(BuildContext context) {
+  Widget eventDetailsView(BuildContext context) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(20.w),
       child: Obx(
         () => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Banner with modern styling
+            // Banner
             _generateBanners(mEventModule.eventAttachments),
-
             SizedBox(height: 24.h),
 
-            // Title with gradient effect
+            // Title
             Text(
               controller.mTitle.value,
-              style: TextStyle(
-                color: AppColors.cAppColorsBlue,
-                fontSize: 22.sp,
-                fontWeight: FontWeight.bold,
-                letterSpacing: -0.5,
-              ),
+              style: getTextBold(colors: AppColors.cAppColorsBlue, size: 22.sp),
             ),
 
             SizedBox(height: 16.h),
 
-            // Description with better readability
+            // Description
             Text(
               controller.mDescription.value,
-              style: TextStyle(
-                color: AppColors.cAppColorsBlue,
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w400,
-                height: 1.5,
+              style: getTextRegular(
+                colors: AppColors.cAppColorsBlue,
+                size: 15.sp,
+                heights: 1.5,
               ),
             ),
 
             SizedBox(height: 24.h),
 
-            // Event date card
+            // Event Schedule Card
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
@@ -117,10 +110,9 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                       SizedBox(width: 8.w),
                       Text(
                         "Event Schedule",
-                        style: TextStyle(
-                          color: AppColors.cAppColorsBlue,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
+                        style: getTextSemiBold(
+                          colors: AppColors.cAppColorsBlue,
+                          size: 16.sp,
                         ),
                       ),
                     ],
@@ -134,19 +126,17 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                           children: [
                             Text(
                               "From",
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w500,
+                              style: getTextMedium(
+                                colors: Colors.grey[600]!,
+                                size: 13.sp,
                               ),
                             ),
                             SizedBox(height: 4.h),
                             Text(
                               controller.mStartDate.value,
-                              style: TextStyle(
-                                color: AppColors.cAppColorsBlue,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
+                              style: getTextSemiBold(
+                                colors: AppColors.cAppColorsBlue,
+                                size: 14.sp,
                               ),
                             ),
                           ],
@@ -164,19 +154,17 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                           children: [
                             Text(
                               "To",
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w500,
+                              style: getTextMedium(
+                                colors: Colors.grey[600]!,
+                                size: 13.sp,
                               ),
                             ),
                             SizedBox(height: 4.h),
                             Text(
                               controller.mEndDate.value,
-                              style: TextStyle(
-                                color: AppColors.cAppColorsBlue,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
+                              style: getTextSemiBold(
+                                colors: AppColors.cAppColorsBlue,
+                                size: 14.sp,
                               ),
                             ),
                           ],
@@ -190,22 +178,17 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
 
             SizedBox(height: 24.h),
 
-            // Sponsor carousel
+            // Sponsors
             sponsorCarousel(context),
 
             SizedBox(height: 32.h),
 
-            // Primary Contact Section with modern card
+            // Primary Contact
             _buildSectionHeader("Primary Contact", Icons.person),
             SizedBox(height: 16.h),
-
             Text(
               "Primary Name",
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
+              style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
             ),
             SizedBox(height: 8.h),
             TextInputWidget(
@@ -220,17 +203,12 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
 
             SizedBox(height: 32.h),
 
-            // Adult Details Section
+            // Adult Details
             _buildSectionHeader("Adult Details", Icons.people),
             SizedBox(height: 16.h),
-
             Text(
               "Number of Adults (Age ${controller.mMemberAdultAge.value} and above)",
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
+              style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
             ),
             SizedBox(height: 8.h),
             TextInputWidget(
@@ -250,87 +228,64 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
               ],
             ),
 
-            // Children Details Section
-            (controller.mMemberChildStatus.value == '1')
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 32.h),
-                      _buildSectionHeader("Children Details", Icons.child_care),
-                      SizedBox(height: 16.h),
+            // Children (Conditional)
+            if (controller.mMemberChildStatus.value == '1') ...[
+              SizedBox(height: 32.h),
+              _buildSectionHeader("Children Details", Icons.child_care),
+              SizedBox(height: 16.h),
+              Text(
+                "Number of Children (Age ${controller.mMemberChildAge.value} and above)",
+                style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
+              ),
+              SizedBox(height: 8.h),
+              TextInputWidget(
+                placeHolder: "",
+                controller:
+                    controller.mNumberOfChildrenAgeLimitController.value,
+                errorText: null,
+                textInputType: TextInputType.number,
+                hintText: "Enter number of children",
+                showFloatingLabel: false,
+                maxLines: 1,
+                maxCharLength: 2,
+                onFilteringTextInputFormatter: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(AppUtilConstants.patternOnlyNumber),
+                  ),
+                  LengthLimitingTextInputFormatter(2),
+                ],
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                "Number of Children (Age 6 and below)",
+                style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
+              ),
+              SizedBox(height: 8.h),
+              TextInputWidget(
+                placeHolder: "",
+                controller:
+                    controller.mNumberOfChildrenAge6BelowController.value,
+                errorText: null,
+                textInputType: TextInputType.number,
+                hintText: "Enter number of children",
+                showFloatingLabel: false,
+                maxLines: 1,
+                maxCharLength: 2,
+                onFilteringTextInputFormatter: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(AppUtilConstants.patternOnlyNumber),
+                  ),
+                  LengthLimitingTextInputFormatter(2),
+                ],
+              ),
+            ],
 
-                      Text(
-                        "Number of Children (Age ${controller.mMemberChildAge.value} and above)",
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      TextInputWidget(
-                        placeHolder: "",
-                        controller: controller
-                            .mNumberOfChildrenAgeLimitController
-                            .value,
-                        errorText: null,
-                        textInputType: TextInputType.number,
-                        hintText: "Enter number of children",
-                        showFloatingLabel: false,
-                        maxLines: 1,
-                        maxCharLength: 2,
-                        onFilteringTextInputFormatter: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(AppUtilConstants.patternOnlyNumber),
-                          ),
-                          LengthLimitingTextInputFormatter(2),
-                        ],
-                      ),
-
-                      SizedBox(height: 16.h),
-                      Text(
-                        "Number of Children (Age 6 and below)",
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      TextInputWidget(
-                        placeHolder: "",
-                        controller: controller
-                            .mNumberOfChildrenAge6BelowController
-                            .value,
-                        errorText: null,
-                        textInputType: TextInputType.number,
-                        hintText: "Enter number of children",
-                        showFloatingLabel: false,
-                        maxLines: 1,
-                        maxCharLength: 2,
-                        onFilteringTextInputFormatter: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(AppUtilConstants.patternOnlyNumber),
-                          ),
-                          LengthLimitingTextInputFormatter(2),
-                        ],
-                      ),
-                    ],
-                  )
-                : SizedBox.shrink(),
-
-            // Guest Details Section
             SizedBox(height: 32.h),
             _buildSectionHeader("Guest Details", Icons.group_add),
             SizedBox(height: 16.h),
-
             Text(
               "Number of Adults (Age ${controller.mGuestAdultAge.value} and above)",
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-              ),
+              style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
             ),
             SizedBox(height: 8.h),
             TextInputWidget(
@@ -350,77 +305,60 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
               ],
             ),
 
-            // Guest Children Section
-            controller.mGuestChildStatus == '1'
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 16.h),
-                      Text(
-                        "Number of Children (Age ${controller.mGuestChildAge.value} and above)",
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      TextInputWidget(
-                        placeHolder: "",
-                        controller: controller
-                            .mNumberOfGuestChildrenAge12AboveController
-                            .value,
-                        errorText: null,
-                        textInputType: TextInputType.number,
-                        hintText: "Enter number of guest children",
-                        showFloatingLabel: false,
-                        maxLines: 1,
-                        maxCharLength: 2,
-                        onFilteringTextInputFormatter: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(AppUtilConstants.patternOnlyNumber),
-                          ),
-                          LengthLimitingTextInputFormatter(2),
-                        ],
-                      ),
-
-                      SizedBox(height: 16.h),
-                      Text(
-                        "Number of Children (Age 6 and below)",
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      TextInputWidget(
-                        placeHolder: "",
-                        controller: controller
-                            .mNumberOfGuestChildrenAge6BelowController
-                            .value,
-                        errorText: null,
-                        textInputType: TextInputType.number,
-                        hintText: "Enter number of guest children",
-                        showFloatingLabel: false,
-                        maxLines: 1,
-                        maxCharLength: 2,
-                        onFilteringTextInputFormatter: [
-                          FilteringTextInputFormatter.allow(
-                            RegExp(AppUtilConstants.patternOnlyNumber),
-                          ),
-                          LengthLimitingTextInputFormatter(2),
-                        ],
-                      ),
-                    ],
-                  )
-                : SizedBox.shrink(),
+            if (controller.mGuestChildStatus == '1') ...[
+              SizedBox(height: 16.h),
+              Text(
+                "Number of Children (Age ${controller.mGuestChildAge.value} and above)",
+                style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
+              ),
+              SizedBox(height: 8.h),
+              TextInputWidget(
+                placeHolder: "",
+                controller:
+                    controller.mNumberOfGuestChildrenAge12AboveController.value,
+                errorText: null,
+                textInputType: TextInputType.number,
+                hintText: "Enter number of guest children",
+                showFloatingLabel: false,
+                maxLines: 1,
+                maxCharLength: 2,
+                onFilteringTextInputFormatter: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(AppUtilConstants.patternOnlyNumber),
+                  ),
+                  LengthLimitingTextInputFormatter(2),
+                ],
+              ),
+              SizedBox(height: 16.h),
+              Text(
+                "Number of Children (Age 6 and below)",
+                style: getTextMedium(colors: Colors.grey[700]!, size: 14.sp),
+              ),
+              SizedBox(height: 8.h),
+              TextInputWidget(
+                placeHolder: "",
+                controller:
+                    controller.mNumberOfGuestChildrenAge6BelowController.value,
+                errorText: null,
+                textInputType: TextInputType.number,
+                hintText: "Enter number of guest children",
+                showFloatingLabel: false,
+                maxLines: 1,
+                maxCharLength: 2,
+                onFilteringTextInputFormatter: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(AppUtilConstants.patternOnlyNumber),
+                  ),
+                  LengthLimitingTextInputFormatter(2),
+                ],
+              ),
+            ],
 
             SizedBox(height: 40.h),
             InkWell(
               onTap: () async {
                 await SharedPrefs().getUserDetails();
-                controller.navigateToNextScreen(mEventModule,context);
+                controller.navigateToNextScreen(mEventModule, context);
               },
               borderRadius: BorderRadius.circular(12.r),
               child: Container(
@@ -447,12 +385,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                   children: [
                     Text(
                       "Proceed",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                      ),
+                      style: getTextSemiBold(colors: Colors.white, size: 16.sp),
                     ),
                     SizedBox(width: 8.w),
                     Icon(Icons.arrow_forward, color: Colors.white, size: 20.sp),
@@ -481,11 +414,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
         SizedBox(width: 12.w),
         Text(
           title,
-          style: TextStyle(
-            color: AppColors.cAppColorsBlue,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-          ),
+          style: getTextBold(colors: AppColors.cAppColorsBlue, size: 18.sp),
         ),
       ],
     );
@@ -535,7 +464,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
 
     return Obx(() {
       if (controller.sponsorList.isEmpty) {
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       }
 
       return Column(
@@ -567,9 +496,7 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                       borderRadius: BorderRadius.circular(20.r),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.cAppColorsBlue.withOpacity(
-                            0.15,
-                          ),
+                          color: AppColors.cAppColorsBlue.withOpacity(0.15),
                           blurRadius: 15,
                           spreadRadius: 2,
                           offset: const Offset(0, 5),
@@ -606,10 +533,9 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
                               ),
                               child: Text(
                                 sponsor.companyName,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
+                                style: getTextBold(
+                                  colors: Colors.white,
+                                  size: 16.sp,
                                 ),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
@@ -625,7 +551,6 @@ class EventDetailsOneScreen extends GetView<EventDetailsOneController> {
             ),
           ),
           SizedBox(height: 12.h),
-          // Page indicators
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(

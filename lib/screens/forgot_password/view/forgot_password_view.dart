@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:organization/animation/animation_background.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/screens/forgot_password/controller/forgot_password_controller.dart';
+import 'package:organization/utils/app_text.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -19,7 +20,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
   final _formKey = GlobalKey<FormState>();
 
   late AnimationController _masterController;
-
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _logoAnimation;
@@ -102,9 +102,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                 return SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
                     child: IntrinsicHeight(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -186,21 +184,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                   children: [
                     Text(
                       'Reset Password',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 32.sp,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.5,
+                      style: getTextBold(
+                        colors: AppColors.textPrimary,
+                        size: 32.sp,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       'Enter your email to receive a password reset link',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w400,
+                      style: getTextRegular(
+                        colors: AppColors.textSecondary,
+                        size: 16.sp,
                       ),
                     ),
                   ],
@@ -265,10 +260,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                     },
                     child: Text(
                       'Registered Account Login',
-                      style: TextStyle(
-                        color: AppColors.primaryGreen,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
+                      style: getTextMedium(
+                        colors: AppColors.primaryGreen,
+                        size: 14.sp,
                       ),
                     ),
                   ),
@@ -295,24 +289,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       ),
       child: TextFormField(
         controller: controller.mEmailController,
-        style: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w500,
+        style: getTextMedium(
+          colors: AppColors.textPrimary,
+          size: 16.sp,
         ),
         cursorColor: AppColors.primaryGreen,
         onChanged: (value) {
-          // Reset validation error when user types
           if (controller.emailValidator.value) {
             controller.emailValidator.value = false;
           }
         },
         decoration: InputDecoration(
           hintText: 'Email ID',
-          hintStyle: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
+          hintStyle: getTextRegular(
+            colors: AppColors.textSecondary,
+            size: 16.sp,
           ),
           prefixIcon: Container(
             margin: EdgeInsets.only(left: 16.w, right: 12.w),
@@ -344,13 +335,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
             borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: AppColors.error, width: 2.5),
           ),
-          errorText: controller.emailValidator.value 
-              ? controller.seEmailValidator.value 
+          errorText: controller.emailValidator.value
+              ? controller.seEmailValidator.value
               : null,
-          errorStyle: TextStyle(
-            color: AppColors.error,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
+          errorStyle: getTextMedium(
+            colors: AppColors.error,
+            size: 12.sp,
           ),
         ),
       ),
@@ -387,11 +377,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
               children: [
                 Text(
                   'Submit',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
+                  style: getTextSemiBold(
+                    colors: Colors.white,
+                    size: 18.sp,
                   ),
                 ),
                 SizedBox(width: 8.w),
@@ -412,8 +400,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
     if (_isDisposed || !mounted) return;
 
     FocusScope.of(context).unfocus();
-    
-    // Call controller's validation and API call
     controller.isCheck();
   }
 }

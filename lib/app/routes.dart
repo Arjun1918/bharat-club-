@@ -15,6 +15,7 @@ import 'package:organization/screens/gallery/view/gallery_screen.dart';
 import 'package:organization/screens/home/view/home_view.dart';
 import 'package:organization/screens/login/view/login_view.dart';
 import 'package:organization/screens/membership/view/membership_screen.dart';
+import 'package:organization/screens/privacy_policy/view/privacy_policy_view.dart';
 import 'package:organization/screens/profile/view/edit_account_screen.dart';
 import 'package:organization/screens/profile/view/edit_contact_profile.dart';
 import 'package:organization/screens/profile/view/edit_information.dart';
@@ -70,6 +71,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.events,
       page: () => EventScreen(),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.privacyPolicy,
+      page: () => PrivacyPolicyPage(),
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(

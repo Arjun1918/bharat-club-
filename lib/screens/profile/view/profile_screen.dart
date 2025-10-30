@@ -10,8 +10,8 @@ import 'package:organization/common/constant/custom_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/lang/translation_service_key.dart';
+import 'package:organization/utils/app_text.dart';
 import '../controller/profile_controller.dart';
-
 
 class ProfileScreen extends GetView<ProfileController> {
   ProfileScreen({super.key});
@@ -20,7 +20,7 @@ class ProfileScreen extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     // CHANGED: Use Get.put() instead of Get.lazyPut() to ensure controller is immediately available
     Get.put(ProfileController());
-    
+
     return FocusDetector(
       onVisibilityGained: () {
         controller.getProfile();
@@ -102,9 +102,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.cAppColors.withOpacity(
-                                    0.3,
-                                  ),
+                                  color: AppColors.cAppColors.withOpacity(0.3),
                                   blurRadius: 8,
                                   offset: Offset(0, 2),
                                 ),
@@ -123,21 +121,16 @@ class ProfileScreen extends GetView<ProfileController> {
                   SizedBox(height: 16.h),
                   Text(
                     controller.userName.value,
-                    style: TextStyle(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
+                    style: getTextBold(size: 22.sp, colors: Colors.black87),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     controller.designation.value.isEmpty
                         ? "Member"
                         : controller.designation.value,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
+                    style: getTextSemiBold(
+                      size: 14.sp,
+                      colors: AppColors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 25.h),
@@ -187,10 +180,9 @@ class ProfileScreen extends GetView<ProfileController> {
                           SizedBox(width: 8.w),
                           Text(
                             sDeleteProfile.tr,
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.sp,
+                            style: getTextSemiBold(
+                              colors: Colors.red,
+                              size: 15.sp,
                             ),
                           ),
                         ],
@@ -229,11 +221,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 Expanded(
                   child: Text(
                     "Membership Type",
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
+                    style: getTextRegular(size: 20.sp, colors: Colors.black87),
                   ),
                 ),
               ],
@@ -294,11 +282,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 Expanded(
                   child: Text(
                     "Basic Details",
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
+                    style: getTextRegular(size: 20.sp, colors: Colors.black87),
                   ),
                 ),
                 SizedBox(
@@ -315,9 +299,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.cAppColors.withOpacity(
-                        0.1,
-                      ),
+                      backgroundColor: AppColors.cAppColors.withOpacity(0.1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.r),
                       ),
@@ -338,10 +320,9 @@ class ProfileScreen extends GetView<ProfileController> {
                         SizedBox(width: 4.w),
                         Text(
                           "Edit",
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.cAppColors,
+                          style: getTextMedium(
+                            size: 13.sp,
+                            colors: AppColors.cAppColors,
                           ),
                         ),
                       ],
@@ -380,264 +361,257 @@ class ProfileScreen extends GetView<ProfileController> {
     );
   }
 
-Widget personOfContact() {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16.r),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.04),
-          blurRadius: 10,
-          offset: Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Person of Contact",
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
+  Widget personOfContact() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "Person of Contact",
+                    style: getTextRegular(size: 20.sp, colors: Colors.black87),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 35.h,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // OPTION 1: Pass controller tag to ensure it can be found
-                    Get.toNamed(
-                      AppRoutes.editPersonOfContactScreen,
-                      arguments: {
-                        'firstName': controller.pocFirstName.value,
-                        'email': controller.pocEmailId.value,
-                        'phone': controller.pocPhoneNumber.value,
-                        'child1': controller.child1.value,
-                        'child2': controller.child2.value,
-                        'child3': controller.child3.value,
-                        'child4': controller.child4.value,
-                      },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.cAppColors.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    elevation: 0,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.edit_outlined,
-                        size: 16.sp,
-                        color: AppColors.cAppColors,
+                SizedBox(
+                  height: 35.h,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // OPTION 1: Pass controller tag to ensure it can be found
+                      Get.toNamed(
+                        AppRoutes.editPersonOfContactScreen,
+                        arguments: {
+                          'firstName': controller.pocFirstName.value,
+                          'email': controller.pocEmailId.value,
+                          'phone': controller.pocPhoneNumber.value,
+                          'child1': controller.child1.value,
+                          'child2': controller.child2.value,
+                          'child3': controller.child3.value,
+                          'child4': controller.child4.value,
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.cAppColors.withOpacity(0.1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        "Edit",
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.edit_outlined,
+                          size: 16.sp,
                           color: AppColors.cAppColors,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 4.w),
+                        Text(
+                          "Edit",
+                          style: getTextMedium(
+                            size: 13.sp,
+                            colors: AppColors.cAppColors,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
 
-        Divider(height: 1, thickness: 1, color: Colors.grey[100]),
+          Divider(height: 1, thickness: 1, color: Colors.grey[100]),
 
-        Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            children: [
-              _buildInfoRow(
-                Icons.person_outline,
-                "Name",
-                controller.pocFirstName.value,
-              ),
-              _buildInfoRow(
-                Icons.email_outlined,
-                "Email",
-                controller.pocEmailId.value,
-              ),
-              _buildInfoRow(
-                Icons.phone_outlined,
-                "Phone",
-                "+${controller.pocPhoneNumber.value}",
-              ),
-              if (controller.child1.value.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
                 _buildInfoRow(
-                  Icons.child_care_outlined,
-                  "Child One",
-                  controller.child1.value,
+                  Icons.person_outline,
+                  "Name",
+                  controller.pocFirstName.value,
                 ),
-              if (controller.child2.value.isNotEmpty)
                 _buildInfoRow(
-                  Icons.child_care_outlined,
-                  "Child Two",
-                  controller.child2.value,
+                  Icons.email_outlined,
+                  "Email",
+                  controller.pocEmailId.value,
                 ),
-              if (controller.child3.value.isNotEmpty)
                 _buildInfoRow(
-                  Icons.child_care_outlined,
-                  "Child Three",
-                  controller.child3.value,
+                  Icons.phone_outlined,
+                  "Phone",
+                  "+${controller.pocPhoneNumber.value}",
                 ),
-              if (controller.child4.value.isNotEmpty)
+                if (controller.child1.value.isNotEmpty)
+                  _buildInfoRow(
+                    Icons.child_care_outlined,
+                    "Child One",
+                    controller.child1.value,
+                  ),
+                if (controller.child2.value.isNotEmpty)
+                  _buildInfoRow(
+                    Icons.child_care_outlined,
+                    "Child Two",
+                    controller.child2.value,
+                  ),
+                if (controller.child3.value.isNotEmpty)
+                  _buildInfoRow(
+                    Icons.child_care_outlined,
+                    "Child Three",
+                    controller.child3.value,
+                  ),
+                if (controller.child4.value.isNotEmpty)
+                  _buildInfoRow(
+                    Icons.child_care_outlined,
+                    "Child Four",
+                    controller.child4.value,
+                    isLast: true,
+                  )
+                else
+                  SizedBox(height: 0),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget profileInformation() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "Professional Information",
+                    style: getTextRegular(
+                      size: 20.sp,
+                      colors: Colors.black87,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 35.h,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed(
+                        AppRoutes.editInformationScreen,
+                        arguments: {
+                          'companyName': controller.companyName.value,
+                          'designation': controller.designation.value,
+                          'location': controller.companyLocation.value,
+                          'website': controller.companyWebSite.value,
+                          'linkedin': controller.companyLinkedin.value,
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.cAppColors.withOpacity(0.1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.edit_outlined,
+                          size: 16.sp,
+                          color: AppColors.cAppColors,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          "Edit",
+                          style: getTextMedium(
+                            size: 13.sp,
+                            colors: AppColors.cAppColors,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Divider(height: 1, thickness: 1, color: Colors.grey[100]),
+
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
                 _buildInfoRow(
-                  Icons.child_care_outlined,
-                  "Child Four",
-                  controller.child4.value,
+                  Icons.business_outlined,
+                  "Company",
+                  controller.companyName.value,
+                ),
+                _buildInfoRow(
+                  Icons.work_outline,
+                  "Designation",
+                  controller.designation.value,
+                ),
+                _buildInfoRow(
+                  Icons.location_on_outlined,
+                  "Location",
+                  controller.companyLocation.value,
+                ),
+                _buildInfoRow(
+                  Icons.language_outlined,
+                  "Website",
+                  controller.companyWebSite.value,
+                ),
+                _buildInfoRow(
+                  Icons.link_outlined,
+                  "LinkedIn",
+                  controller.companyLinkedin.value,
                   isLast: true,
-                )
-              else
-                SizedBox(height: 0),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget profileInformation() {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16.r),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.04),
-          blurRadius: 10,
-          offset: Offset(0, 2),
-        ),
-      ],
-    ),
-    child: Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Professional Information",
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
                 ),
-              ),
-              SizedBox(
-                height: 35.h,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(
-                      AppRoutes.editInformationScreen,
-                      arguments: {
-                        'companyName': controller.companyName.value,
-                        'designation': controller.designation.value,
-                        'location': controller.companyLocation.value,
-                        'website': controller.companyWebSite.value,
-                        'linkedin': controller.companyLinkedin.value,
-                      },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.cAppColors.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    elevation: 0,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 6.h,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.edit_outlined,
-                        size: 16.sp,
-                        color: AppColors.cAppColors,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        "Edit",
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.cAppColors,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-
-        Divider(height: 1, thickness: 1, color: Colors.grey[100]),
-
-        Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            children: [
-              _buildInfoRow(
-                Icons.business_outlined,
-                "Company",
-                controller.companyName.value,
-              ),
-              _buildInfoRow(
-                Icons.work_outline,
-                "Designation",
-                controller.designation.value,
-              ),
-              _buildInfoRow(
-                Icons.location_on_outlined,
-                "Location",
-                controller.companyLocation.value,
-              ),
-              _buildInfoRow(
-                Icons.language_outlined,
-                "Website",
-                controller.companyWebSite.value,
-              ),
-              _buildInfoRow(
-                Icons.link_outlined,
-                "LinkedIn",
-                controller.companyLinkedin.value,
-                isLast: true,
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   Widget _buildInfoRow(
     IconData icon,
@@ -665,19 +639,17 @@ Widget profileInformation() {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
+                  style: getTextSemiBold(
+                    size: 12.sp,
+                    colors: AppColors.textPrimary,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   value.isEmpty ? "--" : value,
-                  style: TextStyle(
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                  style: getTextSemiBold(
+                    size: 17.sp,
+                    colors: Colors.black87,
                   ),
                 ),
               ],

@@ -7,6 +7,7 @@ import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
 import 'package:organization/lang/translation_service_key.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util.dart';
 import 'package:organization/utils/app_util_constants.dart';
 import '../controller/profile_controller.dart';
@@ -114,18 +115,17 @@ class EditPersonOfContactScreen extends StatelessWidget {
               children: [
                 Text(
                   'Person of Contact',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                  style: getTextSemiBold(
+                    size: 18.sp,
+                    colors: Colors.grey.shade800,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   'Update contact person details',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.grey.shade600,
+                  style: getTextRegular(
+                    size: 13.sp,
+                    colors: Colors.grey.shade600,
                   ),
                 ),
               ],
@@ -225,11 +225,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
         SizedBox(width: 8.w),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey.shade800,
-          ),
+          style: getTextSemiBold(size: 16.sp, colors: Colors.grey.shade800),
         ),
       ],
     );
@@ -286,9 +282,9 @@ class EditPersonOfContactScreen extends StatelessWidget {
                 Expanded(
                   child: Text(
                     errorText,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.red.shade600,
+                    style: getTextMedium(
+                      size: 12.sp,
+                      colors: Colors.red.shade600,
                     ),
                   ),
                 ),
@@ -317,18 +313,11 @@ class EditPersonOfContactScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.check_circle_outline,
-              color: Colors.white,
-            ),
+            const Icon(Icons.check_circle_outline, color: Colors.white),
             SizedBox(width: 8.w),
             Text(
               "Update Profile",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 16.sp,
-              ),
+              style: getTextSemiBold(colors: Colors.white, size: 16.sp),
             ),
           ],
         ),

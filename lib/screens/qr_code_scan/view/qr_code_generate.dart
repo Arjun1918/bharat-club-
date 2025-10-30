@@ -6,6 +6,7 @@ import 'package:organization/app/routes_name.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/loader.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../controller/qr_code_generate_controller.dart';
 
@@ -53,10 +54,9 @@ class QrCodeGenerateScreen extends StatelessWidget {
                     children: [
                       Text(
                         "Scan to Check-In",
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey[800],
+                        style: getTextSemiBold1(
+                          size: 18.sp,
+                          colors: AppColors.textPrimary,
                         ),
                       ),
                       SizedBox(height: 20.h),
@@ -86,11 +86,9 @@ class QrCodeGenerateScreen extends StatelessWidget {
                             SizedBox(width: 10.w),
                             Text(
                               "ID: $qrData",
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primaryGreen,
-                                letterSpacing: 0.5,
+                              style: getTextSemiBold1(
+                                size: 15.sp,
+                                colors: AppColors.primaryGreen,
                               ),
                             ),
                           ],
@@ -128,11 +126,10 @@ class QrCodeGenerateScreen extends StatelessWidget {
                       Expanded(
                         child: Text(
                           "Show this QR code at the entrance for check-in",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.amber[900],
-                            fontWeight: FontWeight.w500,
-                            height: 1.3,
+                          style: getTextRegular(
+                            size: 14.sp,
+                            colors: Colors.amber.withOpacity(0.5),
+                            heights: 1.3.h,
                           ),
                         ),
                       ),
@@ -166,11 +163,9 @@ class QrCodeGenerateScreen extends StatelessWidget {
                         SizedBox(width: 10.w),
                         Text(
                           "Back to Home",
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
+                          style: getTextSemiBold(
+                            size: 17.sp,
+                            colors: Colors.white,
                           ),
                         ),
                       ],

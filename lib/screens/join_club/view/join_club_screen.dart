@@ -37,10 +37,6 @@ class JoinClubScreen extends GetView<JoinClubController> {
               controller: controller.pageController,
               physics: const NeverScrollableScrollPhysics(),
               onPageChanged: (index) {},
-              // children: List.generate(
-              //   controller.bottomBarPages.length,
-              //   (index) => controller.bottomBarPages[index],
-              // ),
             )
           : clubView();
     });
@@ -65,7 +61,7 @@ class JoinClubScreen extends GetView<JoinClubController> {
             color: Colors.grey.withOpacity(0.4),
             spreadRadius: 5,
             blurRadius: 7,
-            offset: const Offset(0, 1), 
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -124,11 +120,7 @@ class JoinClubScreen extends GetView<JoinClubController> {
               child: Obx(
                 () => Text(
                   "JOIN ${controller.sJoinClubTitle.value}",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: getTextBold(colors: Colors.white, size: 16.sp),
                 ),
               ),
             ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,7 +78,7 @@ class _EventScreenState extends State<EventScreen> {
             margin: EdgeInsets.all(13.w),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(10.r)),
+              borderRadius: BorderRadius.circular(10.r),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.4),
@@ -128,10 +127,17 @@ class _EventScreenState extends State<EventScreen> {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
+          // Banner
           BannerCard(bannerUrl: controller.sEventBannerImage.value),
+
           SizedBox(height: 5.h),
-          Html(data: controller.sEventDec.value),
+
+          // HTML Content with custom text styling
+          _buildStyledContent(controller.sEventDec.value),
+
           SizedBox(height: 5.h),
+
+          // Event List
           controller.intEventCount.value > 0
               ? ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -148,7 +154,7 @@ class _EventScreenState extends State<EventScreen> {
                         margin: EdgeInsets.all(5.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                          borderRadius: BorderRadius.circular(10.r),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.4),
@@ -164,9 +170,7 @@ class _EventScreenState extends State<EventScreen> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.35),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10.r),
-                                ),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                             ),
                             Padding(
@@ -181,11 +185,12 @@ class _EventScreenState extends State<EventScreen> {
                                       size: 15.sp,
                                     ),
                                   ),
+                                  SizedBox(height: 4.h),
                                   Text(
                                     mEventModule.description ?? "",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: getTextRegular(
+                                    style: getTextSemiBold(
                                       colors: Colors.white,
                                       size: 12.sp,
                                     ),
@@ -198,7 +203,7 @@ class _EventScreenState extends State<EventScreen> {
                               bottom: 15.h,
                               child: Text(
                                 mEventModule.endDate ?? "",
-                                style: getTextRegular(
+                                style: getTextSemiBold(
                                   colors: Colors.white,
                                   size: 12.sp,
                                 ),
@@ -210,20 +215,166 @@ class _EventScreenState extends State<EventScreen> {
                     );
                   },
                 )
-              : Container(
-                  alignment: Alignment.center,
+              : SizedBox(
                   height: 250.h,
-                  child: Text(
-                    "No data found",
-                    style: getTextSemiBold(
-                      colors: AppColors.cAppColorsBlue,
-                      size: 18.sp,
+                  child: Center(
+                    child: Text(
+                      "No data found",
+                      style: getTextSemiBold(
+                        colors: AppColors.cAppColorsBlue,
+                        size: 18.sp,
+                      ),
                     ),
                   ),
                 ),
         ],
       ),
     );
+  }
+
+  Widget _buildStyledContent(String htmlContent) {
+    if (htmlContent.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Parse HTML content and convert to structured text with bullet points
+    List<ContentItem> contentItems = _parseHtmlContent(htmlContent);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: contentItems.map((item) {
+        if (item.isBullet) {
+          return Padding(
+            padding: EdgeInsets.only(left: 10.w, bottom: 8.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 6.h, right: 8.w),
+                  child: Container(
+                    width: 5.w,
+                    height: 5.w,
+                    decoration: const BoxDecoration(
+                      color: Colors.black87,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    item.text,
+                    style: getTextRegular(
+                      colors: Colors.black87, //function
+                      size: 13.sp,
+                      heights: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else if (item.isHeading) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 8.h, top: 5.h),
+            child: Text(
+              item.text,
+              style: getTextSemiBold(
+                colors: Colors.black,
+                size: 15.sp,
+                heights: 1.4,
+              ),
+            ),
+          );
+        } else {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 8.h),
+            child: Text(
+              item.text,
+              style: getTextSemiBold(
+                colors: Colors.black87,
+                size: 13.sp,
+                heights: 1.5,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          );
+        }
+      }).toList(),
+    );
+  }
+
+  List<ContentItem> _parseHtmlContent(String htmlContent) {
+    List<ContentItem> items = [];
+
+    // Remove script and style tags
+    htmlContent = htmlContent.replaceAll(
+      RegExp(r'<script[^>]*>.*?</script>', dotAll: true),
+      '',
+    );
+    htmlContent = htmlContent.replaceAll(
+      RegExp(r'<style[^>]*>.*?</style>', dotAll: true),
+      '',
+    );
+
+    // Split by common block elements
+    List<String> blocks = htmlContent.split(
+      RegExp(r'</(?:p|div|li|h[1-6])>', caseSensitive: false),
+    );
+
+    for (String block in blocks) {
+      if (block.trim().isEmpty) continue;
+
+      // Check if it's a list item
+      bool isBullet = block.contains(
+        RegExp(r'<li[^>]*>', caseSensitive: false),
+      );
+
+      // Check if it's a heading
+      bool isHeading = block.contains(
+        RegExp(r'<h[1-6][^>]*>', caseSensitive: false),
+      );
+
+      // Strip all HTML tags
+      String text = _stripHtmlTags(block);
+
+      if (text.trim().isNotEmpty) {
+        items.add(
+          ContentItem(
+            text: text.trim(),
+            isBullet: isBullet,
+            isHeading: isHeading,
+          ),
+        );
+      }
+    }
+
+    return items;
+  }
+
+  String _stripHtmlTags(String htmlString) {
+    // Remove HTML tags
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: false);
+    String result = htmlString.replaceAll(exp, '');
+
+    // Decode HTML entities
+    result = result
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&#39;', "'")
+        .replaceAll('&rdquo;', '"')
+        .replaceAll('&ldquo;', '"')
+        .replaceAll('&rsquo;', "'")
+        .replaceAll('&lsquo;', "'")
+        .replaceAll('&bull;', '•')
+        .replaceAll('&middot;', '·');
+
+    // Clean up extra whitespace
+    result = result.replaceAll(RegExp(r'\s+'), ' ').trim();
+
+    return result;
   }
 
   Widget _generateEvent(EventModule mEventModule) {
@@ -238,4 +389,17 @@ class _EventScreenState extends State<EventScreen> {
       ),
     );
   }
+}
+
+// Helper class for content items
+class ContentItem {
+  final String text;
+  final bool isBullet;
+  final bool isHeading;
+
+  ContentItem({
+    required this.text,
+    this.isBullet = false,
+    this.isHeading = false,
+  });
 }

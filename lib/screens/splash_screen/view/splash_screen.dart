@@ -6,6 +6,7 @@ import 'package:organization/animation/animation_background.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/screens/splash_screen/controller/splash_screen_contoller.dart';
+import 'package:organization/utils/app_text.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -147,10 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                Colors.white,
-                AppColors.cAppColors.withOpacity(0.02),
-              ],
+              colors: [Colors.white, AppColors.cAppColors.withOpacity(0.02)],
             ),
           ),
           child: Hero(
@@ -185,31 +183,17 @@ class _SplashScreenState extends State<SplashScreen>
       children: [
         Text(
           'Welcome to',
-          style: TextStyle(
-            fontSize: 16.sp,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w400,
-            letterSpacing: 1.2,
-          ),
+          style: getTextBold(size: 16.sp, colors: Colors.grey),
         ),
         SizedBox(height: 8.h),
         Text(
           'Bharat Club',
-          style: TextStyle(
-            fontSize: 28.sp,
-            color: AppColors.cAppColors,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
+          style: getTextBold(size: 28.sp, colors: AppColors.cAppColors),
         ),
         SizedBox(height: 4.h),
         Text(
           'Manage everything efficiently',
-          style: TextStyle(
-            fontSize: 13.sp,
-            color: Colors.grey[500],
-            fontWeight: FontWeight.w400,
-          ),
+          style: getTextRegular(size: 13.sp, colors: Colors.grey),
         ),
       ],
     );

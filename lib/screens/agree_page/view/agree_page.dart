@@ -190,73 +190,67 @@ clubbharat@gmail.com
     );
   }
 
-Widget _actionButtons() {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        // ✅ Agree Button
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(10.w),
-            child: ElevatedButton(
-              onPressed: _isAtBottom
-                  ? () {
-                      Get.find<TermsAndConditionsController>().webView();
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    _isAtBottom ? AppColors.cAppColors : Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
+  Widget _actionButtons() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // ✅ Agree Button
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.w),
+              child: ElevatedButton(
+                onPressed: _isAtBottom
+                    ? () {
+                        Get.find<TermsAndConditionsController>().webView();
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _isAtBottom
+                      ? AppColors.cAppColors
+                      : Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  minimumSize: Size(double.infinity, 40.h),
+                  elevation: 5,
+                  shadowColor: Colors.grey.withOpacity(0.5),
                 ),
-                minimumSize: Size(double.infinity, 40.h),
-                elevation: 5,
-                shadowColor: Colors.grey.withOpacity(0.5),
-              ),
-              child: const Text(
-                "Agree",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child:Padding(
-            padding: EdgeInsets.all(10.w),
-            child: ElevatedButton(
-              onPressed: _isAtBottom
-                  ? () {
-                      Get.offNamed(AppRoutes.loginScreen);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    _isAtBottom ? Colors.redAccent : Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                minimumSize: Size(double.infinity, 40.h),
-                elevation: 5,
-                shadowColor: Colors.grey.withOpacity(0.5),
-              ),
-              child: const Text(
-                "Disagree",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                child: Text(
+                  'Agree',
+                  style: getTextSemiBold(colors: AppColors.white),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.w),
+              child: ElevatedButton(
+                onPressed: _isAtBottom
+                    ? () {
+                        Get.offNamed(AppRoutes.loginScreen);
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _isAtBottom ? Colors.redAccent : Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  minimumSize: Size(double.infinity, 40.h),
+                  elevation: 5,
+                  shadowColor: Colors.grey.withOpacity(0.5),
+                ),
+                child: Text(
+                  "Disagree",
+                  style: getTextSemiBold(colors: AppColors.white),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

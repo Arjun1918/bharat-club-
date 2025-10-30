@@ -18,4 +18,5 @@ class AppRoutes {
   static const qrScreen = '/qrScreen';
   static const qrCodeScanScreen = '/qrCodeScanScreen';
   static const qrSuccessScreen = '/qrSuccessScreen';
+  static const privacyPolicy = '/privacyPolicy';
 }

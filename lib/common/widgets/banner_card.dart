@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 
-
 class BannerCard extends StatelessWidget {
   final String bannerUrl;
   final double height;
@@ -33,7 +32,6 @@ class BannerCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              // Decorative circles
               Positioned(
                 right: -30,
                 top: -30,

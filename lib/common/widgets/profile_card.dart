@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/utils/app_text.dart';
 
 class ProfileCard extends StatelessWidget {
   final String welcomeText;
@@ -46,18 +47,20 @@ class ProfileCard extends StatelessWidget {
               children: [
                 Text(
                   welcomeText,
-                  style: TextStyle(fontSize: 14.sp, color: Colors.grey[800]),
+                  style: getTextSemiBold(
+                    size: 14.sp,
+                    colors: AppColors.textPrimary,
+                  ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   userName,
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                  style: getTextBold(
+                    size: 20.sp,
+                    colors: AppColors.textPrimary,
                   ),
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 4.h),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                   decoration: BoxDecoration(
@@ -66,10 +69,9 @@ class ProfileCard extends StatelessWidget {
                   ),
                   child: Text(
                     membershipType,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.primaryGreen,
-                      fontWeight: FontWeight.w600,
+                    style: getTextSemiBold(
+                      size: 12.sp,
+                      colors: AppColors.primaryGreen,
                     ),
                   ),
                 ),

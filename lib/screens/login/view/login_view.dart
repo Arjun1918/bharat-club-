@@ -5,6 +5,8 @@ import 'package:organization/animation/animation_background.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/screens/login/controller/login_controller.dart';
+import 'package:organization/utils/app_text.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +18,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   late final LoginScreenController controller;
-  
   final _formKey = GlobalKey<FormState>();
 
   late AnimationController _masterController;
@@ -183,11 +184,9 @@ class _LoginScreenState extends State<LoginScreen>
                 SizedBox(height: 32.h),
                 Text(
                   'Welcome Back',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 32.sp,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: -0.5,
+                  style: getTextBold(
+                    colors: AppColors.textPrimary,
+                    size: 32.sp,
                   ),
                 ),
               ],
@@ -242,14 +241,12 @@ class _LoginScreenState extends State<LoginScreen>
                 children: [
                   Text(
                     'Registered Account Login',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
+                    style: getTextSemiBold(
+                      colors: AppColors.textPrimary,
+                      size: 18.sp,
                     ),
                   ),
                   SizedBox(height: 24.h),
-                  // Email field with controller from GetX controller
                   Obx(() => _buildTextField(
                         controller: controller.mEmailController,
                         hintText: 'Email Id',
@@ -265,7 +262,6 @@ class _LoginScreenState extends State<LoginScreen>
                         },
                       )),
                   SizedBox(height: 24.h),
-                  // Password field with controller from GetX controller
                   Obx(() => _buildTextField(
                         controller: controller.mPasswordController,
                         hintText: 'Password',
@@ -299,10 +295,9 @@ class _LoginScreenState extends State<LoginScreen>
                       },
                       child: Text(
                         'Forgot Password?',
-                        style: TextStyle(
-                          color: AppColors.primaryGreen,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w500,
+                        style: getTextMedium(
+                          colors: AppColors.primaryGreen,
+                          size: 14.sp,
                         ),
                       ),
                     ),
@@ -344,19 +339,17 @@ class _LoginScreenState extends State<LoginScreen>
       child: TextFormField(
         controller: controller,
         obscureText: obscureText ?? false,
-        style: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w500,
+        style: getTextMedium(
+          colors: AppColors.textPrimary,
+          size: 16.sp,
         ),
         cursorColor: AppColors.primaryGreen,
         validator: validator,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
+          hintStyle: getTextRegular(
+            colors: AppColors.textSecondary,
+            size: 16.sp,
           ),
           prefixIcon: Container(
             margin: EdgeInsets.only(left: 16.w, right: 12.w),
@@ -390,10 +383,9 @@ class _LoginScreenState extends State<LoginScreen>
             borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: AppColors.error, width: 2.5),
           ),
-          errorStyle: TextStyle(
-            color: AppColors.error,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w500,
+          errorStyle: getTextMedium(
+            colors: AppColors.error,
+            size: 12.sp,
           ),
         ),
       ),
@@ -431,8 +423,7 @@ class _LoginScreenState extends State<LoginScreen>
                         height: 24.r,
                         child: const CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : Row(
@@ -440,11 +431,9 @@ class _LoginScreenState extends State<LoginScreen>
                         children: [
                           Text(
                             'Sign In',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
+                            style: getTextSemiBold(
+                              colors: Colors.white,
+                              size: 18.sp,
                             ),
                           ),
                           SizedBox(width: 8.w),
@@ -480,11 +469,9 @@ class _LoginScreenState extends State<LoginScreen>
           child: Center(
             child: Text(
               'Join Club',
-              style: TextStyle(
-                color: AppColors.primaryGreen,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
+              style: getTextSemiBold(
+                colors: AppColors.primaryGreen,
+                size: 18.sp,
               ),
             ),
           ),

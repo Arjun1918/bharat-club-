@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/common/constant/web_constant.dart';
-import 'package:organization/utils/message_constants.dart';
-import 'package:organization/utils/network_util.dart';
 
 import '../../../../data/remote/web_response.dart';
 import '../../../alert/app_alert.dart';
@@ -53,7 +51,7 @@ class EventController extends GetxController {
       // Get user details with timeout
       debugPrint("📋 Fetching user details...");
       RegistrationUser? mRegistrationUser;
-      
+
       try {
         mRegistrationUser = await SharedPrefs().getUserDetails().timeout(
           const Duration(seconds: 5),
@@ -74,7 +72,7 @@ class EventController extends GetxController {
       }
 
       String? mMembershipID = mRegistrationUser?.membershipId ?? "";
-      
+
       if (mMembershipID.isEmpty) {
         debugPrint("⚠️ Membership ID is empty");
         if (context.mounted) {
@@ -134,7 +132,7 @@ class EventController extends GetxController {
 
       // Parse response
       QrDetailsResponse mQrDetailsResponse = mWebResponseSuccess.data;
-      
+
       debugPrint("→ Response status code: ${mQrDetailsResponse.statusCode}");
       debugPrint("→ Response data: ${mQrDetailsResponse.data}");
 
@@ -161,18 +159,20 @@ class EventController extends GetxController {
       if (responseData == null) {
         debugPrint("⚠️ Response data is null");
         isStatusPresent = false;
-      } 
+      }
       // Case 1: User IS registered - response object exists
-      else if (responseData.response != null && responseData.response!.status != null) {
+      else if (responseData.response != null &&
+          responseData.response!.status != null) {
         isStatusPresent = responseData.response!.status == 1;
-        debugPrint("→ User IS registered - status: ${responseData.response!.status}");
-      } 
+        debugPrint(
+          "→ User IS registered - status: ${responseData.response!.status}",
+        );
+      }
       // Case 2: User is NOT registered - check responseBool
       else if (responseData.responseBool != null) {
         isStatusPresent = responseData.responseBool == true;
         debugPrint("→ Checking responseBool: ${responseData.responseBool}");
-      } 
-      else {
+      } else {
         debugPrint("⚠️ No valid response data found");
         isStatusPresent = false;
       }
@@ -202,16 +202,12 @@ class EventController extends GetxController {
         Get.toNamed(AppRoutes.qrScreen, arguments: mQrDetails);
       } else {
         debugPrint("❌ User not registered → Event Detail Screen");
-        Get.toNamed(
-          AppRoutes.eventDetailOneScreen,
-          arguments: mEventModule,
-        );
+        Get.toNamed(AppRoutes.eventDetailOneScreen, arguments: mEventModule);
       }
-
     } catch (e, stackTrace) {
       debugPrint("❌ Unexpected error: $e");
       debugPrint("Stack trace: $stackTrace");
-      
+
       if (context.mounted) {
         AppAlert.showSnackBar(
           context,
@@ -224,7 +220,6 @@ class EventController extends GetxController {
     }
   }
 
-  /// Get event API
   Future<void> getEventUsApi() async {
     try {
       isLoading.value = true;
@@ -243,17 +238,18 @@ class EventController extends GetxController {
         sEventTitle.value =
             mEventResponse.data?.title ??
             "Every year, the club organizes a variety of programs and activities that encourage maximum participation by the members, especially the children.";
+
         sEventDec.value = mEventResponse.data?.content ?? "";
 
-        /// banner
+        // Banner
         if ((mEventResponse.data?.cmsPageAttachments ?? []).isNotEmpty &&
             (mEventResponse.data?.cmsPageAttachments?.first.fileUrl ?? "")
                 .isNotEmpty) {
           sEventBannerImage.value =
-              (mEventResponse.data?.cmsPageAttachments?.first.fileUrl ?? "");
+              mEventResponse.data!.cmsPageAttachments!.first.fileUrl!;
         }
 
-        /// event list
+        // Event list
         mEventList.clear();
         mEventList.addAll(mEventResponse.data?.module ?? []);
         intEventCount.value = mEventList.length;

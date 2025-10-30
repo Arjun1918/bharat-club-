@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/utils/app_text.dart';
 
 class SponsorItem extends StatelessWidget {
   final String imageUrl;
@@ -49,7 +50,7 @@ class SponsorItem extends StatelessWidget {
                   child: CircularProgressIndicator(
                     value: loadingProgress.expectedTotalBytes != null
                         ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
+                              loadingProgress.expectedTotalBytes!
                         : null,
                     color: AppColors.secondaryGreen,
                   ),
@@ -68,10 +69,9 @@ class SponsorItem extends StatelessWidget {
                     SizedBox(height: 8.h),
                     Text(
                       'Sponsor ${index + 1}',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w600,
+                      style: getTextSemiBold1(
+                        size: 14.sp,
+                        colors: AppColors.textPrimary,
                       ),
                     ),
                   ],

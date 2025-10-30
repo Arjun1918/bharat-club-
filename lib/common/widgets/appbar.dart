@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/utils/app_text.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -12,7 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     this.showBack = true,
-    this.showMenu = false, 
+    this.showMenu = false,
     this.onBack,
   });
 
@@ -29,11 +30,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 4,
         title: Text(
           title,
-          style: TextStyle(
-            fontSize: 25.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
+          style: getTextSemiBold(size: 25.sp, colors: AppColors.white),
         ),
         centerTitle: true,
         leading: showBack

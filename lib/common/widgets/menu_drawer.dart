@@ -6,6 +6,7 @@ import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/common/controller/side_menu_contoller.dart';
 import 'package:organization/common/widgets/snackbar.dart';
 import 'package:organization/data/local/shared_prefs/shared_prefs.dart';
+import 'package:organization/utils/app_text.dart';
 
 class MenuItem {
   final String title;
@@ -99,7 +100,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
         MenuItem(
           title: 'Privacy Policy',
           icon: Icons.privacy_tip_rounded,
-          route: '/privacy-policy',
+          route: AppRoutes.privacyPolicy,
           iconColor: AppColors.white,
         ),
       ],
@@ -110,7 +111,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
   void initState() {
     super.initState();
     print('CustomMenuDrawer initState called');
-    
+
     // Check if controller exists, if not create it
     if (Get.isRegistered<CustomMenuDrawerController>()) {
       controller = Get.find<CustomMenuDrawerController>();
@@ -119,7 +120,7 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
       controller = Get.put(CustomMenuDrawerController());
       print('Controller created');
     }
-    
+
     _logoAnimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -242,10 +243,10 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                             actions: [
                               TextButton(
                                 onPressed: () => Get.back(result: false),
-                                child: const Text(
+                                child: Text(
                                   'Cancel',
-                                  style: TextStyle(
-                                    color: AppColors.secondaryGreen,
+                                  style: getTextSemiBold(
+                                    colors: AppColors.primaryGreen,
                                   ),
                                 ),
                               ),
@@ -257,9 +258,11 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                                     borderRadius: BorderRadius.circular(8.r),
                                   ),
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'Logout',
-                                  style: TextStyle(color: Colors.white),
+                                  style: getTextSemiBold(
+                                    colors: AppColors.white,
+                                  ),
                                 ),
                               ),
                             ],
@@ -293,10 +296,9 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                             SizedBox(width: 8.w),
                             Text(
                               'Logout',
-                              style: TextStyle(
-                                color: AppColors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
+                              style: getTextBold(
+                                colors: AppColors.white,
+                                size: 16.sp,
                               ),
                             ),
                           ],
@@ -316,14 +318,14 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
   Widget _buildMenuItem(MenuItem item) {
     // CRITICAL FIX: Check route OUTSIDE Obx - Get.currentRoute is NOT observable
     final isActive = _isActiveRoute(item.route);
-    
+
     // Only wrap the admin check in Obx since adminStatus is the only observable
     return Obx(() {
       // Show loading or skip admin items while loading
       if (controller.isLoading.value && item.adminOnly) {
         return const SizedBox.shrink();
       }
-      
+
       // Skip admin-only items if user is not admin
       if (item.adminOnly && !controller.adminStatus.value) {
         return const SizedBox.shrink();
@@ -379,10 +381,11 @@ class _CustomMenuDrawerState extends State<CustomMenuDrawer>
                   Expanded(
                     child: Text(
                       item.title,
-                      style: TextStyle(
-                        color: isActive ? AppColors.white : Colors.grey.shade300,
-                        fontSize: 18.sp,
-                        fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                      style: getTextSemiBold(
+                        colors: isActive
+                            ? AppColors.white
+                            : Colors.grey.shade300,
+                        size: 18.sp,
                       ),
                     ),
                   ),

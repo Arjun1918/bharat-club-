@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:get/get.dart';
 import 'package:organization/alert/app_alert.dart';
@@ -8,10 +9,13 @@ import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/banner_card.dart';
 import 'package:organization/screens/gallery/controller/gallery_contoller.dart';
 import 'package:organization/screens/gallery/model/gallery_model.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:staggered_grid_view/flutter_staggered_grid_view.dart';
+
+// Import font helpers
 
 class GalleryListScreen extends GetView<GalleryController> {
   const GalleryListScreen({super.key});
@@ -40,11 +44,11 @@ class GalleryListScreen extends GetView<GalleryController> {
         },
         onVisibilityLost: () {},
         child: Container(
-          padding: const EdgeInsets.all(12),
-          margin: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.w),
+          margin: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.4),
@@ -68,16 +72,12 @@ class GalleryListScreen extends GetView<GalleryController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             BannerCard(bannerUrl: controller.sGalleryBannerImage.value),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
             Text(
               "${controller.sGalleryTitle.value}\n${controller.sGalleryDec.value}",
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: Colors.black,
-              ),
+              style: getTextSemiBold1(size: 16.sp, colors: Colors.black),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 15.h),
             controller.intGalleryCount.value > 0
                 ? StaggeredGridView.countBuilder(
                     staggeredTileBuilder: (int index) =>
@@ -86,9 +86,9 @@ class GalleryListScreen extends GetView<GalleryController> {
                     shrinkWrap: true,
                     itemCount: controller.mGalleryList.length,
                     crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    itemBuilder: (BuildContext context, int index) {
+                    crossAxisSpacing: 12.w,
+                    mainAxisSpacing: 12.h,
+                    itemBuilder: (context, index) {
                       return _buildGalleryItem(
                         controller.mGalleryList[index],
                         index,
@@ -96,15 +96,15 @@ class GalleryListScreen extends GetView<GalleryController> {
                       );
                     },
                   )
-                : Container(
-                    alignment: Alignment.center,
-                    height: 250,
-                    child: Text(
-                      "No data found",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.cAppColorsBlue,
-                        fontSize: 18,
+                : SizedBox(
+                    height: 250.h,
+                    child: Center(
+                      child: Text(
+                        "No data found",
+                        style: getTextMedium(
+                          colors: AppColors.cAppColorsBlue,
+                          size: 18.sp,
+                        ),
                       ),
                     ),
                   ),
@@ -124,19 +124,18 @@ class GalleryListScreen extends GetView<GalleryController> {
     return GestureDetector(
       onTap: () {
         if (isVideo) {
-          controller.webView((mGalleryModule.videoUrl ?? ''));
+          controller.webView(mGalleryModule.videoUrl ?? '');
         } else {
-          // Show fullscreen image viewer for images
           _showFullscreenImage(context, mGalleryModule, index);
         }
       },
       child: Hero(
-        tag: 'gallery_${index}',
+        tag: 'gallery_$index',
         child: Container(
-          height: 180,
+          height: 180.h,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.15),
@@ -146,7 +145,7 @@ class GalleryListScreen extends GetView<GalleryController> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -157,8 +156,8 @@ class GalleryListScreen extends GetView<GalleryController> {
                           child: Image.asset(
                             ImageAssetsConstants.goParkingLogo,
                             fit: BoxFit.contain,
-                            width: 80,
-                            height: 80,
+                            width: 80.w,
+                            height: 80.h,
                           ),
                         ),
                       )
@@ -170,7 +169,9 @@ class GalleryListScreen extends GetView<GalleryController> {
                           child: Center(
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: AppColors.cAppColorsBlue,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.cAppColorsBlue,
+                              ),
                             ),
                           ),
                         ),
@@ -200,7 +201,7 @@ class GalleryListScreen extends GetView<GalleryController> {
                 if (isVideo)
                   Center(
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: EdgeInsets.all(12.w),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
                         shape: BoxShape.circle,
@@ -213,23 +214,23 @@ class GalleryListScreen extends GetView<GalleryController> {
                       ),
                       child: Icon(
                         Icons.play_arrow_rounded,
-                        size: 32,
+                        size: 32.sp,
                         color: AppColors.cAppColorsBlue,
                       ),
                     ),
                   ),
                 Positioned(
-                  top: 8,
-                  right: 8,
+                  top: 8.h,
+                  right: 8.w,
                   child: Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Icon(
                       isVideo ? Icons.videocam : Icons.image,
-                      size: 16,
+                      size: 16.sp,
                       color: AppColors.cAppColorsBlue,
                     ),
                   ),
@@ -270,13 +271,9 @@ class FullscreenGalleryController extends GetxController {
     pageController = PageController(initialPage: initialIndex);
   }
 
-  void toggleControls() {
-    showControls.value = !showControls.value;
-  }
+  void toggleControls() => showControls.value = !showControls.value;
 
-  void onPageChanged(int index) {
-    currentIndex.value = index;
-  }
+  void onPageChanged(int index) => currentIndex.value = index;
 
   void previousPage() {
     if (currentIndex.value > 0) {
@@ -316,7 +313,6 @@ class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize controller with initial index
     controller.initializeController(initialIndex);
 
     return Scaffold(
@@ -342,11 +338,13 @@ class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
                             ? Image.asset(
                                 ImageAssetsConstants.goParkingLogo,
                                 fit: BoxFit.contain,
+                                width: 200.w,
+                                height: 200.h,
                               )
                             : CachedNetworkImage(
                                 imageUrl: item.fileUrl ?? "",
                                 fit: BoxFit.contain,
-                                placeholder: (context, url) => Center(
+                                placeholder: (context, url) => const Center(
                                   child: CircularProgressIndicator(
                                     color: AppColors.cAppColorsBlue,
                                   ),
@@ -382,38 +380,30 @@ class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
                   ),
                 ),
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top + 8,
-                  left: 16,
-                  right: 16,
-                  bottom: 16,
+                  top: MediaQuery.of(context).padding.top + 8.h,
+                  left: 16.w,
+                  right: 16.w,
+                  bottom: 16.h,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 28,
-                      ),
+                      icon: Icon(Icons.close, color: Colors.white, size: 28.sp),
                       onPressed: () => Get.back(),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 6.h,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
                         '${controller.currentIndex.value + 1} / ${galleryList.length}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: getTextMedium(colors: Colors.white, size: 14.sp),
                       ),
                     ),
                   ],
@@ -436,10 +426,10 @@ class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
                   ),
                 ),
                 padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 16,
-                  left: 16,
-                  right: 16,
-                  top: 16,
+                  bottom: MediaQuery.of(context).padding.bottom + 16.h,
+                  left: 16.w,
+                  right: 16.w,
+                  top: 16.h,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -450,13 +440,12 @@ class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
                         color: controller.currentIndex.value > 0
                             ? Colors.white
                             : Colors.white38,
-                        size: 24,
+                        size: 24.sp,
                       ),
                       onPressed: controller.currentIndex.value > 0
                           ? controller.previousPage
                           : null,
                     ),
-
                     IconButton(
                       icon: Icon(
                         Icons.arrow_forward_ios_rounded,
@@ -465,7 +454,7 @@ class FullscreenGalleryViewer extends GetView<FullscreenGalleryController> {
                                 galleryList.length - 1
                             ? Colors.white
                             : Colors.white38,
-                        size: 24,
+                        size: 24.sp,
                       ),
                       onPressed:
                           controller.currentIndex.value < galleryList.length - 1

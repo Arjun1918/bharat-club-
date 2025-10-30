@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
+import 'package:organization/utils/app_text.dart';
 import '../../../data/mode/event_qr_scan/qr_details_response.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 
@@ -28,11 +29,11 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
         body: Container(
           height: 0.85.sh,
           width: 1.sw,
-          padding: EdgeInsets.all(13.h),
-          margin: EdgeInsets.all(13.h),
+          padding: EdgeInsets.all(13.w),
+          margin: EdgeInsets.all(13.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+            borderRadius: BorderRadius.circular(10.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.4),
@@ -56,7 +57,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
           children: [
             Text(
               "Primary Person Contact Details",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: getTextBold(colors: Colors.black87, size: 18.sp),
             ),
             SizedBox(height: 10.h),
             _buildDetailRow("Primary Name", controller.participantName.value),
@@ -66,7 +67,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
 
             Text(
               "Adult Member Details",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: getTextBold(colors: Colors.black87, size: 18.sp),
             ),
             SizedBox(height: 10.h),
             _buildDetailRow(
@@ -78,7 +79,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
 
             Text(
               "Children Details",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: getTextBold(colors: Colors.black87, size: 18.sp),
             ),
             SizedBox(height: 10.h),
             _buildDetailRow(
@@ -94,7 +95,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
 
             Text(
               "Guest Details",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: getTextBold(colors: Colors.black87, size: 18.sp),
             ),
             SizedBox(height: 10.h),
             _buildDetailRow(
@@ -114,7 +115,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
 
             Text(
               "Attendance",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: getTextBold(colors: Colors.black87, size: 18.sp),
             ),
             SizedBox(height: 10.h),
 
@@ -125,12 +126,11 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
             ),
 
             // Child Attended
-            controller.memberChildStatus.value == 1
-                ? _buildTextField(
-                    "Child Attended",
-                    controller.childAttendedController,
-                  )
-                : const SizedBox.shrink(),
+            if (controller.memberChildStatus.value == 1)
+              _buildTextField(
+                "Child Attended",
+                controller.childAttendedController,
+              ),
 
             // Guest Attended
             _buildTextField(
@@ -139,18 +139,17 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
             ),
 
             // Guest Child Attended
-            controller.guestChildStatus.value == 1
-                ? _buildTextField(
-                    "Guest Child Attended",
-                    controller.guestChildAttendedController,
-                  )
-                : const SizedBox.shrink(),
+            if (controller.guestChildStatus.value == 1)
+              _buildTextField(
+                "Guest Child Attended",
+                controller.guestChildAttendedController,
+              ),
 
             Divider(height: 20.h, color: Colors.grey),
 
             Text(
               "Remarks (Optional)",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: getTextBold(colors: Colors.black87, size: 18.sp),
             ),
             SizedBox(height: 10.h),
             _buildRemarksTextField(),
@@ -158,7 +157,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
 
             Center(
               child: SizedBox(
-                width: double.infinity, // ✅ full width button
+                width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     controller.validateAndSubmitAttendance();
@@ -172,13 +171,9 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 16.h),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Submit",
-                    style: TextStyle(
-                      color: Colors.white, // ✅ white text
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
+                    style: getTextSemiBold(colors: Colors.white, size: 16.sp),
                   ),
                 ),
               ),
@@ -267,10 +262,9 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
                 Expanded(
                   child: Text(
                     label,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Colors.grey.shade800,
-                      fontWeight: FontWeight.w500,
+                    style: getTextMedium(
+                      colors: Colors.grey.shade800,
+                      size: 16.sp,
                     ),
                     overflow: TextOverflow.visible,
                     softWrap: true,
@@ -284,11 +278,7 @@ class QrScanSuccessScreen extends GetView<QrScanSuccessController> {
             flex: 2,
             child: Text(
               value,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue.shade700,
-              ),
+              style: getTextBold(colors: Colors.blue.shade700, size: 16.sp),
               overflow: TextOverflow.visible,
               softWrap: true,
             ),

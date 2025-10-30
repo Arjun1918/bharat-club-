@@ -1,6 +1,8 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/screens/about_us/controller/about_us_controller.dart';
 import 'package:organization/common/widgets/banner_card.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/message_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/loader.dart';
@@ -80,11 +82,10 @@ class AboutUsScreen extends GetView<AboutUsController> {
       ),
       child: Text(
         text,
-        style: TextStyle(
-          fontSize: isTitle ? 20 : 16,
-          fontWeight: isTitle ? FontWeight.bold : FontWeight.normal,
-          color: isTitle ? Colors.black87 : Colors.black87,
-          height: 1.5,
+        style: getTextMedium(
+          size: isTitle ? 20 : 16,
+          colors: isTitle ? Colors.black87 : Colors.black87,
+          heights: 1.5.sp,
         ),
       ),
     );

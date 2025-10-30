@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/utils/app_text.dart';
 
 class EventCard extends StatelessWidget {
   final String title;
@@ -70,10 +71,9 @@ class EventCard extends StatelessWidget {
                       ),
                       child: Text(
                         date,
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                        style: getTextSemiBold(
+                          size: 13.sp,
+                          colors: AppColors.white,
                         ),
                       ),
                     ),
@@ -84,14 +84,13 @@ class EventCard extends StatelessWidget {
                 padding: EdgeInsets.all(16.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min, // 👈 prevent unbounded height
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                      style: getTextSemiBold(
+                        colors: AppColors.black,
+                        size: 16.sp,
                       ),
                       maxLines: 1, // 👈 show only one line for title
                       overflow: TextOverflow.ellipsis,
@@ -99,10 +98,7 @@ class EventCard extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Text(
                       description,
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.grey[600],
-                      ),
+                      style: getTextRegular(colors: AppColors.textPrimary),
                       maxLines: 1, // 👈 limit to 3 lines
                       overflow:
                           TextOverflow.ellipsis, // 👈 show "..." if longer

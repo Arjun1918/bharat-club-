@@ -37,16 +37,6 @@ class GalleryItem extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8.h),
-              // Text(
-              //   title,
-              //   style: TextStyle(
-              //     fontSize: 14.sp,
-              //     fontWeight: FontWeight.w600,
-              //     color: Colors.black87,
-              //   ),
-              //   maxLines: 1,
-              //   overflow: TextOverflow.ellipsis,
-              // ),
             ],
           ),
         ),

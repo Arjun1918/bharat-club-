@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:organization/common/constant/image_constants.dart';
 import 'package:organization/common/widgets/appbar.dart';
 import 'package:organization/common/widgets/text_input.dart';
+import 'package:organization/utils/app_text.dart';
 import 'package:organization/utils/app_util.dart';
 import '../controller/profile_controller.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
@@ -16,27 +17,26 @@ class EditProfileInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _initializeControllers();
-    return Scaffold(
-      body: _fullView(),
-    );
+    return Scaffold(body: _fullView());
   }
 
   void _initializeControllers() {
     // Initialize all controllers with existing data from the profile
     // Company Name - maps to 'company_name' in API
     controller.mUserNameController.value.text = controller.companyName.value;
-    
+
     // Designation - maps to 'designation' in API
     controller.mDesignationController.value.text = controller.designation.value;
-    
-    // Location - maps to 'location' in API  
+
+    // Location - maps to 'location' in API
     controller.mEmailController.value.text = controller.companyLocation.value;
-    
+
     // Company Website - maps to 'company_website' in API
     controller.mPhoneNoController.value.text = controller.companyWebSite.value;
-    
+
     // LinkedIn URL - maps to 'linkedin_url' in API
-    controller.mLinkedinController.value.text = controller.companyLinkedin.value;
+    controller.mLinkedinController.value.text =
+        controller.companyLinkedin.value;
   }
 
   Widget _fullView() {
@@ -109,18 +109,17 @@ class EditProfileInformationScreen extends StatelessWidget {
               children: [
                 Text(
                   'Company Profile',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey.shade800,
+                  style: getTextSemiBold(
+                    size: 18.sp,
+                    colors: Colors.grey.shade800,
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   'Update your organization details',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.grey.shade600,
+                  style: getTextRegular(
+                    size: 13.sp,
+                    colors: Colors.grey.shade600,
                   ),
                 ),
               ],
@@ -246,12 +245,11 @@ class EditProfileInformationScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                       SizedBox(width: 8.w),
-                      const Text(
+                      Text(
                         "Update Profile",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                        style: getTextSemiBold(
+                          colors: Colors.white,
+                          size: 16.sp,
                         ),
                       ),
                     ],
@@ -280,11 +278,7 @@ class EditProfileInformationScreen extends StatelessWidget {
         SizedBox(width: 8.w),
         Text(
           title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey.shade800,
-          ),
+          style: getTextSemiBold(size: 16.sp, colors: Colors.grey.shade800),
         ),
       ],
     );
@@ -328,18 +322,11 @@ class EditProfileInformationScreen extends StatelessWidget {
             padding: EdgeInsets.only(left: 12.w),
             child: Row(
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 14.sp,
-                  color: Colors.red.shade600,
-                ),
+                Icon(Icons.error_outline, size: 14.sp, color: AppColors.error),
                 SizedBox(width: 4.w),
                 Text(
                   errorText,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.red.shade600,
-                  ),
+                  style: getTextMedium(size: 12.sp, colors: AppColors.error),
                 ),
               ],
             ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
+import 'package:organization/utils/app_text.dart';
+
+// Import your font helpers
 
 class SectionHeader extends StatelessWidget {
   final String title;
@@ -23,10 +26,9 @@ class SectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(
-              fontSize: 22.sp,
-              color: AppColors.secondaryGreen,
-              fontWeight: FontWeight.bold,
+            style: getTextSemiBold(
+              colors: AppColors.secondaryGreen,
+              size: 22.sp,
             ),
           ),
           if (showViewAll)
@@ -34,10 +36,9 @@ class SectionHeader extends StatelessWidget {
               onPressed: onViewAllPressed,
               child: Text(
                 'View All',
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: AppColors.secondaryGreen,
-                  fontWeight: FontWeight.w600,
+                style: getTextMedium(
+                  colors: AppColors.secondaryGreen,
+                  size: 14.sp,
                 ),
               ),
             ),
