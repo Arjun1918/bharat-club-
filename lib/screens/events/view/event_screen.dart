@@ -182,7 +182,7 @@ class _EventScreenState extends State<EventScreen> {
                                     mEventModule.title ?? "",
                                     style: getTextSemiBold(
                                       colors: Colors.white,
-                                      size: 15.sp,
+                                      size: 16.sp,
                                     ),
                                   ),
                                   SizedBox(height: 4.h),
@@ -192,7 +192,7 @@ class _EventScreenState extends State<EventScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     style: getTextSemiBold(
                                       colors: Colors.white,
-                                      size: 12.sp,
+                                      size: 13.sp,
                                     ),
                                   ),
                                 ],
@@ -205,7 +205,7 @@ class _EventScreenState extends State<EventScreen> {
                                 mEventModule.endDate ?? "",
                                 style: getTextSemiBold(
                                   colors: Colors.white,
-                                  size: 12.sp,
+                                  size: 15.sp,
                                 ),
                               ),
                             ),
@@ -264,8 +264,8 @@ class _EventScreenState extends State<EventScreen> {
                   child: Text(
                     item.text,
                     style: getTextRegular(
-                      colors: Colors.black87, //function
-                      size: 13.sp,
+                      colors: Colors.black87,//function 
+                      size: 15.sp,
                       heights: 1.5,
                     ),
                   ),
@@ -280,7 +280,7 @@ class _EventScreenState extends State<EventScreen> {
               item.text,
               style: getTextSemiBold(
                 colors: Colors.black,
-                size: 15.sp,
+                size: 17.sp,
                 heights: 1.4,
               ),
             ),
@@ -291,8 +291,8 @@ class _EventScreenState extends State<EventScreen> {
             child: Text(
               item.text,
               style: getTextSemiBold(
-                colors: Colors.black87,
-                size: 13.sp,
+                colors: Colors.black87,//chnage
+                size: 16.sp,
                 heights: 1.5,
               ),
               textAlign: TextAlign.left,
