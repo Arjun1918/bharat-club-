@@ -83,7 +83,7 @@ class AboutUsScreen extends GetView<AboutUsController> {
       child: Text(
         text,
         style: getTextMedium(
-          size: isTitle ? 20 : 16,
+          size: isTitle ? 20.sp : 16.sp,
           colors: isTitle ? Colors.black87 : Colors.black87,
           heights: 1.5.sp,
         ),
