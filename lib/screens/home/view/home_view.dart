@@ -89,10 +89,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 : 'https://picsum.photos/200',
           ),
         ),
+        SizedBox(height: 8.h),
         _buildEventsSection(),
+        SizedBox(height: 4.h),
         _buildGallerySection(),
-        _buildSponsorsCarousel(),
-        SizedBox(height: 20.h),
+        Transform.translate(
+          offset: Offset(0, -30.h), 
+          child: _buildSponsorsCarousel(),
+        ),
+        SizedBox(height: 12.h),
       ],
     );
   }
@@ -104,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SectionShimmer(itemWidth: 280.w, itemHeight: 220.h, itemCount: 3),
         SectionShimmer(itemWidth: 160.w, itemHeight: 200.h, itemCount: 5),
         const SponsorShimmer(),
-        SizedBox(height: 20.h),
+        SizedBox(height: 12.h),
       ],
     );
   }
@@ -132,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Get.toNamed(AppRoutes.events);
             },
           ),
+          SizedBox(height: 4.h),
           SizedBox(
             height: 220.h,
             child: ListView.builder(
@@ -164,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     });
   }
+
   void _handleEventTap(dynamic event) {
     if (controller.membershipStatus.value) {
       controller.checkEventAppliedStatus(event);
@@ -191,6 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Get.toNamed(AppRoutes.gallery);
             },
           ),
+          SizedBox(height: 4.h),
           SizedBox(
             height: 200.h,
             child: ListView.builder(
@@ -259,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }).toList(),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 4.h),
           Obx(
             () => CarouselIndicators(
               itemCount: sponsors.length,

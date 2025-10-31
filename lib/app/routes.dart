@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:organization/alert/app_alert.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/data/mode/cms_page/event_response.dart';
 import 'package:organization/data/mode/event_qr_scan/qr_details_request.dart';
@@ -99,8 +102,42 @@ class AppPages {
 
     GetPage(
       name: AppRoutes.qrScreen,
-      page: () =>
-          QrCodeGenerateScreen(mQrDetails: Get.arguments as QrDetailsRequest),
+      page: () {
+        final args = Get.arguments;
+
+        // Debug print
+        print("QR Screen - Arguments received: $args");
+        print("Arguments type: ${args.runtimeType}");
+
+        if (args == null) {
+          print("ERROR: Arguments are null!");
+          // Navigate back or to home
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Get.back();
+            AppAlert.showSnackBar(
+              Get.context!,
+              "Invalid QR data. Please try again.",
+            );
+          });
+          return Container(); // Temporary fallback
+        }
+
+        if (args is! QrDetailsRequest) {
+          print(
+            "ERROR: Arguments are not QrDetailsRequest: ${args.runtimeType}",
+          );
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Get.back();
+            AppAlert.showSnackBar(
+              Get.context!,
+              "Invalid QR data format. Please try again.",
+            );
+          });
+          return Container(); // Temporary fallback
+        }
+
+        return QrCodeGenerateScreen(mQrDetails: args);
+      },
       transition: Transition.rightToLeftWithFade,
     ),
 

@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/utils/app_text.dart';
 
-// Import your font helpers
-
 class SectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onViewAllPressed;
@@ -20,7 +18,7 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 4.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -28,12 +26,17 @@ class SectionHeader extends StatelessWidget {
             title,
             style: getTextSemiBold(
               colors: AppColors.secondaryGreen,
-              size: 22.sp,
+              size: 18.sp,
             ),
           ),
           if (showViewAll)
             TextButton(
               onPressed: onViewAllPressed,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
               child: Text(
                 'View All',
                 style: getTextMedium(

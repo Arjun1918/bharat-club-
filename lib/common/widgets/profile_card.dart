@@ -20,7 +20,12 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16.w),
+      margin: EdgeInsets.only(
+        left: 16.w,
+        right: 16.w,
+        top: 16.w,
+        bottom: 4.w, // Reduced from 16.w to 8.w
+      ),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         gradient: const LinearGradient(

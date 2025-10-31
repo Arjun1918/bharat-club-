@@ -29,7 +29,7 @@ class EventCard extends StatelessWidget {
         tag: 'event_$index',
         child: Container(
           width: 280.w,
-          margin: EdgeInsets.only(right: 16.w),
+          margin: EdgeInsets.only(right: 12.w), // Reduced from 16.w
           decoration: BoxDecoration(
             color: AppColors.cardBackground,
             borderRadius: BorderRadius.circular(16.r),
@@ -81,7 +81,7 @@ class EventCard extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(12.w), // Reduced from 16.w
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -92,16 +92,15 @@ class EventCard extends StatelessWidget {
                         colors: AppColors.black,
                         size: 16.sp,
                       ),
-                      maxLines: 1, // 👈 show only one line for title
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 4.h),
                     Text(
                       description,
                       style: getTextRegular(colors: AppColors.textPrimary),
-                      maxLines: 1, // 👈 limit to 3 lines
-                      overflow:
-                          TextOverflow.ellipsis, // 👈 show "..." if longer
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
