@@ -59,7 +59,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
           _generateBanners(mEventModule.eventAttachments),
 
           SizedBox(height: 20.h),
-          
+
           // Event Title with icon
           Row(
             children: [
@@ -87,9 +87,9 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
               ),
             ],
           ),
-          
+
           SizedBox(height: 28.h),
-          
+
           // Food Catering Section with enhanced card
           controller.mFoodStatus == '1'
               ? _buildSectionCard(
@@ -142,7 +142,8 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                       child: Row(
                         children: [
                           Checkbox(
-                            value: controller.isSubscriptionRenewalChecked.value,
+                            value:
+                                controller.isSubscriptionRenewalChecked.value,
                             onChanged: (value) {
                               controller.isSubscriptionRenewalCheck(value!);
                             },
@@ -186,7 +187,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
           // Enhanced Proceed Button
           SizedBox(height: 40.h),
           _buildProceedButton(),
-          
+
           SizedBox(height: 20.h),
         ],
       ),
@@ -208,10 +209,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
             SizedBox(width: 8.w),
             Text(
               label,
-              style: getTextRegular(
-                colors: Colors.black87,
-                size: 15.sp,
-              ),
+              style: getTextRegular(colors: Colors.black87, size: 15.sp),
             ),
           ],
         ),
@@ -302,13 +300,10 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
           children: [
             Text(
               "Accepted formats: Image or PDF",
-              style: getTextRegular(
-                colors: Colors.grey,
-                size: 13.sp,
-              ),
+              style: getTextRegular(colors: Colors.grey, size: 13.sp),
             ),
             SizedBox(height: 12.h),
-            
+
             if (selectedFile.isNotEmpty)
               Container(
                 margin: EdgeInsets.only(bottom: 12.h),
@@ -382,10 +377,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                     SizedBox(width: 10.w),
                     Text(
                       "Choose File",
-                      style: getTextSemiBold(
-                        colors: Colors.white,
-                        size: 15.sp,
-                      ),
+                      style: getTextSemiBold(colors: Colors.white, size: 15.sp),
                     ),
                   ],
                 ),
@@ -437,10 +429,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 SizedBox(height: 4.h),
                 Text(
                   "RM ${controller.totalPaymentAmount.value.toStringAsFixed(2)}",
-                  style: getTextBold(
-                    colors: Colors.white,
-                    size: 24.sp,
-                  ),
+                  style: getTextBold(colors: Colors.white, size: 24.sp),
                 ),
               ],
             ),
@@ -495,11 +484,8 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Proceed to Payment",
-                  style: getTextSemiBold(
-                    colors: Colors.white,
-                    size: 16.sp,
-                  ),
+                  "Proceed",
+                  style: getTextSemiBold(colors: Colors.white, size: 16.sp),
                 ),
                 SizedBox(width: 8.w),
                 Icon(Icons.arrow_forward, color: Colors.white, size: 20.sp),
@@ -563,8 +549,10 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
             Divider(color: Colors.grey.shade300, thickness: 1),
 
             summaryRow(
-              label: "Adults (${controller.mNumberOfAdultsController.value.text} x ${(double.tryParse(controller.mMemberAdultAmount.value) ?? 0.0).toStringAsFixed(2)}):",
-              amount: "${(int.tryParse(controller.mNumberOfAdultsController.value.text) ?? 0) * (double.tryParse(controller.mMemberAdultAmount.value) ?? 0.00)}",
+              label:
+                  "Adults (${controller.mNumberOfAdultsController.value.text} x ${(double.tryParse(controller.mMemberAdultAmount.value) ?? 0.0).toStringAsFixed(2)}):",
+              amount:
+                  "${(int.tryParse(controller.mNumberOfAdultsController.value.text) ?? 0) * (double.tryParse(controller.mMemberAdultAmount.value) ?? 0.00)}",
             ),
 
             (controller.mMemberChildStatus.value == '1')
@@ -572,18 +560,22 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                     children: [
                       Divider(color: Colors.grey.shade300, thickness: 1),
                       summaryRow(
-                        label: "Children (${controller.mNumberOfChildrenAgeLimitController.value.text} x ${(double.tryParse(controller.mMemberChildAmount.value) ?? 0.00).toStringAsFixed(2)}):",
-                        amount: "${(int.tryParse(controller.mNumberOfChildrenAgeLimitController.value.text) ?? 0) * (double.tryParse(controller.mMemberChildAmount.value) ?? 0.0)}",
+                        label:
+                            "Children (${controller.mNumberOfChildrenAgeLimitController.value.text} x ${(double.tryParse(controller.mMemberChildAmount.value) ?? 0.00).toStringAsFixed(2)}):",
+                        amount:
+                            "${(int.tryParse(controller.mNumberOfChildrenAgeLimitController.value.text) ?? 0) * (double.tryParse(controller.mMemberChildAmount.value) ?? 0.0)}",
                       ),
                     ],
                   )
                 : SizedBox.shrink(),
-            
+
             Divider(color: Colors.grey.shade300, thickness: 1),
 
             summaryRow(
-              label: "Guests (${controller.mNumberOfGuestAdultsController.value.text} x ${(double.tryParse(controller.mGuestAdultAmount.value) ?? 0.0).toStringAsFixed(2)}):",
-              amount: "${(int.tryParse(controller.mNumberOfGuestAdultsController.value.text) ?? 0) * (double.tryParse(controller.mGuestAdultAmount.value) ?? 0.0)}",
+              label:
+                  "Guests (${controller.mNumberOfGuestAdultsController.value.text} x ${(double.tryParse(controller.mGuestAdultAmount.value) ?? 0.0).toStringAsFixed(2)}):",
+              amount:
+                  "${(int.tryParse(controller.mNumberOfGuestAdultsController.value.text) ?? 0) * (double.tryParse(controller.mGuestAdultAmount.value) ?? 0.0)}",
             ),
 
             controller.mGuestChildStatus == '1'
@@ -591,8 +583,10 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                     children: [
                       Divider(color: Colors.grey.shade300, thickness: 1),
                       summaryRow(
-                        label: "Guest Children (${controller.mNumberOfGuestChildrenAge12AboveController.value.text} x ${(double.tryParse(controller.mGuestChildAmount.value) ?? 0.0).toStringAsFixed(2)}):",
-                        amount: "${(int.tryParse(controller.mNumberOfGuestChildrenAge12AboveController.value.text) ?? 0) * (double.tryParse(controller.mGuestChildAmount.value) ?? 0.0)}",
+                        label:
+                            "Guest Children (${controller.mNumberOfGuestChildrenAge12AboveController.value.text} x ${(double.tryParse(controller.mGuestChildAmount.value) ?? 0.0).toStringAsFixed(2)}):",
+                        amount:
+                            "${(int.tryParse(controller.mNumberOfGuestChildrenAge12AboveController.value.text) ?? 0) * (double.tryParse(controller.mGuestChildAmount.value) ?? 0.0)}",
                       ),
                     ],
                   )
@@ -607,7 +601,10 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
             ],
 
             SizedBox(height: 12.h),
-            Divider(color: AppColors.cAppColorsBlue.withOpacity(0.3), thickness: 2),
+            Divider(
+              color: AppColors.cAppColorsBlue.withOpacity(0.3),
+              thickness: 2,
+            ),
             SizedBox(height: 8.h),
 
             Container(
@@ -713,10 +710,7 @@ class EventDetailsTwoScreen extends GetView<EventDetailsOneController> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.3),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.3)],
                 ),
               ),
             ),
