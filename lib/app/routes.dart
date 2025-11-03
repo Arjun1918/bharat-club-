@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/bindings_interface.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:organization/alert/app_alert.dart';
 import 'package:organization/app/routes_name.dart';
 import 'package:organization/data/mode/cms_page/event_response.dart';
 import 'package:organization/data/mode/event_qr_scan/qr_details_request.dart';
@@ -104,30 +102,25 @@ class AppPages {
       name: AppRoutes.qrScreen,
       page: () {
         final args = Get.arguments;
-
-        // Debug print
         print("QR Screen - Arguments received: $args");
         print("Arguments type: ${args.runtimeType}");
 
         if (args == null) {
           print("ERROR: Arguments are null!");
-          return Container(); // Return empty container, don't navigate
+          return Container();
         }
 
         if (args is! QrDetailsRequest) {
           print(
             "ERROR: Arguments are not QrDetailsRequest: ${args.runtimeType}",
           );
-          return Container(); // Return empty container
+          return Container();
         }
 
         return QrCodeGenerateScreen(mQrDetails: args);
       },
       transition: Transition.rightToLeftWithFade,
-      // Add this to clear arguments when page is disposed
-      binding: BindingsBuilder(() {
-        // Clean up when leaving
-      }),
+      binding: BindingsBuilder(() {}),
     ),
     GetPage(
       name: AppRoutes.eventDetailTwoScreen,
