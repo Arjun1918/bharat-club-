@@ -8,6 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBack;
   final bool showMenu;
   final VoidCallback? onBack;
+  final VoidCallback? onBackPressed; // Add this parameter
 
   const CustomAppBar({
     super.key,
@@ -15,6 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showBack = true,
     this.showMenu = false,
     this.onBack,
+    this.onBackPressed, // Add this parameter
   });
 
   @override
@@ -36,7 +38,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         leading: showBack
             ? IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: onBack ?? () => Navigator.pop(context),
+                onPressed:
+                    onBackPressed ??
+                    onBack ??
+                    () => Navigator.pop(context), // Use onBackPressed first
               )
             : showMenu
             ? Builder(
@@ -50,7 +55,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 },
               )
             : null,
-
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16.w),

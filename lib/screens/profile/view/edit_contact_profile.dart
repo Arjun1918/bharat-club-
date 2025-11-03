@@ -73,6 +73,13 @@ class EditPersonOfContactScreen extends StatelessWidget {
     controller.mUserNameController.value.text = controller.pocFirstName.value;
     controller.mEmailController.value.text = controller.pocEmailId.value;
     controller.mPhoneNoController.value.text = controller.pocPhoneNumber.value;
+
+    // Initialize child controllers
+    controller.mChild1Controller.value.text = controller.child1.value;
+    controller.mChild2Controller.value.text = controller.child2.value;
+    controller.mChild3Controller.value.text = controller.child3.value;
+    controller.mChild4Controller.value.text = controller.child4.value;
+
     controller.setValidator();
   }
 
@@ -114,7 +121,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Person of Contact',
+                  'Family Details',
                   style: getTextSemiBold(
                     size: 18.sp,
                     colors: Colors.grey.shade800,
@@ -122,7 +129,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'Update contact person details',
+                  'Update contact person and children details',
                   style: getTextRegular(
                     size: 13.sp,
                     colors: Colors.grey.shade600,
@@ -204,6 +211,53 @@ class EditPersonOfContactScreen extends StatelessWidget {
                 ),
               ],
               maxLength: 11,
+            ),
+
+            SizedBox(height: 30.h),
+            _buildSectionTitle('Children Information'),
+            SizedBox(height: 16.h),
+
+            /// Child 1
+            _buildInputField(
+              label: 'Child One (Name / Age)',
+              controller: controller.mChild1Controller.value,
+              errorText: null,
+              icon: Icons.child_care_outlined,
+              hint: 'e.g., Alex / 10',
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(height: 20.h),
+
+            /// Child 2
+            _buildInputField(
+              label: 'Child Two (Name / Age)',
+              controller: controller.mChild2Controller.value,
+              errorText: null,
+              icon: Icons.child_care_outlined,
+              hint: 'e.g., Sammy / 12',
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(height: 20.h),
+
+            /// Child 3
+            _buildInputField(
+              label: 'Child Three (Name / Age)',
+              controller: controller.mChild3Controller.value,
+              errorText: null,
+              icon: Icons.child_care_outlined,
+              hint: 'e.g., John / 8',
+              keyboardType: TextInputType.text,
+            ),
+            SizedBox(height: 20.h),
+
+            /// Child 4
+            _buildInputField(
+              label: 'Child Four (Name / Age)',
+              controller: controller.mChild4Controller.value,
+              errorText: null,
+              icon: Icons.child_care_outlined,
+              hint: 'e.g., Maria / 15',
+              keyboardType: TextInputType.text,
             ),
           ],
         ),

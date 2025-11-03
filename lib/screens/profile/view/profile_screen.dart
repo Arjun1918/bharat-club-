@@ -382,7 +382,7 @@ class ProfileScreen extends GetView<ProfileController> {
               children: [
                 Expanded(
                   child: Text(
-                    "Person of Contact",
+                    "Family Details",
                     style: getTextRegular(size: 20.sp, colors: Colors.black87),
                   ),
                 ),
@@ -517,10 +517,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 Expanded(
                   child: Text(
                     "Professional Information",
-                    style: getTextRegular(
-                      size: 20.sp,
-                      colors: Colors.black87,
-                    ),
+                    style: getTextRegular(size: 20.sp, colors: Colors.black87),
                   ),
                 ),
                 SizedBox(
@@ -647,10 +644,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 SizedBox(height: 4.h),
                 Text(
                   value.isEmpty ? "--" : value,
-                  style: getTextSemiBold(
-                    size: 17.sp,
-                    colors: Colors.black87,
-                  ),
+                  style: getTextSemiBold(size: 17.sp, colors: Colors.black87),
                 ),
               ],
             ),

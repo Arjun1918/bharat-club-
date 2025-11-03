@@ -13,6 +13,7 @@ import 'package:organization/common/widgets/menu_drawer.dart';
 import 'package:organization/common/widgets/section_header.dart';
 import 'package:organization/common/widgets/shimmer_box.dart';
 import 'package:organization/common/widgets/sponsor_item.dart';
+import 'package:organization/data/mode/event_qr_scan/qr_details_request.dart';
 import 'package:organization/screens/home/view/home_controller.dart';
 import '../../../alert/app_alert.dart';
 
@@ -94,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(height: 4.h),
         _buildGallerySection(),
         Transform.translate(
-          offset: Offset(0, -30.h), 
+          offset: Offset(0, -30.h),
           child: _buildSponsorsCarousel(),
         ),
         SizedBox(height: 12.h),

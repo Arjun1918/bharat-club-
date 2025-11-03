@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/bindings_interface.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:organization/alert/app_alert.dart';
 import 'package:organization/app/routes_name.dart';
@@ -99,7 +100,6 @@ class AppPages {
           EventDetailsOneScreen(mEventModule: Get.arguments as EventModule),
       transition: Transition.rightToLeftWithFade,
     ),
-
     GetPage(
       name: AppRoutes.qrScreen,
       page: () {
@@ -111,36 +111,24 @@ class AppPages {
 
         if (args == null) {
           print("ERROR: Arguments are null!");
-          // Navigate back or to home
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            Get.back();
-            AppAlert.showSnackBar(
-              Get.context!,
-              "Invalid QR data. Please try again.",
-            );
-          });
-          return Container(); // Temporary fallback
+          return Container(); // Return empty container, don't navigate
         }
 
         if (args is! QrDetailsRequest) {
           print(
             "ERROR: Arguments are not QrDetailsRequest: ${args.runtimeType}",
           );
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            Get.back();
-            AppAlert.showSnackBar(
-              Get.context!,
-              "Invalid QR data format. Please try again.",
-            );
-          });
-          return Container(); // Temporary fallback
+          return Container(); // Return empty container
         }
 
         return QrCodeGenerateScreen(mQrDetails: args);
       },
       transition: Transition.rightToLeftWithFade,
+      // Add this to clear arguments when page is disposed
+      binding: BindingsBuilder(() {
+        // Clean up when leaving
+      }),
     ),
-
     GetPage(
       name: AppRoutes.eventDetailTwoScreen,
       page: () =>

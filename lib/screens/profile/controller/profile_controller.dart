@@ -45,6 +45,14 @@ class ProfileController extends GetxController {
       TextEditingController().obs;
   final Rx<TextEditingController> mLinkedinController =
       TextEditingController().obs;
+  final Rx<TextEditingController> mChild1Controller =
+      TextEditingController().obs;
+  final Rx<TextEditingController> mChild2Controller =
+      TextEditingController().obs;
+  final Rx<TextEditingController> mChild3Controller =
+      TextEditingController().obs;
+  final Rx<TextEditingController> mChild4Controller =
+      TextEditingController().obs;
 
   ///value
   RxBool membershipStatus = false.obs;
@@ -344,7 +352,12 @@ class ProfileController extends GetxController {
     mUserNameController.value.text = pocFirstName.value;
     mEmailController.value.text = pocEmailId.value;
     mPhoneNoController.value.text = pocPhoneNumber.value;
-    // Get.toNamed(RouteConstants.rEditPersonOfContactScreen);
+    mChild1Controller.value.text = child1.value;
+    mChild2Controller.value.text = child2.value;
+    mChild3Controller.value.text = child3.value;
+    mChild4Controller.value.text = child4.value;
+
+    Get.toNamed(AppRoutes.editPersonOfContactScreen);
   }
 
   personOfContactApi() async {
@@ -357,11 +370,19 @@ class ProfileController extends GetxController {
           pocEmail: mEmailController.value.text,
           pocFirstName: mUserNameController.value.text,
           pocMobile: mPhoneNoController.value.text,
+          childTwo: mChild2Controller.value.text,
+          childOne: mChild1Controller.value.text,
+          childThree: mChild3Controller.value.text,
+          childFour: mChild4Controller.value.text,
         );
+
         WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
             .postProfileUpdate(mProfileUpdateRequest);
+
         if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
           Get.back();
+          await Future.delayed(const Duration(milliseconds: 300));
+          getProfile();
         }
       } else {
         AppAlert.showSnackBar(
@@ -372,7 +393,6 @@ class ProfileController extends GetxController {
     });
   }
 
-  ///profile Information
   profileInformationDetails() {
     setValidator();
     mUserNameController.value.text = companyName.value;
@@ -380,8 +400,6 @@ class ProfileController extends GetxController {
     mEmailController.value.text = companyLocation.value;
     mPhoneNoController.value.text = companyWebSite.value;
     mLinkedinController.value.text = companyLinkedin.value;
-
-    // Get.toNamed(RouteConstants.rEditProfileInformationScreen);
   }
 
   profileInformationApi() async {
