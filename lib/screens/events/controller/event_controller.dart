@@ -37,7 +37,6 @@ class EventController extends GetxController {
       return;
     }
 
-    // CRITICAL: Store context reference before any async operations
     final BuildContext? context = Get.context;
     if (context == null || !context.mounted) {
       debugPrint("❌ Context is null or not mounted");
@@ -47,8 +46,6 @@ class EventController extends GetxController {
     try {
       isCheckingEvent.value = true;
       debugPrint("✅ Starting event status check");
-
-      // Get user details with timeout
       debugPrint("📋 Fetching user details...");
       RegistrationUser? mRegistrationUser;
 
@@ -71,7 +68,7 @@ class EventController extends GetxController {
         return;
       }
 
-      String? mMembershipID = mRegistrationUser?.membershipId ?? "";
+      String? mMembershipID = mRegistrationUser.membershipId ?? "";
 
       if (mMembershipID.isEmpty) {
         debugPrint("⚠️ Membership ID is empty");
@@ -86,8 +83,6 @@ class EventController extends GetxController {
 
       debugPrint("👤 Member ID: $mMembershipID");
       debugPrint("🎫 Event ID: ${mEventModule.id}");
-
-      // Create request
       QrDetailsRequest mQrDetailsRequest = QrDetailsRequest(
         eventId: (mEventModule.id ?? 0).toString(),
         membershipId: mMembershipID,
@@ -95,7 +90,6 @@ class EventController extends GetxController {
 
       debugPrint("📡 Calling API...");
 
-      // Make API call
       WebResponseSuccess mWebResponseSuccess;
       try {
         mWebResponseSuccess = await AllApiImpl()
@@ -130,7 +124,6 @@ class EventController extends GetxController {
         return;
       }
 
-      // Parse response
       QrDetailsResponse mQrDetailsResponse = mWebResponseSuccess.data;
 
       debugPrint("→ Response status code: ${mQrDetailsResponse.statusCode}");

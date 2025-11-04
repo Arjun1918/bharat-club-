@@ -8,6 +8,7 @@ import 'package:organization/data/mode/event_qr_scan/qr_details_request.dart';
 import 'package:organization/data/mode/event_qr_scan/qr_details_response.dart';
 import 'package:organization/screens/about_us/view/about_us_screen.dart';
 import 'package:organization/screens/agree_page/view/agree_page.dart';
+import 'package:organization/screens/change_password/view/change_password.dart';
 import 'package:organization/screens/contact_us/view/contact_us.dart';
 import 'package:organization/screens/event_details_one/view/event_details_one_screen.dart';
 import 'package:organization/screens/event_details_one/view/event_details_two_screen.dart';
@@ -33,6 +34,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.loginScreen,
       page: () => LoginScreen(),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: AppRoutes.changePassword,
+      page: () => ChangePasswordScreen(),
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Organization</string>
+	<string>Bharat Club</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- 🟢 Camera & Photo Library Permissions -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to your camera to take and upload photos.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your photo library to select and upload images.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires permission to save images to your photo library.</string>
 </dict>
 </plist>

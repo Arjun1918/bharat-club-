@@ -114,126 +114,100 @@ class LoginScreenController extends GetxController {
     await loginApi(RegistrationRequestType.NORMAL_LOGIN.name);
   }
 
-  Future<void> loginApi(String type) async {
+  loginApi(String type) async {
     try {
-      // Check internet connection
-      bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
-      
-      if (!isInternetAvailable) {
-        isLoading.value = false;
-        _showError(MessageConstants.noInternetConnection);
-        return;
-      }
+      NetworkUtils()
+          .checkInternetConnection()
+          .then((isInternetAvailable) async {
+            if (isInternetAvailable) {
+              try {
+                RegistrationRequest mRegistrationRequest = RegistrationRequest(
+                  email: mEmailController.text,
+                  password: mPasswordController.text,
+                  name: "",
+                  profile: "",
+                  mobile: "",
+                  type: "",
+                );
 
-      // Create login request
-      RegistrationRequest mRegistrationRequest = RegistrationRequest(
-          email: mEmailController.text.trim(),
-          password: mPasswordController.text.trim(),
-          name: "",
-          profile: "",
-          mobile: "",
-          type: type);
+                WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
+                    .postLogin(mRegistrationRequest);
 
-      print('Making login API call...');
+                // Hide loading after API response
+                isLoading.value = false;
 
-      // Make API call
-      WebResponseSuccess mWebResponseSuccess =
-          await AllApiImpl().postLogin(mRegistrationRequest);
-
-      print('API call completed with status: ${mWebResponseSuccess.statusCode}');
-
-      // Check status code
-      if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
-        await _handleSuccessfulLogin(mWebResponseSuccess);
-      } else {
-        isLoading.value = false;
-        _showError(mWebResponseSuccess.statusMessage ?? 'Login failed');
-      }
-    } catch (e, stackTrace) {
-      print('Login error: $e');
-      print('Stack trace: $stackTrace');
-      isLoading.value = false;
-      _showError('An error occurred. Please try again.');
-    }
-  }
-
-  Future<void> _handleSuccessfulLogin(WebResponseSuccess mWebResponseSuccess) async {
-    try {
-      print('Handling successful login...');
-
-      RegistrationResponse mRegistrationResponse = mWebResponseSuccess.data;
-
-      if (mRegistrationResponse.data == null) {
-        isLoading.value = false;
-        _showError('Invalid response from server');
-        return;
-      }
-
-      var responseData = mRegistrationResponse.data!;
-      var userData = responseData.user;
-
-      if (userData == null) {
-        isLoading.value = false;
-        _showError('User data not found');
-        return;
-      }
-
-      print('Saving user data using SharedPrefs...');
-
-      // Initialize shared prefs instance if not already
-      await SharedPrefs().sharedPreferencesInstance();
-
-      // Save token
-      String token = responseData.token ?? "";
-      await SharedPrefs().setUserToken(token);
-
-      // Save login status
-      String loginStatus = (userData.loginStatus ?? 1).toString();
-      await SharedPrefs().setUserLoginStatus(loginStatus);
-
-      // Save user details as JSON
-      try {
-        String userJson = jsonEncode(userData.toJson());
-        await SharedPrefs().setUserDetails(userJson);
-        print('User details saved');
-      } catch (jsonError) {
-        print('Error encoding user JSON: $jsonError');
-      }
-
-      // Clear controllers
-      mEmailController.clear();
-      mPasswordController.clear();
-
-      // Hide loader
-      isLoading.value = false;
-
-      // Decide where to go next
-      print('Navigating based on login status: $loginStatus');
-
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      if (loginStatus == "0") {
-        print('Navigating to forgot password screen...');
-        Get.offNamed(AppRoutes.forgot);
-      } else {
-        print('Navigating to home screen...');
-        Get.offAllNamed(AppRoutes.home);
-      }
-    } catch (e, stackTrace) {
-      print('Error in _handleSuccessfulLogin: $e');
-      print('Stack trace: $stackTrace');
-      isLoading.value = false;
-      _showError('Error processing login data');
-    }
-  }
-
-  void _showError(String message) {
-    try {
-      if (Get.context != null) {
-        AppAlert.showSnackBar(Get.context!, message);
-      }
+                if (mWebResponseSuccess.statusCode ==
+                    WebConstants.statusCode200) {
+                  RegistrationResponse mRegistrationResponse =
+                      mWebResponseSuccess.data;
+                  await SharedPrefs().setUserToken(
+                    mRegistrationResponse.data?.token ?? "",
+                  );
+                  await SharedPrefs().setUserLoginStatus(
+                    (mRegistrationResponse.data?.user?.loginStatus ?? 0)
+                        .toString(),
+                  );
+                  await SharedPrefs().setUserDetails(
+                    jsonEncode(mRegistrationResponse.data!.user),
+                  );
+                  if (mRegistrationResponse.data!.user != null) {
+                    if ((mRegistrationResponse.data?.user?.loginStatus ?? 0) ==
+                        0) {
+                      Get.toNamed(AppRoutes.changePassword);
+                    } else {
+                      mEmailController.text = "";
+                      mPasswordController.text = "";
+                      Get.delete<LoginScreenController>();
+                      Get.offNamed(AppRoutes.home);
+                    }
+                  } else {
+                    AppAlert.showSnackBar(
+                      Get.context!,
+                      'Please enter the valid user id and password',
+                    );
+                  }
+                } else {
+                  // Handle non-200 status codes
+                  AppAlert.showSnackBar(
+                    Get.context!,
+                    'Invalid credentials. Please try again.',
+                  );
+                }
+              } catch (e) {
+                // Hide loading on error
+                isLoading.value = false;
+                AppAlert.showSnackBar(
+                  Get.context!,
+                  'Login failed. Please try again.',
+                );
+                print('Login API Error: $e');
+              }
+            } else {
+              // Hide loading when no internet
+              isLoading.value = false;
+              AppAlert.showSnackBar(
+                Get.context!,
+                MessageConstants.noInternetConnection,
+              );
+            }
+          })
+          .catchError((error) {
+            // Hide loading on connection check error
+            isLoading.value = false;
+            AppAlert.showSnackBar(
+              Get.context!,
+              'Connection error. Please try again.',
+            );
+            print('Connection Error: $error');
+          });
     } catch (e) {
-      print('Error showing snackbar: $e');
+      // Hide loading on any unexpected error
+      isLoading.value = false;
+      AppAlert.showSnackBar(
+        Get.context!,
+        'An error occurred. Please try again.',
+      );
+      print('Unexpected Error: $e');
     }
   }
 }

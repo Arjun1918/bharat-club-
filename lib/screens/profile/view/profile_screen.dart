@@ -18,7 +18,6 @@ class ProfileScreen extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    // CHANGED: Use Get.put() instead of Get.lazyPut() to ensure controller is immediately available
     Get.put(ProfileController());
 
     return FocusDetector(
@@ -149,7 +148,52 @@ class ProfileScreen extends GetView<ProfileController> {
                   personOfContact(),
                   SizedBox(height: 16.h),
                   profileInformation(),
-                  SizedBox(height: 30.h),
+                  SizedBox(height: 24.h),
+
+                  // Change Password Button
+                  Container(
+                    width: double.infinity,
+                    height: 50.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: AppColors.cAppColorsBlue.withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      onPressed: () => Get.toNamed(AppRoutes.changePassword),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.lock_outline_rounded,
+                            color: AppColors.cAppColorsBlue,
+                            size: 20.sp,
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            'Change Password',
+                            style: getTextSemiBold(
+                              colors: AppColors.cAppColorsBlue,
+                              size: 15.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 16.h),
+
+                  // Delete Profile Button
                   Container(
                     width: double.infinity,
                     height: 50.h,
@@ -189,7 +233,8 @@ class ProfileScreen extends GetView<ProfileController> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 40.h),
+
+                  SizedBox(height: 30.h),
                 ],
               ),
             ),
@@ -390,7 +435,6 @@ class ProfileScreen extends GetView<ProfileController> {
                   height: 35.h,
                   child: ElevatedButton(
                     onPressed: () {
-                      // OPTION 1: Pass controller tag to ensure it can be found
                       Get.toNamed(
                         AppRoutes.editPersonOfContactScreen,
                         arguments: {

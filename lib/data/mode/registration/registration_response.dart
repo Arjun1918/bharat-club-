@@ -19,8 +19,9 @@ class RegistrationResponse {
     error = json['error'];
     statusCode = json['statusCode'];
     statusMessage = json['statusMessage'];
-    data =
-        json['data'] != null ? RegistrationData.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? RegistrationData.fromJson(json['data'])
+        : null;
     responseTime = json['responseTime'];
   }
 
@@ -49,18 +50,14 @@ class RegistrationResponse {
 /// expires_in : 3600
 
 class RegistrationData {
-  RegistrationData({
-    this.token,
-    this.user,
-    this.tokenType,
-    this.expiresIn,
-  });
+  RegistrationData({this.token, this.user, this.tokenType, this.expiresIn});
 
   RegistrationData.fromJson(dynamic json) {
     token = json['token'];
-    user =
-        json['user'] != null ? RegistrationUser.fromJson(json['user']) : null;
-     tokenType = json['token_type'];
+    user = json['user'] != null
+        ? RegistrationUser.fromJson(json['user'])
+        : null;
+    tokenType = json['token_type'];
     expiresIn = json['expires_in'];
   }
 
@@ -176,8 +173,9 @@ class RegistrationUser {
     linkedinUrl = json['linkedin_url'];
     loginStatus = json['login_status'] ?? 0;
     joinMemberShip = json['join_member_ship'];
-    original =
-    json['original'] != null ? OriginalData.fromJson(json['original']) : null;
+    original = json['original'] != null
+        ? OriginalData.fromJson(json['original'])
+        : null;
     adminFlag = json['admin_flag'];
     membershipTypeID = json['membership_type_id'];
 
@@ -266,8 +264,9 @@ class RegistrationUser {
       map['original'] = original?.toJson();
     }
     if (userAttachments != null) {
-      map['user_attachments'] =
-          userAttachments?.map((v) => v.toJson()).toList();
+      map['user_attachments'] = userAttachments
+          ?.map((v) => v.toJson())
+          .toList();
     }
     return map;
   }
