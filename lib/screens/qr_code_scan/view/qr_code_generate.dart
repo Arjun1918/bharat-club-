@@ -14,6 +14,7 @@ class QrCodeGenerateScreen extends StatelessWidget {
   final mQrDetails;
 
   QrCodeGenerateScreen({super.key, required this.mQrDetails});
+
   final QrCodeGenerateController controller = Get.put(
     QrCodeGenerateController(),
   );
@@ -28,18 +29,23 @@ class QrCodeGenerateScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        Get.back();
+        // Prevent back navigation to the form
+        // Go directly to home instead
+        Get.offAllNamed(AppRoutes.home);
         return false;
       },
       child: FocusDetector(
+        onFocusGained: () {
+          // Screen is now visible
+          print("QR Screen is visible");
+        },
         child: Scaffold(
           backgroundColor: Colors.grey[50],
           appBar: CustomAppBar(
             title: 'QR Code',
             showBack: true,
             onBackPressed: () {
-              // Clear navigation and go back
-              Get.back();
+              Get.offAllNamed(AppRoutes.home);
             },
           ),
           body: SingleChildScrollView(
@@ -140,7 +146,7 @@ class QrCodeGenerateScreen extends StatelessWidget {
                             "Show this QR code at the entrance for check-in",
                             style: getTextRegular(
                               size: 14.sp,
-                              colors: Colors.amber.withOpacity(0.5),
+                              colors: Colors.amber,
                               heights: 1.3.h,
                             ),
                           ),
@@ -149,6 +155,8 @@ class QrCodeGenerateScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24.h),
+
+                  // Back to Home Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

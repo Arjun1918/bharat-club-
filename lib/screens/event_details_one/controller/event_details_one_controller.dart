@@ -325,152 +325,6 @@ class EventDetailsOneController extends GetxController {
     }
   }
 
-getEventSubmitApi() async {
-  try {
-    bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
-
-    if (!isInternetAvailable) {
-      AppAlert.showSnackBar(
-        Get.context!,
-        MessageConstants.noInternetConnection,
-      );
-      return;
-    }
-
-    ParticipantSubmitRequest mPrticipantRequest = ParticipantSubmitRequest(
-      eventId: (mEventModule.id ?? 0).toString(),
-      participantName: mPrimaryNameController.value.text,
-      emailAddress: mEmailController.value.text,
-      noOfParticipants: int.tryParse(msNoOfPersonController.value.text) ?? 0,
-      noOfAdult: int.tryParse(mNumberOfAdultsController.value.text) ?? 0,
-      noOfChild:
-          int.tryParse(mNumberOfChildrenAgeLimitController.value.text) ?? 0,
-      noOfFreeChild:
-          int.tryParse(mNumberOfChildrenAge6BelowController.value.text) ?? 0,
-      noOfGuest: int.tryParse(mNumberOfGuestAdultsController.value.text) ?? 0,
-      noOfGuestChild:
-          int.tryParse(
-            mNumberOfGuestChildrenAge12AboveController.value.text,
-          ) ??
-          0,
-      noOfGuestFreeChild:
-          int.tryParse(
-            mNumberOfGuestChildrenAge6BelowController.value.text,
-          ) ??
-          0,
-      veg: int.tryParse(mVegetarianController.value.text) ?? 0,
-      nonVeg: int.tryParse(mNonVegetarianController.value.text) ?? 0,
-      jain: int.tryParse(mJainController.value.text) ?? 0,
-      subsInclude: isSubscriptionRenewalChecked.value,
-      totalAmountPaid: totalPaymentAmount.value,
-      membershipId: mUserMembershipID.value,
-    );
-
-    WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
-        .postParticipantSubmit(mPrticipantRequest);
-
-    if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
-      ParticipantSubmitResponse mParticipantSubmitResponse =
-          mWebResponseSuccess.data;
-
-      if (mParticipantSubmitResponse.statusCode ==
-          WebConstants.statusCode200) {
-        
-        // FIX: Extract participant ID from the response
-        String participantId = "";
-        
-        try {
-          // Use the helper method from ResponseData model
-          participantId = mParticipantSubmitResponse.data?.getParticipantId() ?? "";
-          
-          if (participantId.isNotEmpty) {
-            print("Successfully extracted participant ID: $participantId");
-          } else {
-            print("Warning: Participant ID is empty");
-          }
-        } catch (e) {
-          print("Error extracting participant ID: $e");
-          print("Stack trace: ${StackTrace.current}");
-          // Continue even if extraction fails
-        }
-
-        // Upload payment receipt if exists and we have a valid participant ID
-        if (mPaymentReceiptController.value.text.isNotEmpty) {
-          if (participantId.isNotEmpty) {
-            await paymentFileUpload(participantId);
-          } else {
-            print("Warning: Could not extract participant ID, skipping file upload");
-          }
-        }
-
-        AppAlert.showSnackBar(Get.context!, "Successfully Registered");
-
-        QrDetailsRequest mQrDetails = QrDetailsRequest(
-          eventId: (mEventModule.id ?? 0).toString(),
-          membershipId: mUserMembershipID.value,
-        );
-
-        print(
-          "QR Details created - EventID: ${mQrDetails.eventId}, MembershipID: ${mQrDetails.membershipId}",
-        );
-
-        // Delete controller and navigate
-        Get.delete<EventDetailsOneController>();
-
-        // Navigate to QR screen with proper arguments
-        Get.toNamed(AppRoutes.qrScreen, arguments: mQrDetails);
-        
-      } else {
-        AppAlert.showSnackBar(
-          Get.context!,
-          mParticipantSubmitResponse.statusMessage ?? "Submission failed",
-        );
-      }
-    } else {
-      ParticipantSubmitResponse mParticipantSubmitResponse =
-          mWebResponseSuccess.data;
-      AppAlert.showSnackBar(
-        Get.context!,
-        mParticipantSubmitResponse.statusMessage ?? "Request failed",
-      );
-    }
-  } catch (e) {
-    print("Error in getEventSubmitApi: $e");
-    print("Stack trace: ${StackTrace.current}");
-    AppAlert.showSnackBar(Get.context!, "An error occurred: ${e.toString()}");
-  }
-}
-  Future<void> paymentFileUpload(String id) async {
-    try {
-      bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
-
-      if (!isInternetAvailable) {
-        AppAlert.showSnackBar(
-          Get.context!,
-          MessageConstants.noInternetConnection,
-        );
-        return;
-      }
-
-      EventPaymentSubmitRequest mEventPaymentSubmitRequest =
-          EventPaymentSubmitRequest(id: id);
-
-      WebResponseSuccess mWebResponseSuccess = await AllApiImpl().eventsImage(
-        mPaymentReceiptController.value.text,
-        mEventPaymentSubmitRequest,
-      );
-
-      if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
-        print("Payment receipt uploaded successfully");
-        // Don't show snackbar here as it will interfere with navigation
-      } else {
-        print("Payment receipt upload failed");
-      }
-    } catch (e) {
-      print("Error uploading payment receipt: $e");
-    }
-  }
-
   void _initializeEventDetails() {
     mTitle.value = mEventModule.title ?? '';
     mDescription.value = mEventModule.description ?? '';
@@ -504,94 +358,182 @@ getEventSubmitApi() async {
   }
 
   //Event Details api
-  getEventDetailsApi() async {
-    NetworkUtils().checkInternetConnection().then((isInternetAvailable) async {
-      if (isInternetAvailable) {
-        WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
-            .postEventDetails();
-        if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
-          EventDetailResponse mEventDetailResponse = mWebResponseSuccess.data;
+  getEventSubmitApi() async {
+    try {
+      bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
 
-          if (mEventDetailResponse.statusCode == WebConstants.statusCode200) {
-            mTitle.value = mEventDetailResponse.data?.response?.title ?? '';
-            mDescription.value =
-                mEventDetailResponse.data?.response?.description ?? '';
-            mStartDate.value =
-                mEventDetailResponse.data?.response?.startDate ?? '';
-            mEndDate.value = mEventDetailResponse.data?.response?.endDate ?? '';
-            mMemberAdultAge.value =
-                mEventDetailResponse.data?.response?.memberAdultAge ?? '';
-            mMemberAdultAmount.value =
-                mEventDetailResponse.data?.response?.memberAdultAmount
-                    ?.toString() ??
-                '';
-            mMemberChildStatus.value =
-                mEventDetailResponse.data?.response?.memberChildStatus
-                    ?.toString() ??
-                '';
-
-            mMemberChildAge.value =
-                mEventDetailResponse.data?.response?.memberChildAge ?? '';
-            mMemberChildAmount.value =
-                mEventDetailResponse.data?.response?.memberChildAmount
-                    ?.toString() ??
-                '';
-            mGuestAdultAge.value =
-                mEventDetailResponse.data?.response?.guestAdultAge ?? '';
-            mGuestAdultAmount.value =
-                mEventDetailResponse.data?.response?.guestAdultAmount
-                    ?.toString() ??
-                '';
-
-            //need to work afer api
-            mGuestChildStatus.value =
-                mEventDetailResponse.data?.response?.guestChildStatus
-                    ?.toString() ??
-                '';
-
-            mGuestChildAge.value =
-                mEventDetailResponse.data?.response?.guestChildAge ?? '';
-            mGuestChildAmount.value =
-                mEventDetailResponse.data?.response?.guestChildAmount
-                    ?.toString() ??
-                '';
-
-            //need to work afer api
-            mFoodStatus.value =
-                mEventDetailResponse.data?.response?.foodStatus?.toString() ??
-                '';
-
-            mSubscriptionStatus.value =
-                mEventDetailResponse.data?.response?.subscriptionStatus
-                    ?.toString() ??
-                '';
-          } else {
-            AppAlert.showSnackBar(
-              Get.context!,
-              mEventDetailResponse.statusMessage ?? "",
-            );
-          }
-        } else {
-          EventDetailResponse mEventDetailResponse = mWebResponseSuccess.data;
-          if (mEventDetailResponse.statusCode == WebConstants.statusCode200) {
-            AppAlert.showSnackBar(
-              Get.context!,
-              mEventDetailResponse.data?.message ?? "",
-            );
-          } else {
-            AppAlert.showSnackBar(
-              Get.context!,
-              mEventDetailResponse.statusMessage ?? "",
-            );
-          }
-        }
-      } else {
+      if (!isInternetAvailable) {
         AppAlert.showSnackBar(
           Get.context!,
           MessageConstants.noInternetConnection,
         );
+        return;
       }
-    });
+
+      // Show loading indicator
+      Get.dialog(
+        WillPopScope(
+          onWillPop: () async => false,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        barrierDismissible: false,
+      );
+
+      ParticipantSubmitRequest mPrticipantRequest = ParticipantSubmitRequest(
+        eventId: (mEventModule.id ?? 0).toString(),
+        participantName: mPrimaryNameController.value.text,
+        emailAddress: mEmailController.value.text,
+        noOfParticipants: int.tryParse(msNoOfPersonController.value.text) ?? 0,
+        noOfAdult: int.tryParse(mNumberOfAdultsController.value.text) ?? 0,
+        noOfChild:
+            int.tryParse(mNumberOfChildrenAgeLimitController.value.text) ?? 0,
+        noOfFreeChild:
+            int.tryParse(mNumberOfChildrenAge6BelowController.value.text) ?? 0,
+        noOfGuest: int.tryParse(mNumberOfGuestAdultsController.value.text) ?? 0,
+        noOfGuestChild:
+            int.tryParse(
+              mNumberOfGuestChildrenAge12AboveController.value.text,
+            ) ??
+            0,
+        noOfGuestFreeChild:
+            int.tryParse(
+              mNumberOfGuestChildrenAge6BelowController.value.text,
+            ) ??
+            0,
+        veg: int.tryParse(mVegetarianController.value.text) ?? 0,
+        nonVeg: int.tryParse(mNonVegetarianController.value.text) ?? 0,
+        jain: int.tryParse(mJainController.value.text) ?? 0,
+        subsInclude: isSubscriptionRenewalChecked.value,
+        totalAmountPaid: totalPaymentAmount.value,
+        membershipId: mUserMembershipID.value,
+      );
+
+      WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
+          .postParticipantSubmit(mPrticipantRequest);
+
+      if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
+        ParticipantSubmitResponse mParticipantSubmitResponse =
+            mWebResponseSuccess.data;
+
+        if (mParticipantSubmitResponse.statusCode ==
+            WebConstants.statusCode200) {
+          // Extract participant ID from the response
+          String participantId = "";
+
+          try {
+            participantId =
+                mParticipantSubmitResponse.data?.getParticipantId() ?? "";
+
+            if (participantId.isNotEmpty) {
+              print("Successfully extracted participant ID: $participantId");
+            } else {
+              print("Warning: Participant ID is empty");
+            }
+          } catch (e) {
+            print("Error extracting participant ID: $e");
+            print("Stack trace: ${StackTrace.current}");
+          }
+
+          // Upload payment receipt if exists and we have a valid participant ID
+          if (mPaymentReceiptController.value.text.isNotEmpty &&
+              participantId.isNotEmpty) {
+            try {
+              await paymentFileUpload(participantId);
+              print("Payment receipt upload completed");
+            } catch (e) {
+              print("Error uploading payment receipt: $e");
+              // Continue even if upload fails
+            }
+          }
+
+          // Close loading dialog
+          if (Get.isDialogOpen ?? false) {
+            Get.back();
+          }
+
+          // Create QR details
+          QrDetailsRequest mQrDetails = QrDetailsRequest(
+            eventId: (mEventModule.id ?? 0).toString(),
+            membershipId: mUserMembershipID.value,
+          );
+
+          print(
+            "QR Details created - EventID: ${mQrDetails.eventId}, MembershipID: ${mQrDetails.membershipId}",
+          );
+
+          // Show success message
+          AppAlert.showSnackBar(Get.context!, "Successfully Registered");
+
+          // Wait a moment for the snackbar to show
+          await Future.delayed(Duration(milliseconds: 500));
+
+          // Navigate to QR screen and remove all previous routes
+          // This ensures user can't go back to the form
+          Get.offAllNamed(AppRoutes.qrScreen, arguments: mQrDetails);
+        } else {
+          // Close loading dialog
+          if (Get.isDialogOpen ?? false) {
+            Get.back();
+          }
+
+          AppAlert.showSnackBar(
+            Get.context!,
+            mParticipantSubmitResponse.statusMessage ?? "Submission failed",
+          );
+        }
+      } else {
+        // Close loading dialog
+        if (Get.isDialogOpen ?? false) {
+          Get.back();
+        }
+
+        ParticipantSubmitResponse mParticipantSubmitResponse =
+            mWebResponseSuccess.data;
+        AppAlert.showSnackBar(
+          Get.context!,
+          mParticipantSubmitResponse.statusMessage ?? "Request failed",
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if open
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      print("Error in getEventSubmitApi: $e");
+      print("Stack trace: ${StackTrace.current}");
+      AppAlert.showSnackBar(Get.context!, "An error occurred: ${e.toString()}");
+    }
+  }
+
+  Future<void> paymentFileUpload(String id) async {
+    try {
+      bool isInternetAvailable = await NetworkUtils().checkInternetConnection();
+
+      if (!isInternetAvailable) {
+        print("No internet connection for payment upload");
+        return;
+      }
+
+      EventPaymentSubmitRequest mEventPaymentSubmitRequest =
+          EventPaymentSubmitRequest(id: id);
+
+      WebResponseSuccess mWebResponseSuccess = await AllApiImpl().eventsImage(
+        mPaymentReceiptController.value.text,
+        mEventPaymentSubmitRequest,
+      );
+
+      if (mWebResponseSuccess.statusCode == WebConstants.statusCode200) {
+        print("Payment receipt uploaded successfully for ID: $id");
+      } else {
+        print(
+          "Payment receipt upload failed with status: ${mWebResponseSuccess.statusCode}",
+        );
+      }
+    } catch (e) {
+      print("Error uploading payment receipt: $e");
+      // Don't throw error, just log it
+    }
   }
 
   void navigateToNextScreen(EventModule eventModule, context) {
