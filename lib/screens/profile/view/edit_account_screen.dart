@@ -15,6 +15,134 @@ import '../controller/profile_controller.dart';
 class EditAccountScreen extends GetView<ProfileController> {
   const EditAccountScreen({super.key});
 
+  // Validation methods
+  String? _validateUsername(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Username is required';
+    }
+
+    final trimmedValue = value.trim();
+
+    if (trimmedValue.length < 2) {
+      return 'Username must be at least 2 characters';
+    }
+
+    if (trimmedValue.length > 50) {
+      return 'Username is too long';
+    }
+
+    // Check if it contains only letters and spaces
+    if (!RegExp(
+      AppUtilConstants.patternStringAndSpace,
+    ).hasMatch(trimmedValue)) {
+      return 'Username can only contain letters and spaces';
+    }
+
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email is required';
+    }
+
+    final trimmedValue = value.trim();
+
+    // Basic email regex pattern
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    if (!emailRegex.hasMatch(trimmedValue)) {
+      return 'Please enter a valid email address';
+    }
+
+    if (trimmedValue.length < 5) {
+      return 'Email is too short';
+    }
+
+    if (trimmedValue.length > 254) {
+      return 'Email is too long';
+    }
+
+    return null;
+  }
+
+  String? _validatePhoneNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Phone number is required';
+    }
+
+    final trimmedValue = value.trim();
+
+    // Check if it contains only numbers
+    if (!RegExp(AppUtilConstants.patternOnlyNumber).hasMatch(trimmedValue)) {
+      return 'Phone number can only contain numbers';
+    }
+
+    if (trimmedValue.length < 10) {
+      return 'Phone number must be at least 10 digits';
+    }
+
+    if (trimmedValue.length > 11) {
+      return 'Phone number cannot exceed 11 digits';
+    }
+
+    return null;
+  }
+
+  void _validateAndUpdate() {
+    bool hasErrors = false;
+
+    // Validate username
+    final usernameError = _validateUsername(
+      controller.mUserNameController.value.text,
+    );
+    if (usernameError != null) {
+      controller.userNameValidator.value = true;
+      hasErrors = true;
+    } else {
+      controller.userNameValidator.value = false;
+    }
+
+    // Validate email
+    final emailError = _validateEmail(controller.mEmailController.value.text);
+    if (emailError != null) {
+      controller.emailValidator.value = true;
+      controller.seEmailValidator.value = emailError;
+      hasErrors = true;
+    } else {
+      controller.emailValidator.value = false;
+      controller.seEmailValidator.value = '';
+    }
+
+    // Validate phone number
+    final phoneError = _validatePhoneNumber(
+      controller.mPhoneNoController.value.text,
+    );
+    if (phoneError != null) {
+      controller.phoneNumberValidator.value = true;
+      controller.sePhoneNumberValidator.value = phoneError;
+      hasErrors = true;
+    } else {
+      controller.phoneNumberValidator.value = false;
+      controller.sePhoneNumberValidator.value = '';
+    }
+
+    if (!hasErrors) {
+      controller.isEditProfileCheck();
+    } else {
+      Get.snackbar(
+        'Validation Error',
+        'Please fill all required fields correctly',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: EdgeInsets.all(16.r),
+        borderRadius: 12.r,
+        duration: const Duration(seconds: 2),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     controller.mUserNameController.value.text = controller.userName.value;
@@ -156,7 +284,7 @@ class EditAccountScreen extends GetView<ProfileController> {
               label: 'Username',
               controller: controller.mUserNameController.value,
               errorText: controller.userNameValidator.isTrue
-                  ? sUserNameError.tr
+                  ? _validateUsername(controller.mUserNameController.value.text)
                   : null,
               icon: Icons.person_outline,
               hint: sUserNameHint.tr,
@@ -244,12 +372,7 @@ class EditAccountScreen extends GetView<ProfileController> {
           decoration: BoxDecoration(
             color: isReadOnly ? Colors.grey.shade100 : Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: errorText != null
-                  ? Colors.red.shade300
-                  : Colors.grey.shade200,
-              width: 1,
-            ),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
           ),
           child: TextInputWidget(
             placeHolder: label,
@@ -306,7 +429,7 @@ class EditAccountScreen extends GetView<ProfileController> {
             borderRadius: BorderRadius.circular(12.r),
           ),
         ),
-        onPressed: () => controller.isEditProfileCheck(),
+        onPressed: _validateAndUpdate,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -13,7 +13,6 @@ import 'package:organization/utils/message_constants.dart';
 import 'package:organization/utils/network_util.dart';
 import '../../../alert/alert_action.dart';
 import '../../../alert/app_alert.dart';
-
 import '../../../data/local/shared_prefs/shared_prefs.dart';
 import '../../../data/mode/forgot_password/forgot_password_delete_request.dart';
 import '../../../data/mode/forgot_password/forgot_password_delete_response.dart';
@@ -93,6 +92,9 @@ class ProfileController extends GetxController {
   RxBool addressValidator = false.obs;
   RxBool designationValidator = false.obs;
 
+  // NEW: Add flag to track if form has been submitted
+  RxBool hasAttemptedSubmit = false.obs;
+
   ///
   RxBool hideOldPassword = true.obs;
   Rx<IconData> suffixOldPasswordIcon = Icons.visibility_off.obs;
@@ -112,6 +114,9 @@ class ProfileController extends GetxController {
   RxString seOccupationValidator = (sOccupationError.tr).obs;
 
   isEditProfileCheck() {
+    // Mark that user has attempted to submit
+    hasAttemptedSubmit.value = true;
+
     setValidator();
     if (mUserNameController.value.text.isEmpty) {
       userNameValidator.value = true;
@@ -131,6 +136,9 @@ class ProfileController extends GetxController {
   }
 
   isPersonOfContactCheck() {
+    // Mark that user has attempted to submit
+    hasAttemptedSubmit.value = true;
+
     setValidator();
     if (mUserNameController.value.text.isEmpty) {
       userNameValidator.value = true;
@@ -150,6 +158,9 @@ class ProfileController extends GetxController {
   }
 
   isProfileInformationCheck() {
+    // Mark that user has attempted to submit
+    hasAttemptedSubmit.value = true;
+
     setValidator();
     if (mUserNameController.value.text.isEmpty) {
       userNameValidator.value = true;
@@ -161,6 +172,9 @@ class ProfileController extends GetxController {
   }
 
   isChangePasswordCheck() {
+    // Mark that user has attempted to submit
+    hasAttemptedSubmit.value = true;
+
     setValidator();
     if (mOldPasswordController.value.text.isEmpty) {
       passwordOldValidator.value = true;
@@ -188,6 +202,12 @@ class ProfileController extends GetxController {
     confirmPasswordValidator.value = false;
     phoneNumberValidator.value = false;
     designationValidator.value = false;
+  }
+
+  // NEW: Method to reset form state when opening edit screens
+  resetFormState() {
+    hasAttemptedSubmit.value = false;
+    setValidator();
   }
 
   showOldPassword() {
@@ -314,7 +334,9 @@ class ProfileController extends GetxController {
     print("DEBUG: emailId = ${emailId.value}");
     print("DEBUG: phoneNumber = ${phoneNumber.value}");
 
-    setValidator();
+    // Reset form state when opening the form
+    resetFormState();
+
     mUserNameController.value = TextEditingController(text: userName.value);
     mEmailController.value = TextEditingController(text: emailId.value);
     mPhoneNoController.value = TextEditingController(text: phoneNumber.value);
@@ -348,7 +370,9 @@ class ProfileController extends GetxController {
 
   ///personOfContact
   personOfContactDetails() {
-    setValidator();
+    // Reset form state when opening the form
+    resetFormState();
+
     mUserNameController.value.text = pocFirstName.value;
     mEmailController.value.text = pocEmailId.value;
     mPhoneNoController.value.text = pocPhoneNumber.value;
@@ -363,17 +387,24 @@ class ProfileController extends GetxController {
   personOfContactApi() async {
     NetworkUtils().checkInternetConnection().then((isInternetAvailable) async {
       if (isInternetAvailable) {
+        // Get trimmed values from controllers (this allows clearing fields)
+        final child1Text = mChild1Controller.value.text.trim();
+        final child2Text = mChild2Controller.value.text.trim();
+        final child3Text = mChild3Controller.value.text.trim();
+        final child4Text = mChild4Controller.value.text.trim();
+
         ProfileUpdateRequest mProfileUpdateRequest = ProfileUpdateRequest(
           name: userName.value,
           email: emailId.value,
           mobile: phoneNumber.value,
-          pocEmail: mEmailController.value.text,
-          pocFirstName: mUserNameController.value.text,
-          pocMobile: mPhoneNoController.value.text,
-          childTwo: mChild2Controller.value.text,
-          childOne: mChild1Controller.value.text,
-          childThree: mChild3Controller.value.text,
-          childFour: mChild4Controller.value.text,
+          pocEmail: mEmailController.value.text.trim(),
+          pocFirstName: mUserNameController.value.text.trim(),
+          pocMobile: mPhoneNoController.value.text.trim(),
+          // NEW CODE - use current controller text (can be empty)
+          childOne: child1Text.isEmpty ? "" : child1Text,
+          childTwo: child2Text.isEmpty ? "" : child2Text,
+          childThree: child3Text.isEmpty ? "" : child3Text,
+          childFour: child4Text.isEmpty ? "" : child4Text,
         );
 
         WebResponseSuccess mWebResponseSuccess = await AllApiImpl()
@@ -394,7 +425,9 @@ class ProfileController extends GetxController {
   }
 
   profileInformationDetails() {
-    setValidator();
+    // Reset form state when opening the form
+    resetFormState();
+
     mUserNameController.value.text = companyName.value;
     mDesignationController.value.text = designation.value;
     mEmailController.value.text = companyLocation.value;

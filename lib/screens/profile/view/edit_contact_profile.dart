@@ -12,14 +12,188 @@ import 'package:organization/utils/app_util.dart';
 import 'package:organization/utils/app_util_constants.dart';
 import '../controller/profile_controller.dart';
 
-class EditPersonOfContactScreen extends StatelessWidget {
+class EditPersonOfContactScreen extends StatefulWidget {
+  const EditPersonOfContactScreen({super.key});
+
+  @override
+  State<EditPersonOfContactScreen> createState() =>
+      _EditPersonOfContactScreenState();
+}
+
+class _EditPersonOfContactScreenState extends State<EditPersonOfContactScreen> {
   final ProfileController controller = Get.find();
 
-  EditPersonOfContactScreen({super.key});
+  @override
+  void initState() {
+    super.initState();
+    _initializeControllers();
+    _setupListeners();
+  }
+
+  void _initializeControllers() {
+    controller.mUserNameController.value.text = controller.pocFirstName.value;
+    controller.mEmailController.value.text = controller.pocEmailId.value;
+    controller.mPhoneNoController.value.text = controller.pocPhoneNumber.value;
+
+    // Initialize child controllers
+    controller.mChild1Controller.value.text = controller.child1.value;
+    controller.mChild2Controller.value.text = controller.child2.value;
+    controller.mChild3Controller.value.text = controller.child3.value;
+    controller.mChild4Controller.value.text = controller.child4.value;
+
+    controller.setValidator();
+  }
+
+  void _setupListeners() {
+    // Add listeners to update the observable values when text changes
+    controller.mChild1Controller.value.addListener(() {
+      // This ensures the controller text is synced
+    });
+    controller.mChild2Controller.value.addListener(() {
+      // This ensures the controller text is synced
+    });
+    controller.mChild3Controller.value.addListener(() {
+      // This ensures the controller text is synced
+    });
+    controller.mChild4Controller.value.addListener(() {
+      // This ensures the controller text is synced
+    });
+  }
+
+  // Validation methods
+  String? _validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Name is required';
+    }
+
+    final trimmedValue = value.trim();
+
+    if (trimmedValue.length < 2) {
+      return 'Name must be at least 2 characters';
+    }
+
+    if (trimmedValue.length > 50) {
+      return 'Name is too long';
+    }
+
+    // Check if it contains only letters and spaces
+    if (!RegExp(
+      AppUtilConstants.patternStringAndSpace,
+    ).hasMatch(trimmedValue)) {
+      return 'Name can only contain letters and spaces';
+    }
+
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Email is required';
+    }
+
+    final trimmedValue = value.trim();
+
+    // Basic email regex pattern
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    if (!emailRegex.hasMatch(trimmedValue)) {
+      return 'Please enter a valid email address';
+    }
+
+    if (trimmedValue.length < 5) {
+      return 'Email is too short';
+    }
+
+    if (trimmedValue.length > 254) {
+      return 'Email is too long';
+    }
+
+    return null;
+  }
+
+  String? _validatePhoneNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Phone number is required';
+    }
+
+    final trimmedValue = value.trim();
+
+    // Check if it contains only numbers
+    if (!RegExp(AppUtilConstants.patternOnlyNumber).hasMatch(trimmedValue)) {
+      return 'Phone number can only contain numbers';
+    }
+
+    if (trimmedValue.length < 10) {
+      return 'Phone number must be at least 10 digits';
+    }
+
+    if (trimmedValue.length > 11) {
+      return 'Phone number cannot exceed 11 digits';
+    }
+
+    return null;
+  }
+
+  void _validateAndUpdate() {
+    bool hasErrors = false;
+
+    // Validate name
+    final nameError = _validateName(controller.mUserNameController.value.text);
+    if (nameError != null) {
+      controller.userNameValidator.value = true;
+      hasErrors = true;
+    } else {
+      controller.userNameValidator.value = false;
+    }
+
+    // Validate email
+    final emailError = _validateEmail(controller.mEmailController.value.text);
+    if (emailError != null) {
+      controller.emailValidator.value = true;
+      controller.seEmailValidator.value = emailError;
+      hasErrors = true;
+    } else {
+      controller.emailValidator.value = false;
+      controller.seEmailValidator.value = '';
+    }
+
+    // Validate phone number
+    final phoneError = _validatePhoneNumber(
+      controller.mPhoneNoController.value.text,
+    );
+    if (phoneError != null) {
+      controller.phoneNumberValidator.value = true;
+      controller.sePhoneNumberValidator.value = phoneError;
+      hasErrors = true;
+    } else {
+      controller.phoneNumberValidator.value = false;
+      controller.sePhoneNumberValidator.value = '';
+    }
+
+    if (!hasErrors) {
+      // Update child values with current text (including empty strings)
+      controller.child1.value = controller.mChild1Controller.value.text.trim();
+      controller.child2.value = controller.mChild2Controller.value.text.trim();
+      controller.child3.value = controller.mChild3Controller.value.text.trim();
+      controller.child4.value = controller.mChild4Controller.value.text.trim();
+
+      controller.isPersonOfContactCheck();
+    } else {
+      Get.snackbar(
+        'Validation Error',
+        'Please correct the errors in the form',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: EdgeInsets.all(16.r),
+        borderRadius: 12.r,
+        duration: const Duration(seconds: 2),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    _initializeControllers();
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -67,20 +241,6 @@ class EditPersonOfContactScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _initializeControllers() {
-    controller.mUserNameController.value.text = controller.pocFirstName.value;
-    controller.mEmailController.value.text = controller.pocEmailId.value;
-    controller.mPhoneNoController.value.text = controller.pocPhoneNumber.value;
-
-    // Initialize child controllers
-    controller.mChild1Controller.value.text = controller.child1.value;
-    controller.mChild2Controller.value.text = controller.child2.value;
-    controller.mChild3Controller.value.text = controller.child3.value;
-    controller.mChild4Controller.value.text = controller.child4.value;
-
-    controller.setValidator();
   }
 
   Widget _buildProfileHeader() {
@@ -169,7 +329,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
               label: 'Name',
               controller: controller.mUserNameController.value,
               errorText: controller.userNameValidator.isTrue
-                  ? "Please enter the name"
+                  ? _validateName(controller.mUserNameController.value.text)
                   : null,
               icon: Icons.person_outline,
               hint: sUserNameHint.tr,
@@ -215,7 +375,17 @@ class EditPersonOfContactScreen extends StatelessWidget {
 
             SizedBox(height: 30.h),
             _buildSectionTitle('Children Information'),
-            SizedBox(height: 16.h),
+            SizedBox(height: 8.h),
+            Padding(
+              padding: EdgeInsets.only(left: 12.w, bottom: 16.h),
+              child: Text(
+                'Optional: Leave blank if not applicable',
+                style: getTextRegular(
+                  size: 12.sp,
+                  colors: Colors.grey.shade600,
+                ),
+              ),
+            ),
 
             /// Child 1
             _buildInputField(
@@ -302,12 +472,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: errorText != null
-                  ? Colors.red.shade300
-                  : Colors.grey.shade200,
-              width: 1,
-            ),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
           ),
           child: TextInputWidget(
             placeHolder: label,
@@ -330,7 +495,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
                 Icon(
                   Icons.error_outline,
                   size: 14.sp,
-                  color: Colors.red.shade600,
+                  color: AppColors.error,
                 ),
                 SizedBox(width: 4.w),
                 Expanded(
@@ -338,7 +503,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
                     errorText,
                     style: getTextMedium(
                       size: 12.sp,
-                      colors: Colors.red.shade600,
+                      colors:  AppColors.error,
                     ),
                   ),
                 ),
@@ -363,7 +528,7 @@ class EditPersonOfContactScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
           ),
         ),
-        onPressed: () => controller.isPersonOfContactCheck(),
+        onPressed: _validateAndUpdate,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

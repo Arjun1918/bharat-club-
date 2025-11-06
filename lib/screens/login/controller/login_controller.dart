@@ -17,6 +17,10 @@ import '../../../data/remote/web_response.dart';
 class LoginScreenController extends GetxController {
   late final TextEditingController mEmailController;
   late final TextEditingController mPasswordController;
+
+  // Form key to manage validation
+  final formKey = GlobalKey<FormState>();
+
   RxBool emailValidator = false.obs;
   Rx<IconData> suffixIcon = Icons.visibility_off.obs;
   RxBool passwordValidator = false.obs;
@@ -24,6 +28,10 @@ class LoginScreenController extends GetxController {
   RxString seEmailValidator = (sEmailError.tr).obs;
   RxString sePasswordValidator = (sPasswordError.tr).obs;
   RxBool isLoading = false.obs;
+
+  // Add these for form validation errors
+  RxString emailError = ''.obs;
+  RxString passwordError = ''.obs;
 
   @override
   void onInit() {
@@ -41,6 +49,90 @@ class LoginScreenController extends GetxController {
       print('Error disposing controllers: $e');
     }
     super.onClose();
+  }
+
+  // Email validation method
+  String? validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      emailError.value = 'Email is required';
+      return emailError.value;
+    }
+
+    final trimmedValue = value.trim();
+
+    // Basic email regex pattern
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    if (!emailRegex.hasMatch(trimmedValue)) {
+      emailError.value = 'Please enter a valid email address';
+      return emailError.value;
+    }
+
+    // Additional checks
+    if (trimmedValue.length < 5) {
+      emailError.value = 'Email is too short';
+      return emailError.value;
+    }
+
+    if (trimmedValue.length > 254) {
+      emailError.value = 'Email is too long';
+      return emailError.value;
+    }
+
+    emailError.value = '';
+    return null;
+  }
+
+  // Password validation method
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      passwordError.value = 'Password is required';
+      return passwordError.value;
+    }
+
+    if (value.length < 6) {
+      passwordError.value = 'Password must be at least 6 characters';
+      return passwordError.value;
+    }
+
+    if (value.length > 50) {
+      passwordError.value = 'Password is too long';
+      return passwordError.value;
+    }
+
+    passwordError.value = '';
+    return null;
+  }
+
+  // Handle login with validation
+  void handleLogin() {
+    // Clear previous errors
+    emailError.value = '';
+    passwordError.value = '';
+
+    // Validate manually
+    final emailValidationError = validateEmail(mEmailController.text);
+    final passwordValidationError = validatePassword(mPasswordController.text);
+
+    if (emailValidationError != null || passwordValidationError != null) {
+      // Trigger form validation to show errors
+      formKey.currentState?.validate();
+
+      // Show error snackbar
+      Get.snackbar(
+        'Validation Error',
+        'Please fill all fields correctly',
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
+        duration: const Duration(seconds: 2),
+      );
+    } else {
+      // Form is valid, proceed with login
+      validateUserLogin();
+    }
   }
 
   isCheck() {

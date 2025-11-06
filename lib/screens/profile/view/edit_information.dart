@@ -21,22 +21,8 @@ class EditProfileInformationScreen extends StatelessWidget {
   }
 
   void _initializeControllers() {
-    // Initialize all controllers with existing data from the profile
-    // Company Name - maps to 'company_name' in API
-    controller.mUserNameController.value.text = controller.companyName.value;
-
-    // Designation - maps to 'designation' in API
-    controller.mDesignationController.value.text = controller.designation.value;
-
-    // Location - maps to 'location' in API
-    controller.mEmailController.value.text = controller.companyLocation.value;
-
-    // Company Website - maps to 'company_website' in API
-    controller.mPhoneNoController.value.text = controller.companyWebSite.value;
-
-    // LinkedIn URL - maps to 'linkedin_url' in API
-    controller.mLinkedinController.value.text =
-        controller.companyLinkedin.value;
+    // Call profileInformationDetails to reset form state and populate controllers
+    controller.profileInformationDetails();
   }
 
   Widget _fullView() {
@@ -157,7 +143,9 @@ class EditProfileInformationScreen extends StatelessWidget {
               _buildInputField(
                 label: 'Company Name',
                 controller: controller.mUserNameController.value,
-                errorText: controller.userNameValidator.isTrue
+                // Only show error if user has attempted to submit
+                errorText: controller.hasAttemptedSubmit.value &&
+                        controller.userNameValidator.isTrue
                     ? "Please enter the Company Name"
                     : null,
                 icon: Icons.business_outlined,
@@ -170,7 +158,9 @@ class EditProfileInformationScreen extends StatelessWidget {
               _buildInputField(
                 label: 'Designation',
                 controller: controller.mDesignationController.value,
-                errorText: controller.designationValidator.isTrue
+                // Only show error if user has attempted to submit
+                errorText: controller.hasAttemptedSubmit.value &&
+                        controller.designationValidator.isTrue
                     ? "Please enter your designation"
                     : null,
                 icon: Icons.work_outline,
@@ -183,7 +173,9 @@ class EditProfileInformationScreen extends StatelessWidget {
               _buildInputField(
                 label: 'Location',
                 controller: controller.mEmailController.value,
-                errorText: controller.emailValidator.isTrue
+                // Only show error if user has attempted to submit
+                errorText: controller.hasAttemptedSubmit.value &&
+                        controller.emailValidator.isTrue
                     ? "Please enter the location"
                     : null,
                 icon: Icons.location_on_outlined,
@@ -199,7 +191,9 @@ class EditProfileInformationScreen extends StatelessWidget {
               _buildInputField(
                 label: 'Company Website',
                 controller: controller.mPhoneNoController.value,
-                errorText: controller.phoneNumberValidator.isTrue
+                // Only show error if user has attempted to submit
+                errorText: controller.hasAttemptedSubmit.value &&
+                        controller.phoneNumberValidator.isTrue
                     ? "Please enter the Company Website"
                     : null,
                 icon: Icons.language,
@@ -212,9 +206,7 @@ class EditProfileInformationScreen extends StatelessWidget {
               _buildInputField(
                 label: 'LinkedIn URL',
                 controller: controller.mLinkedinController.value,
-                errorText: controller.phoneNumberValidator.isTrue
-                    ? "Please enter the LinkedIn URL"
-                    : null,
+                errorText: null, // No validation for LinkedIn (optional field)
                 icon: Icons.link,
                 hint: "Enter the LinkedIn URL",
                 keyboardType: TextInputType.url,
@@ -299,12 +291,7 @@ class EditProfileInformationScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: errorText != null
-                  ? Colors.red.shade300
-                  : Colors.grey.shade200,
-              width: 1,
-            ),
+            border: Border.all(color: Colors.grey.shade200, width: 1),
           ),
           child: TextInputWidget(
             placeHolder: label,

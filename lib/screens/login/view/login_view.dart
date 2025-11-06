@@ -7,7 +7,6 @@ import 'package:organization/app_theme/theme/app_theme.dart';
 import 'package:organization/screens/login/controller/login_controller.dart';
 import 'package:organization/utils/app_text.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -18,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   late final LoginScreenController controller;
-  final _formKey = GlobalKey<FormState>();
 
   late AnimationController _masterController;
   late Animation<double> _fadeAnimation;
@@ -31,7 +29,11 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   void initState() {
     super.initState();
-    controller = Get.put(LoginScreenController(), tag: 'login_controller', permanent: true);
+    controller = Get.put(
+      LoginScreenController(),
+      tag: 'login_controller',
+      permanent: true,
+    );
     _initializeAnimations();
     _startAnimations();
   }
@@ -97,13 +99,15 @@ class _LoginScreenState extends State<LoginScreen>
             secondaryColor: AppColors.tertiaryGreen,
             particleColor: AppColors.primaryGreen,
             child: Form(
-              key: _formKey,
+              key: controller.formKey,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
                       child: IntrinsicHeight(
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -247,45 +251,38 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   SizedBox(height: 24.h),
-                  Obx(() => _buildTextField(
-                        controller: controller.mEmailController,
-                        hintText: 'Email Id',
-                        icon: Icons.badge_outlined,
-                        errorText: controller.emailValidator.value
-                            ? controller.seEmailValidator.value
-                            : null,
-                        validator: (value) {
-                          if (controller.emailValidator.value) {
-                            return controller.seEmailValidator.value;
-                          }
-                          return null;
-                        },
-                      )),
+                  _buildTextField(
+                    controller: controller.mEmailController,
+                    hintText: 'Email Id',
+                    icon: Icons.email_outlined,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    validator: controller.validateEmail,
+                  ),
                   SizedBox(height: 24.h),
-                  Obx(() => _buildTextField(
-                        controller: controller.mPasswordController,
-                        hintText: 'Password',
-                        icon: Icons.lock_outline,
-                        isPassword: true,
-                        obscureText: controller.hidePassword.value,
-                        errorText: controller.passwordValidator.value
-                            ? controller.sePasswordValidator.value
-                            : null,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.suffixIcon.value,
-                            color: AppColors.primaryGreen,
-                            size: 22.r,
-                          ),
-                          onPressed: controller.showPassword,
+                  Obx(
+                    () => _buildTextField(
+                      controller: controller.mPasswordController,
+                      hintText: 'Password',
+                      icon: Icons.lock_outline,
+                      isPassword: true,
+                      obscureText: controller.hidePassword.value,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.hidePassword.value
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: AppColors.primaryGreen,
+                          size: 22.r,
                         ),
-                        validator: (value) {
-                          if (controller.passwordValidator.value) {
-                            return controller.sePasswordValidator.value;
-                          }
-                          return null;
-                        },
-                      )),
+                        onPressed: controller.showPassword,
+                      ),
+                      validator: controller.validatePassword,
+                      onFieldSubmitted: (_) => _handleLogin(),
+                    ),
+                  ),
                   SizedBox(height: 16.h),
                   Align(
                     alignment: Alignment.centerRight,
@@ -322,8 +319,10 @@ class _LoginScreenState extends State<LoginScreen>
     bool isPassword = false,
     bool? obscureText,
     Widget? suffixIcon,
-    String? errorText,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
     String? Function(String?)? validator,
+    Function(String)? onFieldSubmitted,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -339,10 +338,10 @@ class _LoginScreenState extends State<LoginScreen>
       child: TextFormField(
         controller: controller,
         obscureText: obscureText ?? false,
-        style: getTextMedium(
-          colors: AppColors.textPrimary,
-          size: 16.sp,
-        ),
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        onFieldSubmitted: onFieldSubmitted,
+        style: getTextMedium(colors: AppColors.textPrimary, size: 16.sp),
         cursorColor: AppColors.primaryGreen,
         validator: validator,
         decoration: InputDecoration(
@@ -362,7 +361,6 @@ class _LoginScreenState extends State<LoginScreen>
             horizontal: 20.w,
             vertical: 18.h,
           ),
-          errorText: errorText,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
@@ -383,71 +381,71 @@ class _LoginScreenState extends State<LoginScreen>
             borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide(color: AppColors.error, width: 2.5),
           ),
-          errorStyle: getTextMedium(
-            colors: AppColors.error,
-            size: 12.sp,
-          ),
+          errorStyle: getTextMedium(colors: AppColors.error, size: 12.sp),
+          errorMaxLines: 2,
         ),
       ),
     );
   }
 
   Widget _buildLoginButton() {
-    return Obx(() => Container(
-          width: double.infinity,
-          height: 56.h,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [AppColors.primaryGreen, AppColors.secondaryGreen],
+    return Obx(
+      () => Container(
+        width: double.infinity,
+        height: 56.h,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primaryGreen, AppColors.secondaryGreen],
+          ),
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryGreen.withOpacity(0.4),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
             ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(16.r),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primaryGreen.withOpacity(0.4),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16.r),
-              onTap: controller.isLoading.value ? null : _handleLogin,
-              child: Center(
-                child: controller.isLoading.value
-                    ? SizedBox(
-                        width: 24.r,
-                        height: 24.r,
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Sign In',
-                            style: getTextSemiBold(
-                              colors: Colors.white,
-                              size: 18.sp,
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Icon(
-                            Icons.arrow_forward_rounded,
-                            color: Colors.white,
-                            size: 20.r,
-                          ),
-                        ],
+            onTap: controller.isLoading.value ? null : _handleLogin,
+            child: Center(
+              child: controller.isLoading.value
+                  ? SizedBox(
+                      width: 24.r,
+                      height: 24.r,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
-              ),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Sign In',
+                          style: getTextSemiBold(
+                            colors: Colors.white,
+                            size: 18.sp,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 20.r,
+                        ),
+                      ],
+                    ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildJoinClubButton() {
@@ -485,10 +483,7 @@ class _LoginScreenState extends State<LoginScreen>
 
     FocusScope.of(context).unfocus();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (!_isDisposed && mounted) {
-        controller.isCheck();
-      }
-    });
+    // Call controller's handleLogin method which manages validation
+    controller.handleLogin();
   }
 }
