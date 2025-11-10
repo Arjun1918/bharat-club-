@@ -63,24 +63,24 @@ class _EditPersonOfContactScreenState extends State<EditPersonOfContactScreen> {
   // Validation methods
   String? _validateName(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Name is required';
+      return namerequired;
     }
 
     final trimmedValue = value.trim();
 
     if (trimmedValue.length < 2) {
-      return 'Name must be at least 2 characters';
+      return nameMustBe;
     }
 
     if (trimmedValue.length > 50) {
-      return 'Name is too long';
+      return namelong;
     }
 
     // Check if it contains only letters and spaces
     if (!RegExp(
       AppUtilConstants.patternStringAndSpace,
     ).hasMatch(trimmedValue)) {
-      return 'Name can only contain letters and spaces';
+      return letterspace;
     }
 
     return null;
@@ -88,7 +88,7 @@ class _EditPersonOfContactScreenState extends State<EditPersonOfContactScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
+      return sEmailErrorValid;
     }
 
     final trimmedValue = value.trim();
@@ -99,7 +99,7 @@ class _EditPersonOfContactScreenState extends State<EditPersonOfContactScreen> {
     );
 
     if (!emailRegex.hasMatch(trimmedValue)) {
-      return 'Please enter a valid email address';
+      return sEmailErrorValid;
     }
 
     if (trimmedValue.length < 5) {
@@ -115,7 +115,7 @@ class _EditPersonOfContactScreenState extends State<EditPersonOfContactScreen> {
 
   String? _validatePhoneNumber(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Phone number is required';
+      return sPhoneNumberError;
     }
 
     final trimmedValue = value.trim();
@@ -492,19 +492,12 @@ class _EditPersonOfContactScreenState extends State<EditPersonOfContactScreen> {
             padding: EdgeInsets.only(left: 12.w),
             child: Row(
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 14.sp,
-                  color: AppColors.error,
-                ),
+                Icon(Icons.error_outline, size: 14.sp, color: AppColors.error),
                 SizedBox(width: 4.w),
                 Expanded(
                   child: Text(
                     errorText,
-                    style: getTextMedium(
-                      size: 12.sp,
-                      colors:  AppColors.error,
-                    ),
+                    style: getTextMedium(size: 12.sp, colors: AppColors.error),
                   ),
                 ),
               ],

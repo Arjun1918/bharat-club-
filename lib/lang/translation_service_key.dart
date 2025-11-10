@@ -34,28 +34,28 @@ const String sTermsAndConditions = 'Agree To Terms';
 
 ///UserName
 const String sUserName = "user_name";
-const String sUserNameHint = "user_name_hint";
+const String sUserNameHint = "user_name";
 const String sUserNameError = "user_name_error";
 
 
 ///Email
 const String sEmail = "email";
 const String sNoOfPerson = "No of person";
-const String sEmailHint = "email_hint";
+const String sEmailHint = "email";
 const String sEmailError = "email_error";
-const String sEmailErrorValid = "email_error_valid";
+const String sEmailErrorValid = "email is required";
 
 
 ///ConfirmPassword
 const String sConfirmPassword = "confirm_password";
-const String sConfirmPasswordHint = "confirm_password_hint";
+const String sConfirmPasswordHint = "confirm_password";
 const String sConfirmPasswordError = "confirm_password_error";
 const String sConfirmPasswordErrorValid = "confirm_password_error_valid";
 
 ///Phone Number
 const String sPhoneNumber = "phone_number";
-const String sPhoneNumberHint = "phone_number_hint";
-const String sPhoneNumberError = "phone_number_error";
+const String sPhoneNumberHint = "phone_number";
+const String sPhoneNumberError = "Phone number is required";
 const String sPhoneNumberErrorValid = "phone_number_error_valid";
 
 ///Occupation
@@ -94,7 +94,11 @@ const String sMembershipDetailsScreen = "Membership Details";
 const String sQrCode = "Qr Code";
 const String sQrScanner = "Qr Scanner";
 const String sParticipant= "Participant";
-
+//validation
+const String nameMustBe = "Name must be at least 2 characters";
+const String namerequired = "Name is required";
+const String namelong = "Name is too long";
+const String letterspace = "Name can only contain letters and spaces";
 
 
 
